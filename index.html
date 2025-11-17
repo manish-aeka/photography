@@ -21,18 +21,17 @@
 
 
     <!-- Navbar -->
-    <nav class="absolute top-0 left-0 w-full flex justify-between px-10 py-5 items-center z-50">
+    <nav class="fixed top-0 left-0 w-full flex justify-between px-2 py-2 md:px-10 md:py-5 items-center z-50">
         <div class="flex items-center gap-6">
-            <a href="#" class="hover:text-yellow-300">Client Login</a>
-            <a href="#" class="hover:text-yellow-300">Facebook</a>
-            <a href="#" class="hover:text-yellow-300">Instagram</a>
+            <a href="#" class="hover:text-yellow-300">Logo</a>
         </div>
 
-        <h1 class="text-3xl font-serif tracking-widest">Wild Photography</h1>
+        <h1 class="md:text-3xl hidden md:block font-serif tracking-widest">Anupam Dutta Photography</h1>
 
-        <!-- <button class="bg-yellow-300 text-black px-4 py-2 rounded-full font-semibold hover:bg-yellow-400">
-            Buy Prints
-        </button> -->
+        <button onclick="window.location.href='mailto:anupam@gmail.com'"
+            class="bg-yellow-300 text-black px-4 py-2 rounded-full font-semibold hover:bg-yellow-400">
+            Book a Photoshoot
+        </button>
     </nav>
 
     <!-- Hero Slider -->
@@ -66,10 +65,10 @@
     </div>
 
     <!-- Category Card Showcase (Dynamic) -->
-    <div id="categories-container" class="flex flex-wrap justify-center gap-12 my-10 bg-gray-200 p-10"></div>
+    <div id="categories-container" class="flex flex-wrap justify-center gap-12 my-10 bg-gray-200 p-2 md:p-10"></div>
 
     <!-- Latest Collections -->
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-1 md:gap-2 p-2">
         <h1 class="text-center text-3xl">Latest Collections</h1>
         <!-- Gallery Masonry/Collage UI -->
         <div id="gallery" class="max-w-6xl mx-auto my-12 grid grid-cols-3 gap-4"></div>
@@ -80,14 +79,16 @@
     <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
         <button id="close-modal"
             class="absolute top-6 right-10 text-white text-4xl font-bold hover:text-red-400">&times;</button>
-        <img id="modal-img" src="" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-2xl border-4 border-white" />
+        <img id="modal-img" src="" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-2xl border-4 border-white"
+            alt="model" />
     </div>
 
     <!-- Connect Me Section -->
     <section class="bg-[#10121A] py-20 px-4">
         <div class="md:max-w-7xl mx-auto">
-            <h2 class="text-5xl font-bold text-center text-indigo-400 mb-2">Let's Connect @birds.series</h2>
-            <p class="text-center text-gray-400 text-xl mb-12">For inquiries into my nature photography, photography
+            <h2 class="text-2xl md:text-5xl font-bold text-center text-indigo-400 mb-2">Let's Connect @birds.series</h2>
+            <p class="text-center text-gray-400 text-md md:text-xl mb-12">For inquiries into my nature photography,
+                photography
                 services, or availability, please use the form to contact me. I appreciate your interest in my wildlife
                 photography, and I will do my best to get back to you soon!</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -199,7 +200,6 @@
         </div>
     </section>
 
-    <script src="script.js"></script>
     </div>
 
     <!-- Footer -->
@@ -231,6 +231,9 @@
             </div>
         </div>
     </footer>
+
+    <script src="script.js"></script>
+
 </body>
 
 </html>

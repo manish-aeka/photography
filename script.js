@@ -1,5 +1,17 @@
 // --- ALL DOMContentLoaded LOGIC COMBINED ---
 document.addEventListener('DOMContentLoaded', function () {
+    // Navbar scroll background toggle
+    const navbar = document.querySelector('nav');
+    function handleNavbarBg() {
+        if (window.scrollY > 10) {
+            navbar.classList.add('bg-gray-900');
+        } else {
+            navbar.classList.remove('bg-gray-900');
+        }
+    }
+    window.addEventListener('scroll', handleNavbarBg);
+    // Run once on load
+    handleNavbarBg();
     // Contact Form Mailto Feature
     const form = document.getElementById('contact-form');
     if (form) {
