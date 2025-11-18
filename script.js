@@ -1,314 +1,276 @@
-// --- ALL DOMContentLoaded LOGIC COMBINED ---
-document.addEventListener('DOMContentLoaded', function () {
-    // Navbar scroll background toggle
-    const navbar = document.querySelector('nav');
+document.addEventListener("DOMContentLoaded", async () => {
+    /* 
+        NAVBAR SCROLL EFFECT
+   */
+    const navbar = document.querySelector("nav");
+
     function handleNavbarBg() {
         if (window.scrollY > 10) {
-            navbar.classList.add('bg-gray-900');
+            navbar.classList.add("bg-gray-900", "shadow-md");
         } else {
-            navbar.classList.remove('bg-gray-900');
+            navbar.classList.remove("bg-gray-900", "shadow-md");
         }
     }
-    window.addEventListener('scroll', handleNavbarBg);
-    // Run once on load
+    window.addEventListener("scroll", handleNavbarBg);
     handleNavbarBg();
-    // Contact Form Mailto Feature
-    const form = document.getElementById('contact-form');
+
+    
+    let data;
+    try {
+        const res = await fetch("images.json");
+        data = await res.json();
+    } catch (err) {
+        console.error("Error loading images.json:", err);
+        return;
+    }
+
+  
+    const sliderImage = document.getElementById("slider-image");
+    const dotsContainer = document.getElementById("dots");
+    let currentIndex = 0;
+    function changeSlide(index) {
+        currentIndex = index;
+
+        // Fade out (do NOT remove kenburns-zoom here!)
+        sliderImage.classList.remove("opacity-100");
+        sliderImage.classList.add("opacity-0");
+
+        setTimeout(() => {
+            // Change image
+            sliderImage.src = data["slider-images"][index];
+
+            // Reset animation properly so it starts clean
+            sliderImage.classList.remove("kenburns-zoom");
+            void sliderImage.offsetWidth; // IMPORTANT — forces reflow
+
+            // Fade in + restart zoom-in animation
+            sliderImage.classList.remove("opacity-0");
+            sliderImage.classList.add("opacity-100");
+            sliderImage.classList.add("kenburns-zoom");
+        }, 400); // Fade duration (match with CSS opacity duration)
+
+        updateDots();
+    }
+
+    function createDots() {
+        data["slider-images"].forEach((_, i) => {
+            const dot = document.createElement("div");
+            dot.className = `w-3 h-3 rounded-full cursor-pointer transition ${i === 0 ? "bg-white" : "bg-white/50"
+                }`;
+            dot.addEventListener("click", () => changeSlide(i));
+            dotsContainer.appendChild(dot);
+        });
+    }
+
+    function updateDots() {
+        Array.from(dotsContainer.children).forEach((dot, i) => {
+            dot.className =
+                "w-3 h-3 rounded-full cursor-pointer transition " +
+                (i === currentIndex ? "bg-white" : "bg-white/50");
+        });
+    }
+
+    // Initialize slider
+    sliderImage.src = data["slider-images"][0];
+    createDots();
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % data["slider-images"].length;
+        changeSlide(currentIndex);
+    }, 8000);
+
+    /*
+        CATEGORY CARDS (Dynamic) with LEFT SLIDE ANIMATION
+   */
+    const container = document.getElementById("categories-container");
+    container.innerHTML = "";
+
+    data.categories.forEach((category, index) => {
+        const card = document.createElement("div");
+        card.className =
+            `category-card w-[420px] bg-white text-gray-900 rounded-xl overflow-hidden shadow-lg transition-all duration-700 transform translate-x-[-100px] opacity-0 ${index % 2 === 0 ? 'slide-in-left' : 'slide-in-right'}`;
+        card.setAttribute("data-category-url", category.url);
+
+        const fullDesc = category.description;
+        const shortDesc =
+            fullDesc.length > 200 ? fullDesc.slice(0, 200) + "..." : fullDesc;
+
+        card.innerHTML = `
+      <img class="w-full h-[280px] object-cover" src="${category.image}" alt="${category.title}">
+      <div class="px-6 py-4">
+        <h3 class="text-2xl font-bold mb-2">${category.title}</h3>
+        <p class="text-gray-700 text-lg card-desc">${shortDesc}</p>
+        ${fullDesc.length > 200
+                ? `
+              <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 read-more-btn">
+                Read More
+              </button>
+              <button class="mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 show-less-btn hidden">
+                Show Less
+              </button>`
+                : ""
+            }
+      </div>
+    `;
+
+        // Card click navigation
+        card.addEventListener("click", (e) => {
+            if (
+                e.target.classList.contains("read-more-btn") ||
+                e.target.classList.contains("show-less-btn")
+            )
+                return;
+            window.location.href = category.url;
+        });
+
+        // Read More / Show Less logic
+        const btnRead = card.querySelector(".read-more-btn");
+        const btnLess = card.querySelector(".show-less-btn");
+        if (btnRead && btnLess) {
+            btnRead.addEventListener("click", (e) => {
+                e.stopPropagation();
+                card.querySelector(".card-desc").textContent = fullDesc;
+                btnRead.classList.add("hidden");
+                btnLess.classList.remove("hidden");
+            });
+            btnLess.addEventListener("click", (e) => {
+                e.stopPropagation();
+                card.querySelector(".card-desc").textContent = shortDesc;
+                btnRead.classList.remove("hidden");
+                btnLess.classList.add("hidden");
+            });
+        }
+
+        container.appendChild(card);
+    });
+
+    /*
+        CATEGORY SCROLL REVEAL - SMOOTH LEFT SLIDE
+     */
+    const categoryCards = document.querySelectorAll(".category-card");
+
+    const cardObserver = new IntersectionObserver(
+        (entries, obs) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("translate-x-0", "opacity-100");
+                    }, i * 200); // staggered delay
+                    obs.unobserve(entry.target);
+                }
+            });
+        },
+        { 
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        }
+    );
+
+    categoryCards.forEach((card) => cardObserver.observe(card));
+
+    /* ==============================
+       🏞️ GALLERY SECTION - HANGING ANIMATION
+    ============================== */
+    const gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+
+    data["gallery-images"].forEach((img, i) => {
+        const extra =
+            i % 6 === 0
+                ? "row-span-2 col-span-2"
+                : i % 5 === 0
+                    ? "row-span-2"
+                    : i % 4 === 0
+                        ? "col-span-2"
+                        : "";
+        
+        const galleryItem = document.createElement("div");
+        galleryItem.className = `overflow-hidden rounded-lg ${extra} cursor-pointer gallery-item transform translate-y-[-50px] opacity-0 scale-95 transition-all duration-1000`;
+        galleryItem.innerHTML = `<img src="${img}" class="w-full h-full object-cover gallery-img hover:scale-110 transition-transform duration-700" data-img="${img}" />`;
+        
+        gallery.appendChild(galleryItem);
+    });
+
+    /* 
+        GALLERY SCROLL REVEAL - HANGING STAGGERED ANIMATION
+    */
+    const galleryItems = document.querySelectorAll(".gallery-item");
+
+    const galleryObserver = new IntersectionObserver(
+        (entries, obs) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add(
+                            "translate-y-0", 
+                            "opacity-100", 
+                            "scale-100",
+                            "hang-animation"
+                        );
+                    }, i * 150); // staggered hanging effect
+                    obs.unobserve(entry.target);
+                }
+            });
+        },
+        { 
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        }
+    );
+
+    galleryItems.forEach((item) => galleryObserver.observe(item));
+
+    /*
+        CINEMATIC MODAL
+     */
+    const modal = document.getElementById("image-modal");
+    const modalImg = document.getElementById("modal-img");
+    const closeBtn = document.getElementById("close-modal");
+
+    gallery.addEventListener("click", (e) => {
+        if (e.target.classList.contains("gallery-img")) {
+            modalImg.src = e.target.dataset.img;
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modal.classList.add("show");
+                modalImg.classList.add("show");
+            }, 10);
+        }
+    });
+
+    function closeModal() {
+        modalImg.classList.remove("show");
+        modal.classList.remove("show");
+        setTimeout(() => modal.classList.add("hidden"), 400);
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+    });
+
+    /*
+       CONTACT FORM MAILTO
+     */
+    const form = document.getElementById("contact-form");
     if (form) {
-        form.addEventListener('submit', function (e) {
+        form.addEventListener("submit", (e) => {
             e.preventDefault();
-            const inputs = form.querySelectorAll('input[type="text"]');
-            let name = '', subject = '';
-            if (inputs.length === 1) {
-                name = inputs[0].value;
-            } else if (inputs.length > 1) {
-                name = inputs[0].value;
-                subject = inputs[1].value;
-            }
+            const name = form.querySelector('input[placeholder="Your name"]').value;
             const email = form.querySelector('input[type="email"]').value;
-            if (!subject) {
-                // fallback: try to get subject by label
-                const subjectInput = Array.from(form.querySelectorAll('input')).find(input => input.previousElementSibling && input.previousElementSibling.textContent.trim().toLowerCase() === 'subject');
-                if (subjectInput) subject = subjectInput.value;
-            }
-            const message = form.querySelector('textarea').value;
-            const mailto = `mailto:manish7479dlp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+            const subject = form.querySelector(
+                'input[placeholder="Photography inquiry"]'
+            ).value;
+            const message = form.querySelector("textarea").value;
+
+            const mailto = `mailto:manish7479dlp@gmail.com?subject=${encodeURIComponent(
+                subject
+            )}&body=${encodeURIComponent(
+                "Name: " + name + "\nEmail: " + email + "\n\n" + message
+            )}`;
             window.location.href = mailto;
         });
     }
-
-    // --- CATEGORY CARD RENDER & CLICK REDIRECT ---
-    fetch("images.json")
-        .then(res => res.json())
-        .then(data => {
-            // Render categories
-            if (data.categories && Array.isArray(data.categories)) {
-                const container = document.getElementById('categories-container');
-                container.innerHTML = '';
-                data.categories.forEach(category => {
-                    const card = document.createElement('div');
-                    card.className = "w-[420px] min-h-[420px] bg-white text-gray-900 max-w-2xl rounded-xl overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300";
-                    card.setAttribute('data-category-url', category.url);
-
-                    // Truncate description to 200 chars
-                    const fullDesc = category.description;
-                    const shortDesc = fullDesc.length > 200 ? fullDesc.slice(0, 200) + '...' : fullDesc;
-
-                    card.innerHTML = `
-                        <img class="w-full h-[280px] object-cover rounded-t-xl" src="${category.image}" alt="${category.title}">
-                        <div class="px-8 py-6">
-                            <div class="font-bold text-2xl mb-3">${category.title}</div>
-                            <p class="text-gray-700 text-lg card-desc">${shortDesc}</p>
-                            ${fullDesc.length > 200 ? `
-                                <button class=\"mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 read-more-btn\">Read More</button>
-                                <button class=\"mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 show-less-btn\" style=\"display:none\">Show Less</button>
-                            ` : ''}
-                        </div>
-                    `;
-                    // Card click (except button)
-                    card.addEventListener('click', function (e) {
-                        if (e.target.classList.contains('read-more-btn') || e.target.classList.contains('show-less-btn')) return;
-                        if (category.url) {
-                            window.location.href = category.url;
-                        }
-                    });
-                    // Read More / Show Less button logic
-                    const btnRead = card.querySelector('.read-more-btn');
-                    const btnLess = card.querySelector('.show-less-btn');
-                    if (btnRead && btnLess) {
-                        btnRead.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            card.querySelector('.card-desc').textContent = fullDesc;
-                            btnRead.style.display = 'none';
-                            btnLess.style.display = 'inline-block';
-                        });
-                        btnLess.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            card.querySelector('.card-desc').textContent = shortDesc;
-                            btnRead.style.display = 'inline-block';
-                            btnLess.style.display = 'none';
-                        });
-                    }
-                    container.appendChild(card);
-                });
-            }
-        });
-    // (Keep old click handler for static cards if any remain)
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', function () {
-            const url = card.getAttribute('data-category-url');
-            if (url) {
-                window.location.href = url;
-            }
-        });
-    });
-
-    // --- GALLERY MASONRY/COLLAGE RENDER ---
-    fetch("images.json")
-        .then(res => res.json())
-        .then(data => {
-            const gallery = document.getElementById('gallery');
-            if (!gallery || !data['gallery-images']) return;
-            gallery.innerHTML = '';
-            data['gallery-images'].forEach((img, i) => {
-                // Vary the row/col span for collage effect
-                let extra = '';
-                if (i % 6 === 0) extra = 'row-span-2 col-span-2';
-                else if (i % 5 === 0) extra = 'row-span-2';
-                else if (i % 4 === 0) extra = 'col-span-2';
-                gallery.innerHTML += `
-                        <div class="overflow-hidden rounded-lg ${extra} cursor-pointer gallery-img-wrapper">
-                            <img src="${img}" class="w-full h-full object-cover gallery-img" data-img="${img}" />
-                        </div>
-                    `;
-            });
-            // Add click event for popup
-            document.querySelectorAll('.gallery-img').forEach(imgEl => {
-                imgEl.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    const modal = document.getElementById('image-modal');
-                    const modalImg = document.getElementById('modal-img');
-                    modalImg.src = imgEl.getAttribute('data-img');
-                    modal.classList.remove('hidden');
-                });
-            });
-            // Close modal logic
-            const closeBtn = document.getElementById('close-modal');
-            const modal = document.getElementById('image-modal');
-            closeBtn.addEventListener('click', function () {
-                modal.classList.add('hidden');
-                document.getElementById('modal-img').src = '';
-            });
-            // Also close modal on background click
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    modal.classList.add('hidden');
-                    document.getElementById('modal-img').src = '';
-                }
-            });
-        });
 });
-// --- GALLERY MASONRY/COLLAGE RENDER ---
-fetch("images.json")
-    .then(res => res.json())
-    .then(data => {
-        const gallery = document.getElementById('gallery');
-        if (!gallery || !data['gallery-images']) return;
-        gallery.innerHTML = '';
-        data['gallery-images'].forEach((img, i) => {
-            // Vary the row/col span for collage effect
-            let extra = '';
-            if (i % 6 === 0) extra = 'row-span-2 col-span-2';
-            else if (i % 5 === 0) extra = 'row-span-2';
-            else if (i % 4 === 0) extra = 'col-span-2';
-            gallery.innerHTML += `
-                    <div class="overflow-hidden rounded-lg ${extra} cursor-pointer gallery-img-wrapper">
-                        <img src="${img}" class="w-full h-full object-cover gallery-img" data-img="${img}" />
-                    </div>
-                `;
-        });
-        // Add click event for popup
-        document.querySelectorAll('.gallery-img').forEach(imgEl => {
-            imgEl.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const modal = document.getElementById('image-modal');
-                const modalImg = document.getElementById('modal-img');
-                modalImg.src = imgEl.getAttribute('data-img');
-                modal.classList.remove('hidden');
-            });
-        });
-        // Close modal logic
-        const closeBtn = document.getElementById('close-modal');
-        const modal = document.getElementById('image-modal');
-        closeBtn.addEventListener('click', function () {
-            modal.classList.add('hidden');
-            document.getElementById('modal-img').src = '';
-        });
-        // Also close modal on background click
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-                document.getElementById('modal-img').src = '';
-            }
-        });
-    });
-// --- CATEGORY CARD RENDER & CLICK REDIRECT ---
-document.addEventListener('DOMContentLoaded', function () {
-    fetch("images.json")
-        .then(res => res.json())
-        .then(data => {
-            // Render categories
-            if (data.categories && Array.isArray(data.categories)) {
-                const container = document.getElementById('categories-container');
-                container.innerHTML = '';
-                data.categories.forEach(category => {
-                    const card = document.createElement('div');
-                    card.className = "w-[420px] min-h-[420px] bg-white text-gray-900 max-w-2xl rounded-xl overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300";
-                    card.setAttribute('data-category-url', category.url);
-
-                    // Truncate description to 200 chars
-                    const fullDesc = category.description;
-                    const shortDesc = fullDesc.length > 200 ? fullDesc.slice(0, 200) + '...' : fullDesc;
-
-                    card.innerHTML = `
-                        <img class="w-full h-[280px] object-cover rounded-t-xl" src="${category.image}" alt="${category.title}">
-                        <div class="px-8 py-6">
-                            <div class="font-bold text-2xl mb-3">${category.title}</div>
-                            <p class="text-gray-700 text-lg card-desc">${shortDesc}</p>
-                            ${fullDesc.length > 200 ? `
-                                <button class=\"mt-4 px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 read-more-btn\">Read More</button>
-                                <button class=\"mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 show-less-btn\" style=\"display:none\">Show Less</button>
-                            ` : ''}
-                        </div>
-                    `;
-                    // Card click (except button)
-                    card.addEventListener('click', function (e) {
-                        if (e.target.classList.contains('read-more-btn') || e.target.classList.contains('show-less-btn')) return;
-                        if (category.url) {
-                            window.location.href = category.url;
-                        }
-                    });
-                    // Read More / Show Less button logic
-                    const btnRead = card.querySelector('.read-more-btn');
-                    const btnLess = card.querySelector('.show-less-btn');
-                    if (btnRead && btnLess) {
-                        btnRead.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            card.querySelector('.card-desc').textContent = fullDesc;
-                            btnRead.style.display = 'none';
-                            btnLess.style.display = 'inline-block';
-                        });
-                        btnLess.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            card.querySelector('.card-desc').textContent = shortDesc;
-                            btnRead.style.display = 'inline-block';
-                            btnLess.style.display = 'none';
-                        });
-                    }
-                    container.appendChild(card);
-                });
-            }
-        });
-    // (Keep old click handler for static cards if any remain)
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', function () {
-            const url = card.getAttribute('data-category-url');
-            if (url) {
-                window.location.href = url;
-            }
-        });
-    });
-});
-let slider_images = [];
-let current_slider_image = 0;
-
-// Load JSON images
-fetch("images.json")
-    .then(res => res.json())
-    .then(data => {
-        slider_images = data["slider-images"];
-        loadImage();
-        createDots();
-    });
-
-// Load image into slider
-function loadImage() {
-    const img = document.getElementById("slider-image");
-    img.classList.remove("fade");
-
-    setTimeout(() => {
-        img.src = slider_images[current_slider_image];
-        img.classList.add("fade");
-    }, 100);
-
-    updateDots();
-}
-
-// Auto slide every 4 seconds
-setInterval(() => {
-    current_slider_image = (current_slider_image + 1) % slider_images.length;
-    loadImage();
-}, 4000);
-
-// --- DOTS ---
-function createDots() {
-    const dotContainer = document.getElementById("dots");
-    slider_images.forEach((_, i) => {
-        const dot = document.createElement("div");
-        dot.className = "w-3 h-3 bg-white/60 rounded-full cursor-pointer";
-        dot.addEventListener("click", () => {
-            current_slider_image = i;
-            loadImage();
-        });
-        dotContainer.appendChild(dot);
-    });
-}
-
-function updateDots() {
-    const dotContainer = document.getElementById("dots").children;
-    for (let i = 0; i < dotContainer.length; i++) {
-        dotContainer[i].className =
-            "w-3 h-3 rounded-full cursor-pointer " +
-            (i === current_slider_image ? "bg-white" : "bg-white/50");
-    }
-}
