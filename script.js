@@ -31,23 +31,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     function changeSlide(index) {
         currentIndex = index;
 
-        // Fade out (do NOT remove kenburns-zoom here!)
         sliderImage.classList.remove("opacity-100");
         sliderImage.classList.add("opacity-0");
 
         setTimeout(() => {
-            // Change image
             sliderImage.src = data["slider-images"][index];
-
-            // Reset animation properly so it starts clean
             sliderImage.classList.remove("kenburns-zoom");
-            void sliderImage.offsetWidth; // IMPORTANT — forces reflow
-
-            // Fade in + restart zoom-in animation
+            void sliderImage.offsetWidth;
             sliderImage.classList.remove("opacity-0");
             sliderImage.classList.add("opacity-100");
             sliderImage.classList.add("kenburns-zoom");
-        }, 400); // Fade duration (match with CSS opacity duration)
+        }, 400);
 
         updateDots();
     }
@@ -55,8 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function createDots() {
         data["slider-images"].forEach((_, i) => {
             const dot = document.createElement("div");
-            dot.className = `w-3 h-3 rounded-full cursor-pointer transition ${i === 0 ? "bg-white" : "bg-white/50"
-                }`;
+            dot.className = `w-3 h-3 rounded-full cursor-pointer transition ${i === 0 ? "bg-white" : "bg-white/50"}`;
             dot.addEventListener("click", () => changeSlide(i));
             dotsContainer.appendChild(dot);
         });
@@ -64,9 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function updateDots() {
         Array.from(dotsContainer.children).forEach((dot, i) => {
-            dot.className =
-                "w-3 h-3 rounded-full cursor-pointer transition " +
-                (i === currentIndex ? "bg-white" : "bg-white/50");
+            dot.className = "w-3 h-3 rounded-full cursor-pointer transition " + (i === currentIndex ? "bg-white" : "bg-white/50");
         });
     }
 
@@ -79,148 +70,141 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 8000);
 
     /*
-        CATEGORY CARDS (Dynamic) with LEFT SLIDE ANIMATION
+        CATEGORY CARDS - BIG & BEAUTIFUL LAYOUT
    */
     const container = document.getElementById("categories-container");
     container.innerHTML = "";
 
     data.categories.forEach((category, index) => {
+        const isEven = index % 2 === 0;
+        
         const card = document.createElement("div");
-        card.className =
-            `category-card w-[420px] bg-white text-gray-900 rounded-xl overflow-hidden shadow-lg transition-all duration-700 transform translate-x-[-100px] opacity-0 ${index % 2 === 0 ? 'slide-in-left' : 'slide-in-right'}`;
-        card.setAttribute("data-category-url", category.url);
-
-        const fullDesc = category.description;
-        const shortDesc =
-            fullDesc.length > 200 ? fullDesc.slice(0, 200) + "..." : fullDesc;
-
+        card.className = `category-card w-full max-w-7xl mx-auto my-6  transition-all duration-1000 transform ${isEven ? '-translate-x-20' : 'translate-x-20'} opacity-0`;
+        
         card.innerHTML = `
-      <img class="w-full h-[280px] object-cover" src="${category.image}" alt="${category.title}">
-      <div class="px-6 py-4">
-        <h3 class="text-2xl font-bold mb-2">${category.title}</h3>
-        <p class="text-gray-700 text-lg card-desc">${shortDesc}</p>
-        ${fullDesc.length > 200
-                ? `
-              <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 read-more-btn">
-                Read More
-              </button>
-              <button class="mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 show-less-btn hidden">
-                Show Less
-              </button>`
-                : ""
-            }
-      </div>
-    `;
+            <div class="flex flex-col overflow-hidden ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-10">
+                <!-- Image Section -->
+                <div class="w-full  md:w-1/2 ${isEven ? 'md:pr-8' : 'md:pl-8'}">
+                    <div class="${isEven ? 'slide-in-image-left' : 'slide-in-image-right'} transform ${isEven ? 'translate-x-[-100px]' : 'translate-x-[100px]'} opacity-0 transition-all overflow-hidden duration-1000 delay-300">
+                        <img class="w-full h-[300px] md:h-[500px] object-cover rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-700 shadow-lg hover:scale-105" 
+                             src="${category.image}" 
+                             alt="${category.title}">
+                    </div>
+                </div>
+                
+                <!-- Text Content Section -->
+                <div class="w-full md:w-1/2 ${isEven ? 'md:pl-8' : 'md:pr-8'}">
+                    <div class="${isEven ? 'slide-in-text-left' : 'slide-in-text-right'} transform ${isEven ? 'translate-x-[-80px]' : 'translate-x-[80px]'} opacity-0 transition-all duration-1000 delay-500">
+                        <h3 class="text-4xl md:text-5xl font-bold mb-6 text-gray-100 font-serif">${category.title}</h3>
+                        <p class="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 font-light">${category.description}</p>
+                        <button class="explore-btn px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-semibold text-md">
+                            Explore ${category.title} →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
 
-        // Card click navigation
-        card.addEventListener("click", (e) => {
-            if (
-                e.target.classList.contains("read-more-btn") ||
-                e.target.classList.contains("show-less-btn")
-            )
-                return;
+        // Explore button click
+        const exploreBtn = card.querySelector(".explore-btn");
+        exploreBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
             window.location.href = category.url;
         });
-
-        // Read More / Show Less logic
-        const btnRead = card.querySelector(".read-more-btn");
-        const btnLess = card.querySelector(".show-less-btn");
-        if (btnRead && btnLess) {
-            btnRead.addEventListener("click", (e) => {
-                e.stopPropagation();
-                card.querySelector(".card-desc").textContent = fullDesc;
-                btnRead.classList.add("hidden");
-                btnLess.classList.remove("hidden");
-            });
-            btnLess.addEventListener("click", (e) => {
-                e.stopPropagation();
-                card.querySelector(".card-desc").textContent = shortDesc;
-                btnRead.classList.remove("hidden");
-                btnLess.classList.add("hidden");
-            });
-        }
 
         container.appendChild(card);
     });
 
     /*
-        CATEGORY SCROLL REVEAL - SMOOTH LEFT SLIDE
+        SMOOTH CATEGORY SCROLL REVEAL - FIXED VERSION
      */
     const categoryCards = document.querySelectorAll(".category-card");
 
     const cardObserver = new IntersectionObserver(
         (entries, obs) => {
-            entries.forEach((entry, i) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add("translate-x-0", "opacity-100");
-                    }, i * 200); // staggered delay
+                    // Animate main card immediately
+                    entry.target.classList.add("translate-x-0", "opacity-100");
+                    
+                    // Find image and text elements
+                    const imageElement = entry.target.querySelector('.slide-in-image-left, .slide-in-image-right');
+                    const textElement = entry.target.querySelector('.slide-in-text-left, .slide-in-text-right');
+                    
+                    // Animate image with delay
+                    if (imageElement) {
+                        setTimeout(() => {
+                            imageElement.classList.add('translate-x-0', 'opacity-100');
+                        }, 300);
+                    }
+                    
+                    // Animate text with longer delay
+                    if (textElement) {
+                        setTimeout(() => {
+                            textElement.classList.add('translate-x-0', 'opacity-100');
+                        }, 600);
+                    }
+                    
                     obs.unobserve(entry.target);
                 }
             });
         },
         { 
             threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
+            rootMargin: "0px 0px -100px 0px"
         }
     );
 
     categoryCards.forEach((card) => cardObserver.observe(card));
 
     /* ==============================
-       🏞️ GALLERY SECTION - HANGING ANIMATION
+       GALLERY SECTION
     ============================== */
     const gallery = document.getElementById("gallery");
-    gallery.innerHTML = "";
+gallery.innerHTML = "";
 
-    data["gallery-images"].forEach((img, i) => {
-        const extra =
-            i % 6 === 0
-                ? "row-span-2 col-span-2"
-                : i % 5 === 0
-                    ? "row-span-2"
-                    : i % 4 === 0
-                        ? "col-span-2"
-                        : "";
-        
-        const galleryItem = document.createElement("div");
-        galleryItem.className = `overflow-hidden rounded-lg ${extra} cursor-pointer gallery-item transform translate-y-[-50px] opacity-0 scale-95 transition-all duration-1000`;
-        galleryItem.innerHTML = `<img src="${img}" class="w-full h-full object-cover gallery-img hover:scale-110 transition-transform duration-700" data-img="${img}" />`;
-        
-        gallery.appendChild(galleryItem);
-    });
+data["gallery-images"].forEach((img, i) => {
+    const extra = i % 6 === 0 ? "row-span-2 col-span-2" : 
+                 i % 5 === 0 ? "row-span-2" : 
+                 i % 4 === 0 ? "col-span-2" : "";
+    
+    const galleryItem = document.createElement("div");
+    galleryItem.className = `overflow-hidden rounded-lg ${extra} cursor-pointer gallery-item transform translate-y-10 opacity-0 transition-all duration-700 relative group`;
+    galleryItem.innerHTML = `
+        <img src="${img}" 
+             class="w-full h-full object-cover gallery-img hover:scale-110 transition-transform duration-500" 
+             data-img="${img}" />
+        <!-- Simple Click to View Text -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+    <span class="text-white text-xs font-medium bg-gray-500 bg-opacity-40 px-3 py-1.5 rounded-md backdrop-blur-sm">
+        Click to view
+    </span>
+</div>
+    `;
+    
+    gallery.appendChild(galleryItem);
+});
 
-    /* 
-        GALLERY SCROLL REVEAL - HANGING STAGGERED ANIMATION
-    */
+    /* GALLERY SCROLL REVEAL */
     const galleryItems = document.querySelectorAll(".gallery-item");
-
     const galleryObserver = new IntersectionObserver(
         (entries, obs) => {
             entries.forEach((entry, i) => {
                 if (entry.isIntersecting) {
                     setTimeout(() => {
-                        entry.target.classList.add(
-                            "translate-y-0", 
-                            "opacity-100", 
-                            "scale-100",
-                            "hang-animation"
-                        );
-                    }, i * 150); // staggered hanging effect
+                        entry.target.classList.add("translate-y-0", "opacity-100");
+                    }, i * 100);
                     obs.unobserve(entry.target);
                 }
             });
         },
-        { 
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        }
+        { threshold: 0.1 }
     );
 
     galleryItems.forEach((item) => galleryObserver.observe(item));
 
     /*
-        CINEMATIC MODAL
+        MODAL
      */
     const modal = document.getElementById("image-modal");
     const modalImg = document.getElementById("modal-img");
@@ -252,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     /*
-       CONTACT FORM MAILTO
+       CONTACT FORM
      */
     const form = document.getElementById("contact-form");
     if (form) {
@@ -260,16 +244,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             e.preventDefault();
             const name = form.querySelector('input[placeholder="Your name"]').value;
             const email = form.querySelector('input[type="email"]').value;
-            const subject = form.querySelector(
-                'input[placeholder="Photography inquiry"]'
-            ).value;
+            const subject = form.querySelector('input[placeholder="Photography inquiry"]').value;
             const message = form.querySelector("textarea").value;
 
-            const mailto = `mailto:manish7479dlp@gmail.com?subject=${encodeURIComponent(
-                subject
-            )}&body=${encodeURIComponent(
-                "Name: " + name + "\nEmail: " + email + "\n\n" + message
-            )}`;
+            const mailto = `mailto:manish7479dlp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\n" + message)}`;
             window.location.href = mailto;
         });
     }
