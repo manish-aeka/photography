@@ -41,6 +41,62 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch("images.json")
         .then(res => res.json())
         .then(data => {
+            // Set logo URL if available
+            if (data['logo-url']) {
+                document.querySelectorAll('.logo-img').forEach(logoImg => {
+                    logoImg.src = data['logo-url'];
+                });
+                // Also update favicon
+                const favicon = document.querySelector('link[rel="icon"]');
+                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                if (favicon) favicon.href = data['logo-url'];
+                if (appleTouchIcon) appleTouchIcon.href = data['logo-url'];
+            }
+
+            // Populate About section
+            if (data.about) {
+                const aboutTitle = document.getElementById('about-title');
+                const aboutDesc = document.getElementById('about-description');
+
+                if (aboutTitle && data.about.title) {
+                    aboutTitle.textContent = data.about.title;
+                }
+                if (aboutDesc && data.about.description) {
+                    aboutDesc.textContent = data.about.description;
+                }
+
+                // Populate About Card/Content Box
+                if (data.about.card) {
+                    const cardContainer = document.getElementById('about-card');
+                    const cardImage = document.getElementById('about-card-image');
+                    const cardTitle = document.getElementById('about-card-title');
+                    const cardDesc = document.getElementById('about-card-description');
+                    const cardSubDesc = document.getElementById('about-card-subdescription');
+
+                    // Show/hide card based on visibility flag
+                    if (cardContainer && data.about.card['is-card-visible'] !== undefined) {
+                        if (data.about.card['is-card-visible']) {
+                            cardContainer.style.display = 'flex';
+                        } else {
+                            cardContainer.style.display = 'none';
+                        }
+                    }
+
+                    if (cardImage && data.about.card.url) {
+                        cardImage.src = data.about.card.url;
+                    }
+                    if (cardTitle && data.about.card.title) {
+                        cardTitle.textContent = data.about.card.title;
+                    }
+                    if (cardDesc && data.about.card.description) {
+                        cardDesc.textContent = data.about.card.description;
+                    }
+                    if (cardSubDesc && data.about.card['sub-description']) {
+                        cardSubDesc.textContent = data.about.card['sub-description'];
+                    }
+                }
+            }
+
             // Render categories
             if (data.categories && Array.isArray(data.categories)) {
                 const container = document.getElementById('categories-container');
