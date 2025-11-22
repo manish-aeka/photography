@@ -53,6 +53,38 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch("anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
+            // Populate Hero Content from slider-content
+            if (data['slider-content']) {
+                const heroHeading = document.getElementById('heroHeading');
+                const heroDescription = document.getElementById('heroDescription');
+                const heroButton = document.getElementById('heroButton');
+
+                if (heroHeading && data['slider-content'].heading) {
+                    heroHeading.textContent = data['slider-content'].heading;
+                }
+                if (heroDescription && data['slider-content'].description) {
+                    heroDescription.textContent = data['slider-content'].description;
+                }
+                if (heroButton && data['slider-content']['show-latest-collections-button'] === false) {
+                    heroButton.style.display = 'none';
+                } else if (heroButton) {
+                    heroButton.innerHTML = `<span class="relative z-10 flex items-center gap-2">
+                        Explore Latest Collections
+                        <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </span>`;
+
+                    // Scroll to Featured Work (gallery) section
+                    heroButton.onclick = function () {
+                        const featuredWorkSection = document.getElementById('featured-work');
+                        if (featuredWorkSection) {
+                            featuredWorkSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    };
+                }
+            }
+
             // Set logo URL if available
             if (data['logo-url']) {
                 document.querySelectorAll('.logo-img').forEach(logoImg => {
@@ -115,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.innerHTML = '';
                 data.categories.forEach(category => {
                     const card = document.createElement('div');
-                    card.className = "w-[420px] min-h-[420px] bg-white text-gray-900 max-w-2xl rounded-xl overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300";
+                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30 cursor-pointer";
                     card.setAttribute('data-category-url', category.url);
 
                     // Truncate description to 200 chars
@@ -123,13 +155,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     const shortDesc = fullDesc.length > 200 ? fullDesc.slice(0, 200) + '...' : fullDesc;
 
                     card.innerHTML = `
-                        <img class="w-full h-[280px] object-cover rounded-t-xl" src="${category.image}" alt="${category.title}">
-                        <div class="px-8 py-6">
-                            <div class="font-bold text-2xl mb-3">${category.title}</div>
-                            <p class="text-gray-700 text-lg card-desc">${shortDesc}</p>
+                        <!-- Animated Background Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        <!-- Image Section with Overlay -->
+                        <div class="relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
+                            <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
+                                <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Section -->
+                        <div class="relative p-8 z-10">
+                            <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
+                            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"></div>
+                            <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class=\"mt-4 px-4 py-2 bg-[#1983CC] text-white rounded hover:bg-blue-700 read-more-btn\">Read More</button>
-                                <button class=\"mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 show-less-btn\" style=\"display:none\">Show Less</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg read-more-btn">Read More</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
                     `;
@@ -271,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.innerHTML = '';
                 data.categories.forEach(category => {
                     const card = document.createElement('div');
-                    card.className = "w-[420px] min-h-[420px] bg-white text-gray-900 max-w-2xl rounded-xl overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300";
+                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30 cursor-pointer";
                     card.setAttribute('data-category-url', category.url);
 
                     // Truncate description to 200 chars
@@ -279,13 +324,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     const shortDesc = fullDesc.length > 200 ? fullDesc.slice(0, 200) + '...' : fullDesc;
 
                     card.innerHTML = `
-                        <img class="w-full h-[280px] object-cover rounded-t-xl" src="${category.image}" alt="${category.title}">
-                        <div class="px-8 py-6">
-                            <div class="font-bold text-2xl mb-3">${category.title}</div>
-                            <p class="text-gray-700 text-lg card-desc">${shortDesc}</p>
+                        <!-- Animated Background Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        <!-- Image Section with Overlay -->
+                        <div class="relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
+                            <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
+                                <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Section -->
+                        <div class="relative p-8 z-10">
+                            <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
+                            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"></div>
+                            <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class=\"mt-4 px-4 py-2 bg-[#1983CC] text-white rounded hover:bg-[#1983CC] read-more-btn\">Read More</button>
-                                <button class=\"mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 show-less-btn\" style=\"display:none\">Show Less</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg read-more-btn">Read More</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
                     `;
