@@ -108,6 +108,21 @@
         [id$="-section"] {
             scroll-margin-top: 80px;
         }
+
+        /* Mobile sidebar toggle */
+        .sidebar-open {
+            transform: translateX(0);
+        }
+
+        .sidebar-closed {
+            transform: translateX(-100%);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transition: transform 0.3s ease-in-out;
+            }
+        }
     </style>
 </head>
 
@@ -126,48 +141,73 @@
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 shadow-sm z-50">
-        <div class="h-full px-6 flex items-center justify-between">
-            <div class="flex items-center gap-4">
+        <div class="h-full px-4 md:px-6 flex items-center justify-between">
+            <!-- Hamburger Menu (Mobile) -->
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-700 p-2 hover:bg-gray-100 rounded-lg"
+                title="Toggle menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+
+            <div class="flex items-center gap-2 md:gap-4">
                 <div
-                    class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                         </path>
                     </svg>
                 </div>
-                <div>
+                <div class="hidden sm:block">
                     <h1
-                        class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        class="text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                         Photography Dashboard</h1>
                     <p class="text-xs text-gray-500">Content Management System</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div id="loadingMessage" class="flex items-center gap-2">
+            <div class="flex items-center gap-2 md:gap-4">
+                <div id="loadingMessage" class="hidden md:flex items-center gap-2">
                     <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce"></div>
                     <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
                     <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
                     <span class="text-sm text-gray-600 font-medium ml-2">Loading...</span>
                 </div>
                 <button onclick="updateJSON()"
-                    class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                    class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-3 md:px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-1 md:gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    Save JSON
+                    <span class="hidden sm:inline">Save JSON</span>
+                    <span class="sm:hidden">Save</span>
                 </button>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden"
+        onclick="toggleSidebar()"></div>
+
     <!-- Sidebar -->
-    <aside class="fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto z-40">
+    <aside id="sidebar"
+        class="sidebar fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto z-40 md:translate-x-0 -translate-x-full transition-transform duration-300">
         <div class="p-4">
-            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-4">
-                <p class="text-xs text-indigo-900 leading-relaxed">✨ Click images to upload • Auto-converts to base64 •
-                    Real-time preview</p>
+            <div class="flex items-center justify-between mb-4">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3 flex-1">
+                    <p class="text-xs text-indigo-900 leading-relaxed">✨ Click images to upload • Auto-converts to
+                        base64 •
+                        Real-time preview</p>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden ml-2 text-gray-500 hover:text-gray-700 p-1"
+                    title="Close menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
             </div>
 
             <nav class="space-y-1">
@@ -211,7 +251,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="ml-64 mt-16 p-8">
+    <main class="md:ml-64 mt-16 p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
 
             <!-- Slider Images Section -->
@@ -488,6 +528,22 @@
         });
 
         // Smooth scroll to section
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
         function scrollToSection(sectionId) {
             const element = document.getElementById(sectionId);
             if (element) {
@@ -498,6 +554,11 @@
                     item.classList.remove('active');
                 });
                 event.target.closest('.sidebar-item').classList.add('active');
+
+                // Close sidebar on mobile after clicking
+                if (window.innerWidth < 768) {
+                    toggleSidebar();
+                }
             }
         }
 
@@ -608,9 +669,9 @@
             jsonData['slider-images'].forEach((url, index) => {
                 container.innerHTML += `
                     <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
-                        <div class="flex gap-4 p-4">
+                        <div class="flex flex-col md:flex-row gap-4 p-4">
                             <!-- Left Side - Image Preview -->
-                            <div class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0" style="width: 280px; height: 200px;">
+                            <div class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
                                 <img src="${url}" class="w-full h-full object-contain image-clickable" alt="Slider ${index + 1}" onclick="openFullscreen('${url}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                     <button onclick="pickImageForSlider(${index})" 
@@ -813,9 +874,9 @@
             jsonData['gallery-images'].forEach((url, index) => {
                 container.innerHTML += `
                     <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
-                        <div class="flex gap-4 p-4">
+                        <div class="flex flex-col md:flex-row gap-4 p-4">
                             <!-- Left Side - Image Preview -->
-                            <div class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0" style="width: 280px; height: 200px;">
+                            <div class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
                                 <img src="${url}" class="w-full h-full object-contain image-clickable" alt="Gallery ${index + 1}" onclick="openFullscreen('${url}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                     <button onclick="pickImageForGallery(${index})" 
