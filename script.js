@@ -1,5 +1,17 @@
 // --- ALL DOMContentLoaded LOGIC COMBINED ---
 document.addEventListener('DOMContentLoaded', function () {
+    // Hide loading overlay
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) {
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '0';
+            loadingOverlay.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+            }, 500);
+        }, 500);
+    }
+
     // Navbar scroll background toggle
     const navbar = document.querySelector('nav');
     function handleNavbarBg() {
