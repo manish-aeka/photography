@@ -70,25 +70,44 @@
 
     <!-- About me section -->
     <!-- <div class="p-10 max-w-4xl mx-auto"> -->
-    <div class="p-10 flex flex-col gap-4">
+    <div class="px-2 py-12 flex flex-col gap-8 max-w-5xl mx-auto">
 
-        <h2 class="md:text-4xl text-2xl font-semibold text-center">About Anupam Dutta Photography</h2>
-        <p class="text-center">Coming soon...</p>
-        <!-- <div class="flex gap-2">
-            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG9ncmFwaHklMjBwaG90b2dyYXBofGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60"
-                alt="Anupam Dutta Photography" class="w-full h-auto my-4 rounded-lg shadow-lg" />
+        <h2 class="text-3xl md:text-4xl font-bold text-center tracking-wide">
+            About Anupam Dutta Photography
+        </h2>
 
-            <div class="flex flex-col gap-2 p-2">
-                <h3 class="text-2xl font-semibold">Why I love clicking</h3>
-                <p>To inspire a deeper connection with nature, nature photography captures its untamed beauty, serving
-                    as a call to protect the remaining wild spaces through professional photography services that
-                    highlight wildlife photography.</p>
+        <p class="text-center text-gray-400 text-lg leading-relaxed max-w-3xl mx-auto">
+            Capturing the untamed beauty of nature through the lens — every photograph tells a story,
+            evokes emotion, and preserves a moment that will never return.
+        </p>
+
+        <!-- Content Box -->
+        <!-- <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-center bg-white rounded-2xl shadow-lg p-4 md:p-8">
+
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60"
+                class="w-full md:w-1/2 h-64 md:h-80 object-cover rounded-xl shadow-md" alt="Anupam Dutta Photography" />
+
+            <div class="flex flex-col gap-4 md:w-1/2">
+
+                <h3 class="text-2xl font-semibold text-gray-800">
+                    My Passion for Photography
+                </h3>
+
+                <p class="text-gray-600 leading-relaxed">
+                    Wildlife photography is more than capturing images — it’s about revealing the hidden
+                    stories of the natural world. I strive to freeze moments that inspire curiosity,
+                    respect, and emotional connection toward the wilderness.
+                </p>
+
+                <p class="text-gray-600 leading-relaxed">
+                    With every shot, I aim to blend patience, timing, and creativity to bring out the
+                    essence of wildlife in its purest form.
+                </p>
+
             </div>
-
-
         </div> -->
-
     </div>
+
 
     <!-- Category Card Showcase (Dynamic) -->
     <div id="categories-container" class="flex flex-wrap justify-center gap-12 bg-gray-200 p-2 md:p-10"></div>
@@ -100,7 +119,7 @@
                 Featured
             </span>
 
-            <h1 class="md:text-4xl text-2xl text-center  mt-3">
+            <h1 class="md:text-4xl text-2xl text-center font-bold mt-3">
                 Latest Collections
             </h1>
         </div>
@@ -241,8 +260,10 @@
     <footer class="bg-[#10121A] text-gray-400 py-8 mt-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 gap-4">
             <div class="text-center md:text-left">
-                <span class="font-semibold text-white">&copy; 2025 Wild Photography.</span> All rights reserved.
+                <span class="font-semibold text-white">&copy; <span id="year"></span> Anupam Dutta Photography.</span>
+                All rights reserved.
             </div>
+
             <div class="flex gap-6 text-lg">
                 <a href="#" class="hover:text-indigo-400 transition">Home</a>
                 <a href="#categories-container" class="hover:text-indigo-400 transition">Categories</a>
@@ -268,6 +289,10 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
 
 </body>
 
