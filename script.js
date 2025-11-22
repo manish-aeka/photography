@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (subjectInput) subject = subjectInput.value;
             }
             const message = form.querySelector('textarea').value;
-            const mailto = `mailto:manish7479dlp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+            const mailto = `mailto:anupam.d1@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
             window.location.href = mailto;
         });
     }
