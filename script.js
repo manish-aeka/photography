@@ -224,87 +224,172 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!gallery || !data['gallery-images']) return;
             gallery.innerHTML = '';
             data['gallery-images'].forEach((img, i) => {
-                // Vary the row/col span for collage effect
-                let extra = '';
-                if (i % 6 === 0) extra = 'row-span-2 col-span-2';
-                else if (i % 5 === 0) extra = 'row-span-2';
-                else if (i % 4 === 0) extra = 'col-span-2';
-                gallery.innerHTML += `
-                        <div class="overflow-hidden rounded-lg ${extra} cursor-pointer gallery-img-wrapper">
-                            <img src="${img}" class="w-full h-full object-cover gallery-img" data-img="${img}" />
+                const wrapper = document.createElement('div');
+
+                // Create collage pattern with varying spans and heights
+                let spanClass = '';
+                let heightClass = 'h-64';
+
+                // Pattern: large, medium, small repeating for visual interest
+                if (i % 8 === 0) {
+                    spanClass = 'sm:col-span-2 sm:row-span-2';
+                    heightClass = 'h-96';
+                } else if (i % 8 === 1 || i % 8 === 2) {
+                    spanClass = 'sm:col-span-1';
+                    heightClass = 'h-48';
+                } else if (i % 8 === 3) {
+                    spanClass = 'sm:col-span-2';
+                    heightClass = 'h-72';
+                } else if (i % 8 === 4 || i % 8 === 5) {
+                    spanClass = 'sm:col-span-1';
+                    heightClass = 'h-80';
+                } else if (i % 8 === 6) {
+                    spanClass = 'sm:col-span-1 sm:row-span-2';
+                    heightClass = 'h-96';
+                } else {
+                    spanClass = 'sm:col-span-1';
+                    heightClass = 'h-64';
+                }
+
+                wrapper.className = `group relative overflow-hidden rounded-2xl cursor-pointer transform transition-all duration-500 hover:scale-[1.02] hover:z-10 ${spanClass}`;
+
+                wrapper.innerHTML = `
+                    <!-- Image -->
+                    <img src="${img}" 
+                         class="w-full ${heightClass} object-cover object-center pointer-events-none" 
+                         data-img="${img}" 
+                         alt="Gallery Image ${i + 1}" />
+                    
+                    <!-- Overlay with gradient -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                                </svg>
+                            </div>
                         </div>
-                    `;
-            });
-            // Add click event for popup
-            document.querySelectorAll('.gallery-img').forEach(imgEl => {
-                imgEl.addEventListener('click', function (e) {
+                        
+                        <!-- Bottom accent line -->
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                    </div>
+                    
+                    <!-- Corner accent -->
+                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                `;
+
+                // Add click event for popup - make entire wrapper clickable
+                wrapper.addEventListener('click', function (e) {
                     e.stopPropagation();
-                    const modal = document.getElementById('image-modal');
-                    const modalImg = document.getElementById('modal-img');
-                    modalImg.src = imgEl.getAttribute('data-img');
-                    modal.classList.remove('hidden');
+                    console.log('Image clicked, index:', i);
+                    openModal(i);
                 });
+
+                gallery.appendChild(wrapper);
             });
-            // Close modal logic
+
+            // Modal navigation logic
+            let currentImageIndex = 0;
+            const images = data['gallery-images'];
+            console.log('Gallery loaded with', images.length, 'images');
+
+            function openModal(index) {
+                console.log('Opening modal for image index:', index);
+                currentImageIndex = index;
+                const modal = document.getElementById('image-modal');
+                const modalImg = document.getElementById('modal-img');
+                const currentCounter = document.getElementById('current-image');
+                const totalCounter = document.getElementById('total-images');
+
+                console.log('Modal elements:', { modal, modalImg, currentCounter, totalCounter });
+
+                if (modal && modalImg && currentCounter && totalCounter) {
+                    modalImg.src = images[currentImageIndex];
+                    currentCounter.textContent = currentImageIndex + 1;
+                    totalCounter.textContent = images.length;
+                    modal.classList.remove('hidden');
+                    console.log('Modal opened successfully');
+                } else {
+                    console.error('Modal elements not found!');
+                }
+            }
+
+            function showNextImage() {
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                const modalImg = document.getElementById('modal-img');
+                const currentCounter = document.getElementById('current-image');
+                if (modalImg && currentCounter) {
+                    modalImg.src = images[currentImageIndex];
+                    currentCounter.textContent = currentImageIndex + 1;
+                }
+            }
+
+            function showPrevImage() {
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                const modalImg = document.getElementById('modal-img');
+                const currentCounter = document.getElementById('current-image');
+                if (modalImg && currentCounter) {
+                    modalImg.src = images[currentImageIndex];
+                    currentCounter.textContent = currentImageIndex + 1;
+                }
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('image-modal');
+                const modalImg = document.getElementById('modal-img');
+                if (modal && modalImg) {
+                    modal.classList.add('hidden');
+                    modalImg.src = '';
+                }
+            }
+
+            // Event listeners - only add if elements exist
             const closeBtn = document.getElementById('close-modal');
             const modal = document.getElementById('image-modal');
-            closeBtn.addEventListener('click', function () {
-                modal.classList.add('hidden');
-                document.getElementById('modal-img').src = '';
-            });
-            // Also close modal on background click
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    modal.classList.add('hidden');
-                    document.getElementById('modal-img').src = '';
+            const nextBtn = document.getElementById('next-modal');
+            const prevBtn = document.getElementById('prev-modal');
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    closeModal();
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    showNextImage();
+                });
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    showPrevImage();
+                });
+            }
+
+            // Close on background click
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function (e) {
+                const modal = document.getElementById('image-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    if (e.key === 'ArrowRight') showNextImage();
+                    if (e.key === 'ArrowLeft') showPrevImage();
+                    if (e.key === 'Escape') closeModal();
                 }
             });
         });
 });
-// --- GALLERY MASONRY/COLLAGE RENDER ---
-fetch("anupam-dutta-photography-data-set.json")
-    .then(res => res.json())
-    .then(data => {
-        const gallery = document.getElementById('gallery');
-        if (!gallery || !data['gallery-images']) return;
-        gallery.innerHTML = '';
-        data['gallery-images'].forEach((img, i) => {
-            // Vary the row/col span for collage effect
-            let extra = '';
-            if (i % 6 === 0) extra = 'row-span-2 col-span-2';
-            else if (i % 5 === 0) extra = 'row-span-2';
-            else if (i % 4 === 0) extra = 'col-span-2';
-            gallery.innerHTML += `
-                    <div class="overflow-hidden rounded-lg ${extra} cursor-pointer gallery-img-wrapper">
-                        <img src="${img}" class="w-full h-full object-cover gallery-img" data-img="${img}" />
-                    </div>
-                `;
-        });
-        // Add click event for popup
-        document.querySelectorAll('.gallery-img').forEach(imgEl => {
-            imgEl.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const modal = document.getElementById('image-modal');
-                const modalImg = document.getElementById('modal-img');
-                modalImg.src = imgEl.getAttribute('data-img');
-                modal.classList.remove('hidden');
-            });
-        });
-        // Close modal logic
-        const closeBtn = document.getElementById('close-modal');
-        const modal = document.getElementById('image-modal');
-        closeBtn.addEventListener('click', function () {
-            modal.classList.add('hidden');
-            document.getElementById('modal-img').src = '';
-        });
-        // Also close modal on background click
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-                document.getElementById('modal-img').src = '';
-            }
-        });
-    });
 // --- CATEGORY CARD RENDER & CLICK REDIRECT ---
 document.addEventListener('DOMContentLoaded', function () {
     fetch("anupam-dutta-photography-data-set.json")
