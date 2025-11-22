@@ -30,41 +30,50 @@
 <body class="bg-gray-900 text-white">
 
     <!-- Attractive Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900 z-[100] flex items-center justify-center">
+    <div id="loading-overlay"
+        class="fixed inset-0 bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900 z-[100] flex items-center justify-center">
         <div class="text-center px-4">
             <!-- Logo with Animation -->
             <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-8">
                 <!-- Outer Ring -->
                 <div class="absolute inset-0 border-4 border-indigo-500/20 rounded-full"></div>
                 <!-- Spinning Ring -->
-                <div class="absolute inset-0 border-4 border-transparent border-t-indigo-500 border-r-purple-500 rounded-full animate-spin"></div>
+                <div
+                    class="absolute inset-0 border-4 border-transparent border-t-indigo-500 border-r-purple-500 rounded-full animate-spin">
+                </div>
                 <!-- Inner Pulse -->
                 <div class="absolute inset-3 bg-indigo-500/10 rounded-full animate-ping"></div>
                 <!-- Logo Image -->
                 <div class="absolute inset-0 flex items-center justify-center p-6">
-                    <img src="./logo.png" alt="Anupam Dutta Photography" class="w-full h-full object-contain animate-pulse">
+                    <img src="./logo.png" alt="Anupam Dutta Photography"
+                        class="w-full h-full object-contain animate-pulse">
                 </div>
             </div>
-            
+
             <!-- Brand Name with Gradient and Animation -->
             <div class="space-y-3">
-                <h1 class="text-3xl md:text-4xl font-serif tracking-wider bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+                <h1
+                    class="text-3xl md:text-4xl font-serif tracking-wider bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
                     Anupam Dutta Photography
                 </h1>
-                
+
                 <!-- Loading Text -->
                 <div class="flex items-center justify-center gap-2">
                     <span class="text-indigo-300 text-sm md:text-base font-medium">Loading</span>
                     <div class="flex gap-1">
-                        <span class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
-                        <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
-                        <span class="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                        <span class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"
+                            style="animation-delay: 0s"></span>
+                        <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                            style="animation-delay: 0.15s"></span>
+                        <span class="w-2 h-2 bg-pink-400 rounded-full animate-bounce"
+                            style="animation-delay: 0.3s"></span>
                     </div>
                 </div>
-                
+
                 <!-- Progress Bar -->
                 <div class="w-64 md:w-80 h-1 bg-gray-800 rounded-full mx-auto mt-4 overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-pulse" style="animation: loadProgress 2s ease-in-out infinite"></div>
+                    <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-pulse"
+                        style="animation: loadProgress 2s ease-in-out infinite"></div>
                 </div>
             </div>
         </div>
@@ -72,9 +81,17 @@
 
     <style>
         @keyframes loadProgress {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 70%;
+            }
+
+            100% {
+                width: 100%;
+            }
         }
     </style>
 
