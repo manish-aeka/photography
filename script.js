@@ -56,14 +56,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Populate About section
             if (data.about) {
                 const aboutTitle = document.getElementById('about-title');
-                const aboutHeading = document.getElementById('about-heading');
                 const aboutDesc = document.getElementById('about-description');
 
                 if (aboutTitle && data.about.title) {
                     aboutTitle.textContent = data.about.title;
-                }
-                if (aboutHeading && data.about.heading) {
-                    aboutHeading.textContent = data.about.heading;
                 }
                 if (aboutDesc && data.about.description) {
                     aboutDesc.textContent = data.about.description;
