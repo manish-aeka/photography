@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- CATEGORY CARD RENDER & CLICK REDIRECT ---
-    fetch("images.json")
+    fetch("anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             // Set logo URL if available
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // --- GALLERY MASONRY/COLLAGE RENDER ---
-    fetch("images.json")
+    fetch("anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             const gallery = document.getElementById('gallery');
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 // --- GALLERY MASONRY/COLLAGE RENDER ---
-fetch("images.json")
+fetch("anupam-dutta-photography-data-set.json")
     .then(res => res.json())
     .then(data => {
         const gallery = document.getElementById('gallery');
@@ -250,7 +250,7 @@ fetch("images.json")
     });
 // --- CATEGORY CARD RENDER & CLICK REDIRECT ---
 document.addEventListener('DOMContentLoaded', function () {
-    fetch("images.json")
+    fetch("anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             // Render categories
@@ -319,7 +319,7 @@ let slider_images = [];
 let current_slider_image = 0;
 
 // Load JSON images
-fetch("images.json")
+fetch("anupam-dutta-photography-data-set.json")
     .then(res => res.json())
     .then(data => {
         slider_images = data["slider-images"];

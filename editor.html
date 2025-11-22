@@ -612,17 +612,17 @@
             "gallery-images": []
         };
 
-        // Auto-load images.json on page load
+        // Auto-load anupam-dutta-photography-data-set.json on page load
         window.addEventListener('DOMContentLoaded', async function () {
             try {
-                const response = await fetch('./images.json');
+                const response = await fetch('./anupam-dutta-photography-data-set.json');
                 jsonData = await response.json();
                 document.getElementById('loadingMessage').classList.add('hidden');
                 renderEditor();
             } catch (error) {
                 document.getElementById('loadingMessage').innerHTML = `
-                    <div class="text-red-600 font-semibold">Error loading images.json: ${error.message}</div>
-                    <p class="text-gray-600 mt-2">Make sure images.json is in the same folder as editor.html</p>
+                    <div class="text-red-600 font-semibold">Error loading anupam-dutta-photography-data-set.json: ${error.message}</div>
+                    <p class="text-gray-600 mt-2">Make sure anupam-dutta-photography-data-set.json is in the same folder as editor.html</p>
                 `;
             }
         });
@@ -1081,7 +1081,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'images.json';
+                a.download = 'anupam-dutta-photography-data-set.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -1089,7 +1089,7 @@
 
                 progressBar.style.width = '100%';
                 progressBar.textContent = '100%';
-                progressText.textContent = 'Complete! Your updated images.json file has been downloaded.';
+                progressText.textContent = 'Complete! Your updated anupam-dutta-photography-data-set.json file has been downloaded.';
                 progressBar.classList.add('bg-green-500');
 
                 setTimeout(() => {
