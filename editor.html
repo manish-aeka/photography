@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Data Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Photography Data Editor</h1>
+            <p class="text-gray-600 mb-4">Edit your photography website data. Click on images to replace them
+                (auto-converts to base64).</p>
+            <div id="loadingMessage" class="text-center py-4">
+                <div class="animate-pulse text-indigo-600 font-semibold">Loading images.json data...</div>
+            </div>
+        </div>
+
+        <!-- Slider Images Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Slider Images</h2>
+            <div id="sliderImagesContainer" class="space-y-3"></div>
+            <button onclick="addSliderImage()"
+                class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold">
+                + Add Slider Image
+            </button>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Categories</h2>
+            <div id="categoriesContainer" class="space-y-6"></div>
+            <button onclick="addCategory()"
+                class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold">
+                + Add Category
+            </button>
+        </div>
+
+        <!-- Gallery Images Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Gallery Images</h2>
+            <div id="galleryImagesContainer" class="space-y-3"></div>
+            <button onclick="addGalleryImage()"
+                class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold">
+                + Add Gallery Image
+            </button>
+        </div>
+
+        <!-- Update Button -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <button onclick="updateJSON()"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-bold text-lg">
+                Update JSON File
+            </button>
+            <div id="progressContainer" class="mt-4 hidden">
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="progressBar"
+                        class="bg-indigo-600 h-4 rounded-full transition-all duration-300 flex items-center justify-center text-xs text-white font-semibold">
+                        0%
+                    </div>
+                </div>
+                <p id="progressText" class="text-center text-gray-600 mt-2"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let jsonData = {
+            "slider-images": [],
+            "categories": [],
+            "gallery-images": []
+        };
+
+        // Auto-load images.json on page load
+        window.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const response = await fetch('./images.json');
+                jsonData = await response.json();
+                document.getElementById('loadingMessage').classList.add('hidden');
+                renderEditor();
+            } catch (error) {
+                document.getElementById('loadingMessage').innerHTML = `
+                    <div class="text-red-600 font-semibold">Error loading images.json: ${error.message}</div>
+                    <p class="text-gray-600 mt-2">Make sure images.json is in the same folder as editor.html</p>
+                `;
+            }
+        });
+
+        function renderEditor() {
+            renderSliderImages();
+            renderCategories();
+            renderGalleryImages();
+        }
+
+        function renderSliderImages() {
+            const container = document.getElementById('sliderImagesContainer');
+            container.innerHTML = '';
+            jsonData['slider-images'].forEach((url, index) => {
+                container.innerHTML += `
+                    <div class="flex gap-4 items-center p-4 bg-white border border-gray-300 rounded-lg shadow-sm">
+                        <div class="flex-shrink-0">
+                            <div class="relative group">
+                                <img src="${url}" class="w-32 h-32 object-cover rounded-lg border-2 border-gray-300" alt="Slider ${index + 1}">
+                                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center cursor-pointer" onclick="pickImageForSlider(${index})">
+                                    <span class="text-white font-semibold text-sm">Click to Change</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Image URL / Base64</label>
+                            <textarea 
+                                onchange="jsonData['slider-images'][${index}] = this.value; renderSliderImages();"
+                                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono"
+                                rows="2"
+                                placeholder="Image URL or base64 data">${url}</textarea>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="pickImageForSlider(${index})" 
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-semibold text-sm whitespace-nowrap">
+                                📁 Pick Image
+                            </button>
+                            <button onclick="removeSliderImage(${index})" 
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-semibold text-sm">
+                                🗑️ Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addSliderImage() {
+            jsonData['slider-images'].push('');
+            renderSliderImages();
+        }
+
+        function removeSliderImage(index) {
+            jsonData['slider-images'].splice(index, 1);
+            renderSliderImages();
+        }
+
+        function pickImageForSlider(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        jsonData['slider-images'][index] = event.target.result;
+                        renderSliderImages();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+            jsonData.categories.forEach((category, index) => {
+                container.innerHTML += `
+                    <div class="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-gray-800">Category ${index + 1}</h3>
+                            <button onclick="removeCategory(${index})" 
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-semibold text-sm">
+                                🗑️ Remove Category
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+                                    <input type="text" value="${category.title}" 
+                                        onchange="jsonData.categories[${index}].title = this.value"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        placeholder="Category Title">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                                    <textarea 
+                                        onchange="jsonData.categories[${index}].description = this.value"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        rows="4"
+                                        placeholder="Category Description">${category.description}</textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Page URL</label>
+                                    <input type="text" value="${category.url}" 
+                                        onchange="jsonData.categories[${index}].url = this.value"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        placeholder="Link URL (e.g., #)">
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Category Image</label>
+                                <div class="relative group">
+                                    <img src="${category.image}" class="w-full h-64 object-cover rounded-lg border-2 border-gray-300" alt="Category ${index + 1}">
+                                    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center cursor-pointer" onclick="pickImageForCategory(${index})">
+                                        <span class="text-white font-semibold">Click to Change Image</span>
+                                    </div>
+                                </div>
+                                <textarea 
+                                    onchange="jsonData.categories[${index}].image = this.value; renderCategories();"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-mono"
+                                    rows="2"
+                                    placeholder="Image URL or base64 data">${category.image}</textarea>
+                                <button onclick="pickImageForCategory(${index})" 
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-semibold w-full">
+                                    📁 Pick Image from System
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addCategory() {
+            jsonData.categories.push({
+                title: '',
+                description: '',
+                image: '',
+                url: '#'
+            });
+            renderCategories();
+        }
+
+        function removeCategory(index) {
+            jsonData.categories.splice(index, 1);
+            renderCategories();
+        }
+
+        function pickImageForCategory(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        jsonData.categories[index].image = event.target.result;
+                        renderCategories();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function renderGalleryImages() {
+            const container = document.getElementById('galleryImagesContainer');
+            container.innerHTML = '';
+
+            // Display in grid layout
+            container.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+
+            jsonData['gallery-images'].forEach((url, index) => {
+                container.innerHTML += `
+                    <div class="bg-white border border-gray-300 rounded-lg p-3 shadow-sm">
+                        <div class="relative group mb-3">
+                            <img src="${url}" class="w-full h-48 object-cover rounded-lg border-2 border-gray-300" alt="Gallery ${index + 1}">
+                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center cursor-pointer" onclick="pickImageForGallery(${index})">
+                                <span class="text-white font-semibold text-sm">Click to Change</span>
+                            </div>
+                        </div>
+                        <textarea 
+                            onchange="jsonData['gallery-images'][${index}] = this.value; renderGalleryImages();"
+                            class="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-mono mb-2"
+                            rows="2"
+                            placeholder="Image URL or base64">${url}</textarea>
+                        <div class="flex gap-2">
+                            <button onclick="pickImageForGallery(${index})" 
+                                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded font-semibold text-sm">
+                                📁 Pick
+                            </button>
+                            <button onclick="removeGalleryImage(${index})" 
+                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded font-semibold text-sm">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += '</div>';
+        }
+
+        function addGalleryImage() {
+            jsonData['gallery-images'].push('');
+            renderGalleryImages();
+        }
+
+        function removeGalleryImage(index) {
+            jsonData['gallery-images'].splice(index, 1);
+            renderGalleryImages();
+        }
+
+        function pickImageForGallery(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        jsonData['gallery-images'][index] = event.target.result;
+                        renderGalleryImages();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Convert image URL to base64
+        async function urlToBase64(url) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            } catch (error) {
+                console.error('Error converting URL to base64:', error);
+                return url; // Return original URL if conversion fails
+            }
+        }
+
+        // Update JSON with base64 images
+        async function updateJSON() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.classList.remove('hidden');
+            progressText.textContent = 'Preparing JSON file...';
+            progressBar.style.width = '50%';
+            progressBar.textContent = '50%';
+
+            try {
+                // Download the updated JSON
+                progressText.textContent = 'Creating download file...';
+                progressBar.style.width = '75%';
+                progressBar.textContent = '75%';
+
+                const jsonString = JSON.stringify(jsonData, null, 4);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'images.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                progressText.textContent = 'Complete! Your updated images.json file has been downloaded.';
+                progressBar.classList.add('bg-green-500');
+
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    progressBar.classList.remove('bg-green-500');
+                    progressBar.style.width = '0%';
+                }, 3000);
+
+            } catch (error) {
+                alert('Error updating JSON: ' + error.message);
+                progressContainer.classList.add('hidden');
+            }
+        }
+
+        // Initialize with empty structure
+        renderEditor();
+    </script>
+</body>
+
+</html>
