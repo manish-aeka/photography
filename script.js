@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.innerHTML = '';
                 data.categories.forEach(category => {
                     const card = document.createElement('div');
-                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30 cursor-pointer";
+                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 cursor-pointer";
                     card.setAttribute('data-category-url', category.url);
 
                     // Truncate description to 200 chars
@@ -294,24 +294,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     card.innerHTML = `
                         <!-- Animated Background Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1C5BAE]/5 via-[#1DA6E1]/5 to-[#1C5BAE]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
                         <!-- Image Section with Overlay -->
                         <div class="relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
                             <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
-                                <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                                <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
                             </div>
                         </div>
                         
                         <!-- Content Section -->
                         <div class="relative p-8 z-10">
                             <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
-                            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"></div>
+                            <div class="w-16 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full mb-4"></div>
                             <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg read-more-btn">Read More</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] text-white rounded-xl font-semibold hover:from-[#1DA6E1] hover:to-[#1C5BAE] transition-all shadow-lg read-more-btn">Read More</button>
                                 <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
@@ -409,11 +409,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         
                         <!-- Bottom accent line -->
-                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE]"></div>
                     </div>
                     
                     <!-- Corner accent -->
-                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#1C5BAE] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 `;
 
                 // Add click event for popup - make entire wrapper clickable
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.innerHTML = '';
                 data.categories.forEach(category => {
                     const card = document.createElement('div');
-                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30 cursor-pointer";
+                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 cursor-pointer";
                     card.setAttribute('data-category-url', category.url);
 
                     // Truncate description to 200 chars
@@ -548,24 +548,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     card.innerHTML = `
                         <!-- Animated Background Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1C5BAE]/5 via-[#1DA6E1]/5 to-[#1C5BAE]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
                         <!-- Image Section with Overlay -->
                         <div class="relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
                             <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
-                                <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                                <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
                             </div>
                         </div>
                         
                         <!-- Content Section -->
                         <div class="relative p-8 z-10">
                             <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
-                            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"></div>
+                            <div class="w-16 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full mb-4"></div>
                             <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg read-more-btn">Read More</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] text-white rounded-xl font-semibold hover:from-[#1DA6E1] hover:to-[#1C5BAE] transition-all shadow-lg read-more-btn">Read More</button>
                                 <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
