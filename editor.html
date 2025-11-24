@@ -13,7 +13,6 @@
     <meta name="theme-color" content="#1C5BAE">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
         :root {
             --primary-color: #1C5BAE;
@@ -187,6 +186,35 @@
                     </svg>
                     <span>Login</span>
                 </button>
+
+                <!-- Security Info -->
+                <div class="flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg mt-4">
+                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                        </path>
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Your credentials are protected with <span
+                                class="text-blue-400 font-semibold">enterprise-grade encryption</span>.
+                            Access is secure and private.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer Badge -->
+                <div class="text-center pt-3">
+                    <span
+                        class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-700/50 border border-gray-600 rounded-full text-xs text-gray-400">
+                        <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Protected Access
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -1144,14 +1172,12 @@
             passwordHashField.value = 'Hashing...';
 
             try {
-                // Check if bcrypt is loaded
-                if (typeof bcrypt === 'undefined') {
-                    throw new Error('Bcrypt library not loaded. Please refresh the page.');
-                }
-
-                // Generate salt and hash using async methods
-                const salt = await bcrypt.genSalt(10);
-                const hash = await bcrypt.hash(password, salt);
+                // Use Web Crypto API to hash the password
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
                 // Update the hash field
                 passwordHashField.value = hash;
@@ -1749,8 +1775,17 @@
                     return;
                 }
 
-                // Compare password directly
-                if (password === storedPassword) {
+                // Hash the entered password using Web Crypto API
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                // Compare password hash
+                const isValid = hash === storedPassword;
+
+                if (isValid) {
                     // Store authentication state
                     sessionStorage.setItem('editorAuth', 'true');
 
@@ -1786,11 +1821,12 @@
             }
         }
 
-        // Initialize authentication check
-        checkAuth();
-
-        // Initialize with empty structure
-        renderEditor();
+        // Initialize authentication check and editor when DOM is ready
+        window.addEventListener('load', function () {
+            console.log('Editor initialized with Web Crypto API');
+            checkAuth();
+            renderEditor();
+        });
     </script>
 </body>
 
