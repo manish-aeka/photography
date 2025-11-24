@@ -1479,6 +1479,7 @@
                 jsonData.categories[categoryIndex]['images-url'] = [];
             }
             jsonData.categories[categoryIndex]['images-url'][imageIndex] = value;
+            renderCategories();
         }
 
         function removeCategoryImage(categoryIndex, imageIndex) {
