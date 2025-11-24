@@ -33,14 +33,14 @@ $branch = git branch --show-current
 Write-Host "Current branch: $branch" -ForegroundColor Blue
 Write-Host ""
 
-# Add all changes
-Write-Host "Adding all changes..." -ForegroundColor Blue
-git add .
+# Add only JSON files
+Write-Host "Adding JSON files..." -ForegroundColor Blue
+git add *.json
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "[OK] Files added successfully" -ForegroundColor Green
+    Write-Host "[OK] JSON files added successfully" -ForegroundColor Green
 } else {
-    Write-Host "[ERROR] Failed to add files" -ForegroundColor Red
+    Write-Host "[ERROR] Failed to add JSON files" -ForegroundColor Red
     exit 1
 }
 Write-Host ""
