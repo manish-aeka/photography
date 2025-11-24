@@ -176,6 +176,65 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
+            // Apply slider content data dynamically
+            if (data['slider-content']) {
+                const sliderContent = data['slider-content'];
+                
+                // Set slider heading
+                if (sliderContent.heading) {
+                    const heroHeading = document.getElementById('heroHeading');
+                    if (heroHeading) {
+                        heroHeading.textContent = sliderContent.heading;
+                        // Show/hide based on flag
+                        if (sliderContent['show-heading'] === false) {
+                            heroHeading.style.display = 'none';
+                        } else {
+                            heroHeading.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Set slider description
+                if (sliderContent.description) {
+                    const heroDescription = document.getElementById('heroDescription');
+                    if (heroDescription) {
+                        heroDescription.textContent = sliderContent.description;
+                        // Show/hide based on flag
+                        if (sliderContent['show-description'] === false) {
+                            heroDescription.style.display = 'none';
+                        } else {
+                            heroDescription.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Show/hide latest collections button
+                if (sliderContent['show-latest-collections-button'] !== undefined) {
+                    const heroButton = document.getElementById('heroButton');
+                    if (heroButton) {
+                        if (sliderContent['show-latest-collections-button'] === false) {
+                            heroButton.style.display = 'none';
+                        } else {
+                            heroButton.style.display = 'inline-block';
+                        }
+                    }
+                }
+            }
+
+            // Apply slider images dynamically
+            if (data['slider-images'] && data['slider-images'].length > 0) {
+                const sliderImage = document.getElementById('slider-image');
+                if (sliderImage) {
+                    // Set the first image as the current image
+                    sliderImage.src = data['slider-images'][0];
+                    
+                    // Store all images in a data attribute or global variable for slider functionality
+                    window.sliderImagesData = data['slider-images'];
+                    
+                    // If you have existing slider next/prev functions, they can now use window.sliderImagesData
+                }
+            }
+
             // Populate About section
             if (data.about) {
                 const aboutTitle = document.getElementById('about-title');
