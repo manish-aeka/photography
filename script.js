@@ -283,10 +283,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.categories && Array.isArray(data.categories)) {
                 const container = document.getElementById('categories-container');
                 container.innerHTML = '';
-                data.categories.forEach(category => {
+                data.categories.forEach((category, index) => {
                     const card = document.createElement('div');
                     card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 cursor-pointer";
-                    card.setAttribute('data-category-url', category.url);
+                    card.setAttribute('data-category-index', index);
 
                     // Truncate description to 200 chars
                     const fullDesc = category.description;
@@ -319,8 +319,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Card click (except button)
                     card.addEventListener('click', function (e) {
                         if (e.target.classList.contains('read-more-btn') || e.target.classList.contains('show-less-btn')) return;
-                        if (category.url) {
-                            window.location.href = category.url;
+                        const categoryIndex = card.getAttribute('data-category-index');
+                        if (categoryIndex !== null) {
+                            window.location.href = `category.html?category=${categoryIndex}`;
                         }
                     });
                     // Read More / Show Less button logic
@@ -537,10 +538,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.categories && Array.isArray(data.categories)) {
                 const container = document.getElementById('categories-container');
                 container.innerHTML = '';
-                data.categories.forEach(category => {
+                data.categories.forEach((category, index) => {
                     const card = document.createElement('div');
                     card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 cursor-pointer";
-                    card.setAttribute('data-category-url', category.url);
+                    card.setAttribute('data-category-index', index);
 
                     // Truncate description to 200 chars
                     const fullDesc = category.description;
@@ -573,8 +574,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Card click (except button)
                     card.addEventListener('click', function (e) {
                         if (e.target.classList.contains('read-more-btn') || e.target.classList.contains('show-less-btn')) return;
-                        if (category.url) {
-                            window.location.href = category.url;
+                        const categoryIndex = card.getAttribute('data-category-index');
+                        if (categoryIndex !== null) {
+                            window.location.href = `category.html?category=${categoryIndex}`;
                         }
                     });
                     // Read More / Show Less button logic

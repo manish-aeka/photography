@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Category - Anupam Dutta Photography</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #1C5BAE;
+            --secondary-color: #1DA6E1;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 1s ease-out;
+        }
+
+        /* Modern scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white">
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay"
+        class="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-[100] flex items-center justify-center">
+        <div class="text-center px-4">
+            <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-8">
+                <div class="absolute inset-0 border-4 border-[#1C5BAE]/20 rounded-full"></div>
+                <div
+                    class="absolute inset-0 border-4 border-transparent border-t-[#1C5BAE] border-r-[#1DA6E1] rounded-full animate-spin">
+                </div>
+                <div class="absolute inset-3 bg-[#1C5BAE]/10 rounded-full animate-ping"></div>
+                <div class="absolute inset-0 flex items-center justify-center p-6">
+                    <img src="./logo.png" alt="Anupam Dutta Photography"
+                        class="w-full h-full object-contain animate-pulse">
+                </div>
+            </div>
+            <h1
+                class="text-3xl md:text-4xl font-serif tracking-wider bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent animate-pulse">
+                Loading...
+            </h1>
+        </div>
+    </div>
+
+    <!-- Modern Navbar -->
+    <nav
+        class="fixed top-0 left-0 w-full backdrop-blur-md bg-gray-900/80 border-b border-white/10 px-4 md:px-10 py-4 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <a href="./index.html" class="group flex items-center gap-3 transition-transform hover:scale-105">
+                    <img id="logo-img" src="" alt="Anupam Dutta Photography"
+                        class="h-12 md:h-14 w-auto rounded-full transition-all">
+                    <h1 id="navbar-title" class="md:text-3xl hidden md:block font-serif tracking-widest">
+                        Anupam Dutta Photography
+                    </h1>
+                </a>
+            </div>
+
+            <!-- Back Button -->
+            <a href="./index.html"
+                class="group relative overflow-hidden bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] px-4 md:px-6 py-2.5 rounded-full font-semibold text-white shadow-lg hover:shadow-[#1C5BAE]/50 transition-all transform hover:scale-105">
+                <span class="relative z-10 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                        </path>
+                    </svg>
+                    <span>Back to Home</span>
+                </span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Category Header -->
+    <div class="relative pt-32 pb-20 px-4 bg-gradient-to-b from-gray-900 via-gray-800/20 to-gray-900 overflow-hidden">
+        <!-- Decorative Background Elements -->
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-[#1C5BAE]/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1DA6E1]/10 rounded-full blur-3xl"></div>
+
+        <div class="relative max-w-7xl mx-auto text-center space-y-6">
+            <div
+                class="inline-flex items-center gap-3 bg-gradient-to-r from-[#1C5BAE]/20 via-[#1DA6E1]/20 to-[#1C5BAE]/20 backdrop-blur-xl border border-[#1C5BAE]/30 px-6 py-2.5 rounded-full shadow-lg">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                <span
+                    class="text-sm font-semibold bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent">
+                    Category
+                </span>
+            </div>
+
+            <h1 id="category-title"
+                class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent tracking-tight leading-[1.3] pb-4">
+            </h1>
+
+            <div class="flex justify-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-16 h-1 bg-gradient-to-r from-transparent via-[#1C5BAE] to-[#1DA6E1] rounded-full">
+                    </div>
+                    <div class="w-3 h-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full animate-pulse"></div>
+                    <div class="w-16 h-1 bg-gradient-to-r from-[#1DA6E1] via-[#1C5BAE] to-transparent rounded-full">
+                    </div>
+                </div>
+            </div>
+
+            <p id="category-description" class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+            </p>
+
+            <div id="image-count" class="text-[#1DA6E1] font-semibold text-lg"></div>
+        </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="relative bg-gradient-to-b from-gray-900 via-gray-800/20 to-gray-800 py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </div>
+    </div>
+
+    <!-- Modern Image Modal -->
+    <div id="image-modal"
+        class="fixed inset-0 bg-black/98 backdrop-blur-sm flex items-center justify-center z-50 hidden transition-all">
+        <!-- Close Button -->
+        <button id="close-modal" title="Close modal" aria-label="Close image viewer"
+            class="absolute top-6 right-6 text-white hover:text-[#1DA6E1] transition-colors group z-10">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
+        <!-- Previous Button -->
+        <button id="prev-modal" title="Previous image" aria-label="Previous image"
+            class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-[#1DA6E1] transition-all bg-black/50 hover:bg-black/70 rounded-full p-4 group">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <!-- Image Container -->
+        <div class="flex items-center justify-center w-full h-full p-4">
+            <img id="modal-img" src="" class="max-h-full max-w-full object-contain" alt="Gallery Image" />
+        </div>
+
+        <!-- Next Button -->
+        <button id="next-modal" title="Next image" aria-label="Next image"
+            class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-[#1DA6E1] transition-all bg-black/50 hover:bg-black/70 rounded-full p-4 group">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+
+        <!-- Image Counter -->
+        <div id="image-counter"
+            class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-2 rounded-full text-sm font-semibold">
+            <span id="current-image">1</span> / <span id="total-images">1</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 border-t border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-400">
+                © <span id="year"></span> Anupam Dutta Photography. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        let categoryData = null;
+        let allImages = [];
+        let currentImageIndex = 0;
+
+        // Get category index from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryIndex = parseInt(urlParams.get('category'));
+
+        // Load data
+        fetch('./anupam-dutta-photography-data-set.json')
+            .then(response => response.json())
+            .then(data => {
+                // Set logo and navbar title
+                if (data.settings && data.settings['logo-url']) {
+                    document.getElementById('logo-img').src = data.settings['logo-url'];
+                }
+                if (data.settings && data.settings['navbar-title']) {
+                    document.getElementById('navbar-title').textContent = data.settings['navbar-title'];
+                }
+
+                // Get category data
+                if (data.categories && data.categories[categoryIndex]) {
+                    categoryData = data.categories[categoryIndex];
+
+                    // Set page title and header
+                    document.getElementById('page-title').textContent = categoryData.title + ' - Anupam Dutta Photography';
+                    document.getElementById('category-title').textContent = categoryData.title;
+                    document.getElementById('category-description').textContent = categoryData.description;
+
+                    // Get all images
+                    allImages = categoryData['images-url'] || [];
+
+                    if (allImages.length > 0) {
+                        document.getElementById('image-count').textContent = allImages.length + ' Images';
+                        renderGallery();
+                    } else {
+                        document.getElementById('gallery').innerHTML = `
+                            <div class="col-span-full text-center py-20">
+                                <svg class="w-20 h-20 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-400 text-xl">No images available in this category yet.</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // Category not found
+                    document.getElementById('category-title').textContent = 'Category Not Found';
+                    document.getElementById('category-description').textContent = 'The requested category could not be found.';
+                    document.getElementById('gallery').innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <p class="text-gray-400 text-xl">Category not found. <a href="./index.html" class="text-[#1DA6E1] hover:underline">Return to home</a></p>
+                        </div>
+                    `;
+                }
+
+                // Hide loading overlay
+                setTimeout(() => {
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.style.opacity = '0';
+                    loadingOverlay.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 500);
+                }, 500);
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                document.getElementById('category-title').textContent = 'Error Loading Data';
+                document.getElementById('category-description').textContent = 'There was an error loading the category data.';
+
+                // Hide loading overlay
+                setTimeout(() => {
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.style.display = 'none';
+                }, 500);
+            });
+
+        // Render gallery
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            allImages.forEach((imageUrl, index) => {
+                const card = document.createElement('div');
+                card.className = 'group relative bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-[#1C5BAE]/50 transition-all duration-500 cursor-pointer';
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-square">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <img src="${imageUrl}" alt="${categoryData.title} ${index + 1}" 
+                            class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2220%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                        <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
+                            <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
+                        </div>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => openModal(index));
+                gallery.appendChild(card);
+            });
+
+            // Update total images in modal
+            document.getElementById('total-images').textContent = allImages.length;
+        }
+
+        // Modal functions
+        function openModal(index) {
+            currentImageIndex = index;
+            updateModalImage();
+            document.getElementById('image-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateModalImage() {
+            document.getElementById('modal-img').src = allImages[currentImageIndex];
+            document.getElementById('current-image').textContent = currentImageIndex + 1;
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % allImages.length;
+            updateModalImage();
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
+            updateModalImage();
+        }
+
+        // Modal event listeners
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('next-modal').addEventListener('click', nextImage);
+        document.getElementById('prev-modal').addEventListener('click', prevImage);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('image-modal').classList.contains('hidden')) {
+                if (e.key === 'Escape') closeModal();
+                if (e.key === 'ArrowRight') nextImage();
+                if (e.key === 'ArrowLeft') prevImage();
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('image-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'image-modal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
