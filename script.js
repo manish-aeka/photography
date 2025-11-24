@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (subjectInput) subject = subjectInput.value;
             }
             const message = form.querySelector('textarea').value;
-            const mailto = `mailto:anupam.d1@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+            const recipientEmail = form.dataset.email || 'anupam.d1@gmail.com';
+            const mailto = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
             window.location.href = mailto;
         });
     }
@@ -85,16 +86,153 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Set logo URL if available
-            if (data['logo-url']) {
-                document.querySelectorAll('.logo-img').forEach(logoImg => {
-                    logoImg.src = data['logo-url'];
-                });
-                // Also update favicon
-                const favicon = document.querySelector('link[rel="icon"]');
-                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-                if (favicon) favicon.href = data['logo-url'];
-                if (appleTouchIcon) appleTouchIcon.href = data['logo-url'];
+            // Apply settings data dynamically
+            if (data.settings) {
+                const settings = data.settings;
+
+                // Set logo URL
+                if (settings['logo-url']) {
+                    document.querySelectorAll('.logo-img').forEach(logoImg => {
+                        logoImg.src = settings['logo-url'];
+                    });
+                    // Also update favicon
+                    const favicon = document.querySelector('link[rel="icon"]');
+                    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                    if (favicon) favicon.href = settings['logo-url'];
+                    if (appleTouchIcon) appleTouchIcon.href = settings['logo-url'];
+                }
+
+                // Set navbar title
+                if (settings['navbar-title']) {
+                    const navbarTitles = document.querySelectorAll('nav h1, .navbar-title');
+                    navbarTitles.forEach(title => {
+                        if (title.tagName === 'H1') {
+                            title.textContent = settings['navbar-title'];
+                        }
+                    });
+                }
+
+                // Set email links
+                if (settings.email) {
+                    document.querySelectorAll('a[href^="mailto:"]').forEach(emailLink => {
+                        emailLink.href = `mailto:${settings.email}`;
+                        if (emailLink.textContent.includes('@')) {
+                            emailLink.textContent = settings.email;
+                        }
+                    });
+                    // Update form mailto
+                    const form = document.getElementById('contact-form');
+                    if (form) {
+                        form.dataset.email = settings.email;
+                    }
+                }
+
+                // Set phone number
+                if (settings.phone) {
+                    document.querySelectorAll('a[href^="tel:"]').forEach(phoneLink => {
+                        phoneLink.href = `tel:${settings.phone}`;
+                        phoneLink.textContent = settings.phone;
+                    });
+                }
+
+                // Set address/location
+                if (settings.address) {
+                    const locationElements = document.querySelectorAll('.location-text, [data-location]');
+                    locationElements.forEach(element => {
+                        element.textContent = settings.address;
+                    });
+                    // Also find the location in the contact section
+                    const contactDivs = document.querySelectorAll('.text-lg.font-semibold.text-white');
+                    contactDivs.forEach(div => {
+                        if (div.textContent.includes('Kolkata')) {
+                            div.textContent = settings.address;
+                        }
+                    });
+                }
+
+                // Set page title and footer brand name
+                if (settings['navbar-title']) {
+                    document.title = settings['navbar-title'];
+                    const footerTitles = document.querySelectorAll('footer h3');
+                    footerTitles.forEach(title => {
+                        if (title.textContent.includes('Anupam Dutta')) {
+                            title.textContent = settings['navbar-title'];
+                        }
+                    });
+                }
+
+                // Set Instagram links
+                if (settings['instagram-url']) {
+                    document.querySelectorAll('a[href*="instagram.com"], .instagram-link').forEach(igLink => {
+                        igLink.href = settings['instagram-url'];
+                    });
+                }
+
+                // Set Instagram username display
+                if (settings['instagram-username']) {
+                    document.querySelectorAll('.instagram-username').forEach(igUsername => {
+                        igUsername.textContent = settings['instagram-username'];
+                    });
+                }
+            }
+
+            // Apply slider content data dynamically
+            if (data['slider-content']) {
+                const sliderContent = data['slider-content'];
+
+                // Set slider heading
+                if (sliderContent.heading) {
+                    const heroHeading = document.getElementById('heroHeading');
+                    if (heroHeading) {
+                        heroHeading.textContent = sliderContent.heading;
+                        // Show/hide based on flag
+                        if (sliderContent['show-heading'] === false) {
+                            heroHeading.style.display = 'none';
+                        } else {
+                            heroHeading.style.display = 'block';
+                        }
+                    }
+                }
+
+                // Set slider description
+                if (sliderContent.description) {
+                    const heroDescription = document.getElementById('heroDescription');
+                    if (heroDescription) {
+                        heroDescription.textContent = sliderContent.description;
+                        // Show/hide based on flag
+                        if (sliderContent['show-description'] === false) {
+                            heroDescription.style.display = 'none';
+                        } else {
+                            heroDescription.style.display = 'block';
+                        }
+                    }
+                }
+
+                // Show/hide latest collections button
+                if (sliderContent['show-latest-collections-button'] !== undefined) {
+                    const heroButton = document.getElementById('heroButton');
+                    if (heroButton) {
+                        if (sliderContent['show-latest-collections-button'] === false) {
+                            heroButton.style.display = 'none';
+                        } else {
+                            heroButton.style.display = 'inline-block';
+                        }
+                    }
+                }
+            }
+
+            // Apply slider images dynamically
+            if (data['slider-images'] && data['slider-images'].length > 0) {
+                const sliderImage = document.getElementById('slider-image');
+                if (sliderImage) {
+                    // Set the first image as the current image
+                    sliderImage.src = data['slider-images'][0];
+
+                    // Store all images in a data attribute or global variable for slider functionality
+                    window.sliderImagesData = data['slider-images'];
+
+                    // If you have existing slider next/prev functions, they can now use window.sliderImagesData
+                }
             }
 
             // Populate About section
@@ -147,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.innerHTML = '';
                 data.categories.forEach(category => {
                     const card = document.createElement('div');
-                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30 cursor-pointer";
+                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 cursor-pointer";
                     card.setAttribute('data-category-url', category.url);
 
                     // Truncate description to 200 chars
@@ -156,24 +294,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     card.innerHTML = `
                         <!-- Animated Background Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1C5BAE]/5 via-[#1DA6E1]/5 to-[#1C5BAE]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
                         <!-- Image Section with Overlay -->
                         <div class="relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
                             <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
-                                <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                                <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
                             </div>
                         </div>
                         
                         <!-- Content Section -->
                         <div class="relative p-8 z-10">
                             <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
-                            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"></div>
+                            <div class="w-16 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full mb-4"></div>
                             <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg read-more-btn">Read More</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] text-white rounded-xl font-semibold hover:from-[#1DA6E1] hover:to-[#1C5BAE] transition-all shadow-lg read-more-btn">Read More</button>
                                 <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
@@ -271,11 +409,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         
                         <!-- Bottom accent line -->
-                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE]"></div>
                     </div>
                     
                     <!-- Corner accent -->
-                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#1C5BAE] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 `;
 
                 // Add click event for popup - make entire wrapper clickable
@@ -401,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container.innerHTML = '';
                 data.categories.forEach(category => {
                     const card = document.createElement('div');
-                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30 cursor-pointer";
+                    card.className = "group relative w-full max-w-md bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 cursor-pointer";
                     card.setAttribute('data-category-url', category.url);
 
                     // Truncate description to 200 chars
@@ -410,24 +548,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     card.innerHTML = `
                         <!-- Animated Background Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1C5BAE]/5 via-[#1DA6E1]/5 to-[#1C5BAE]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
                         <!-- Image Section with Overlay -->
                         <div class="relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
                             <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
-                                <div class="w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                                <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
                             </div>
                         </div>
                         
                         <!-- Content Section -->
                         <div class="relative p-8 z-10">
                             <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
-                            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"></div>
+                            <div class="w-16 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full mb-4"></div>
                             <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg read-more-btn">Read More</button>
+                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] text-white rounded-xl font-semibold hover:from-[#1DA6E1] hover:to-[#1C5BAE] transition-all shadow-lg read-more-btn">Read More</button>
                                 <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
