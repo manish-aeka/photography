@@ -344,490 +344,486 @@
 
     <!-- Main Content -->
     <main class="md:ml-64 mt-16 p-4 md:p-8">
-        <div class="max-w-7xl mx-auto">
 
-            <!-- Slider Content Section -->
-            <div id="slider-content-section"
-                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Slider Content Section -->
+        <div id="slider-content-section"
+            class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Hero/Slider Content</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Heading -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Heading</label>
+                    <input type="text" id="slider-heading"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                        placeholder="Enter main heading">
+                </div>
+
+                <!-- Show Heading Toggle -->
+                <div class="flex items-center">
+                    <input type="checkbox" id="show-heading"
+                        class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
+                    <label for="show-heading" class="ml-3 text-sm font-medium text-gray-300">Show Heading</label>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                    <textarea id="slider-description" rows="3"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
+                        placeholder="Enter description text"></textarea>
+                </div>
+
+                <!-- Show Description Toggle -->
+                <div class="flex items-center">
+                    <input type="checkbox" id="show-description"
+                        class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
+                    <label for="show-description" class="ml-3 text-sm font-medium text-gray-300">Show
+                        Description</label>
+                </div>
+
+                <!-- Show Latest Collections Button Toggle -->
+                <div class="flex items-center">
+                    <input type="checkbox" id="show-latest-collections-button"
+                        class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
+                    <label for="show-latest-collections-button" class="ml-3 text-sm font-medium text-gray-300">Show
+                        Latest Collections Button</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider Images Section -->
+        <div id="slider-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Slider Images</h2>
+            </div>
+            <div id="sliderImagesContainer" class="space-y-3"></div>
+            <button onclick="addSliderImage()"
+                class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Slider Image
+            </button>
+        </div>
+
+        <!-- Categories Section -->
+        <div id="categories-section"
+            class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Categories</h2>
+            </div>
+            <div id="categoriesContainer" class="space-y-6"></div>
+            <button onclick="addCategory()"
+                class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Category
+            </button>
+        </div>
+
+        <!-- Gallery Images Section -->
+        <div id="gallery-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Gallery Images</h2>
+            </div>
+            <div id="galleryImagesContainer" class="space-y-3"></div>
+            <button onclick="addGalleryImage()"
+                class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Gallery Image
+            </button>
+        </div>
+
+        <!-- About Section -->
+        <div id="about-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    About Section</h2>
+            </div>
+            <div class="space-y-5">
+                <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
+                    <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
                             </path>
                         </svg>
-                    </div>
-                    <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        Hero/Slider Content</h2>
+                        Title
+                    </label>
+                    <input type="text" id="about-title-input"
+                        class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm"
+                        placeholder="Enter about title">
                 </div>
-
-                <div class="space-y-6">
-                    <!-- Heading -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Heading</label>
-                        <input type="text" id="slider-heading"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="Enter main heading">
-                    </div>
-
-                    <!-- Show Heading Toggle -->
-                    <div class="flex items-center">
-                        <input type="checkbox" id="show-heading"
-                            class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
-                        <label for="show-heading" class="ml-3 text-sm font-medium text-gray-300">Show Heading</label>
-                    </div>
-
-                    <!-- Description -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Description</label>
-                        <textarea id="slider-description" rows="3"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
-                            placeholder="Enter description text"></textarea>
-                    </div>
-
-                    <!-- Show Description Toggle -->
-                    <div class="flex items-center">
-                        <input type="checkbox" id="show-description"
-                            class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
-                        <label for="show-description" class="ml-3 text-sm font-medium text-gray-300">Show
-                            Description</label>
-                    </div>
-
-                    <!-- Show Latest Collections Button Toggle -->
-                    <div class="flex items-center">
-                        <input type="checkbox" id="show-latest-collections-button"
-                            class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
-                        <label for="show-latest-collections-button" class="ml-3 text-sm font-medium text-gray-300">Show
-                            Latest Collections Button</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slider Images Section -->
-            <div id="slider-section"
-                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
+                    <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
+                                d="M4 6h16M4 12h16M4 18h7"></path>
                         </svg>
-                    </div>
-                    <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        Slider Images</h2>
+                        Description
+                    </label>
+                    <textarea id="about-description-input" rows="4"
+                        class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm"
+                        placeholder="Enter about description"></textarea>
                 </div>
-                <div id="sliderImagesContainer" class="space-y-3"></div>
-                <button onclick="addSliderImage()"
-                    class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Add Slider Image
-                </button>
-            </div>
 
-            <!-- Categories Section -->
-            <div id="categories-section"
-                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        Categories</h2>
-                </div>
-                <div id="categoriesContainer" class="space-y-6"></div>
-                <button onclick="addCategory()"
-                    class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Add Category
-                </button>
-            </div>
-
-            <!-- Gallery Images Section -->
-            <div id="gallery-section"
-                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                    </div>
-                    <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        Gallery Images</h2>
-                </div>
-                <div id="galleryImagesContainer" class="space-y-3"></div>
-                <button onclick="addGalleryImage()"
-                    class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Add Gallery Image
-                </button>
-            </div>
-
-            <!-- About Section -->
-            <div id="about-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        About Section</h2>
-                </div>
-                <div class="space-y-5">
-                    <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
-                        <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- About Card Section -->
+                <div class="border-t-2 border-gray-700 pt-6 mt-6">
+                    <div class="flex items-center gap-2 mb-5">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
                                 </path>
                             </svg>
-                            Title
-                        </label>
-                        <input type="text" id="about-title-input"
-                            class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm"
-                            placeholder="Enter about title">
-                    </div>
-                    <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
-                        <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h7"></path>
-                            </svg>
-                            Description
-                        </label>
-                        <textarea id="about-description-input" rows="4"
-                            class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm"
-                            placeholder="Enter about description"></textarea>
-                    </div>
-
-                    <!-- About Card Section -->
-                    <div class="border-t-2 border-gray-700 pt-6 mt-6">
-                        <div class="flex items-center gap-2 mb-5">
-                            <div
-                                class="w-8 h-8 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
-                                    </path>
-                                </svg>
-                            </div>
-                            <h3
-                                class="text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                                About Card</h3>
                         </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card Title</label>
-                                <input type="text" id="about-card-title-input"
-                                    class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
-                                    placeholder="Enter card title">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card Description</label>
-                                <textarea id="about-card-description-input" rows="3"
-                                    class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
-                                    placeholder="Enter card description"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card
-                                    Sub-Description</label>
-                                <textarea id="about-card-subdescription-input" rows="2"
-                                    class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
-                                    placeholder="Enter card sub-description"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card Image</label>
-                                <div
-                                    class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
-                                    <div class="flex flex-col md:flex-row gap-4 p-4">
-                                        <!-- Left Side - Image Preview -->
+                        <h3
+                            class="text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                            About Card</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card Title</label>
+                            <input type="text" id="about-card-title-input"
+                                class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
+                                placeholder="Enter card title">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card Description</label>
+                            <textarea id="about-card-description-input"
+                                class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all resize-none h-[200px]"
+                                placeholder="Enter card description"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card
+                                Sub-Description</label>
+                            <textarea id="about-card-subdescription-input" rows="2"
+                                class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
+                                placeholder="Enter card sub-description"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card Image</label>
+                            <div
+                                class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
+                                <div class="flex flex-col md:flex-row gap-4 p-4">
+                                    <!-- Left Side - Image Preview -->
+                                    <div
+                                        class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
+                                        <img id="about-card-image-preview" src=""
+                                            class="w-full h-full object-contain image-clickable" alt="About Card"
+                                            onclick="openFullscreen(this.src)"
+                                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                         <div
-                                            class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
-                                            <img id="about-card-image-preview" src=""
-                                                class="w-full h-full object-contain image-clickable" alt="About Card"
-                                                onclick="openFullscreen(this.src)"
-                                                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-                                            <div
-                                                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
-                                                <button onclick="pickImageForAboutCard()"
-                                                    class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-indigo-50">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
-                                                        </path>
-                                                    </svg>
-                                                    Change
-                                                </button>
-                                            </div>
+                                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
+                                            <button onclick="pickImageForAboutCard()"
+                                                class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-indigo-50">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                    </path>
+                                                </svg>
+                                                Change
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Side - Content -->
+                                    <div class="flex-1 flex flex-col space-y-3">
+                                        <!-- Card Header -->
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+                                                <span
+                                                    class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">1</span>
+                                                About Card Image
+                                            </h3>
                                         </div>
 
-                                        <!-- Right Side - Content -->
-                                        <div class="flex-1 flex flex-col space-y-3">
-                                            <!-- Card Header -->
-                                            <div class="flex items-center justify-between">
-                                                <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
-                                                    <span
-                                                        class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">1</span>
-                                                    About Card Image
-                                                </h3>
-                                            </div>
+                                        <!-- URL Input -->
+                                        <div class="flex-1">
+                                            <label
+                                                class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                                                    </path>
+                                                </svg>
+                                                Image URL / Base64
+                                            </label>
+                                            <textarea id="about-card-url-input"
+                                                class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
+                                                placeholder="Paste image URL or upload to generate base64..."
+                                                readonly></textarea>
+                                        </div>
 
-                                            <!-- URL Input -->
-                                            <div class="flex-1">
-                                                <label
-                                                    class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
-                                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
-                                                        </path>
-                                                    </svg>
-                                                    Image URL / Base64
-                                                </label>
-                                                <textarea id="about-card-url-input"
-                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
-                                                    placeholder="Paste image URL or upload to generate base64..."
-                                                    readonly></textarea>
-                                            </div>
-
-                                            <!-- Action Buttons -->
-                                            <div class="flex gap-2">
-                                                <button onclick="pickImageForAboutCard()"
-                                                    class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
-                                                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                                        </path>
-                                                    </svg>
-                                                    <span>Upload</span>
-                                                </button>
-                                                <button
-                                                    onclick="openFullscreen(document.getElementById('about-card-image-preview').src); event.stopPropagation();"
-                                                    class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
-                                                    title="View Fullscreen">
-                                                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7">
-                                                        </path>
-                                                    </svg>
-                                                </button>
-                                            </div>
+                                        <!-- Action Buttons -->
+                                        <div class="flex gap-2">
+                                            <button onclick="pickImageForAboutCard()"
+                                                class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                    </path>
+                                                </svg>
+                                                <span>Upload</span>
+                                            </button>
+                                            <button
+                                                onclick="openFullscreen(document.getElementById('about-card-image-preview').src); event.stopPropagation();"
+                                                class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
+                                                title="View Fullscreen">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7">
+                                                    </path>
+                                                </svg>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-gray-700 p-4 rounded-xl border border-gray-600 flex items-center gap-3">
-                                <input type="checkbox" id="about-card-visible-input"
-                                    class="w-5 h-5 text-[#1C5BAE] border-gray-600 rounded focus:ring-[#1C5BAE] cursor-pointer bg-gray-600">
-                                <label for="about-card-visible-input"
-                                    class="text-sm font-semibold text-gray-200 cursor-pointer flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                        </path>
-                                    </svg>
-                                    Card Visible on Website
-                                </label>
-                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Progress Container -->
-                <div id="progressContainer"
-                    class="mt-6 hidden bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
-                    <div class="w-full bg-gray-700 rounded-full h-6 overflow-hidden">
-                        <div id="progressBar"
-                            class="bg-gradient-to-r from-green-500 to-emerald-600 h-6 rounded-full transition-all duration-300 flex items-center justify-center text-sm text-white font-bold">
-                            0%
-                        </div>
-                    </div>
-                    <p id="progressText" class="text-center text-gray-300 font-medium mt-3"></p>
-                </div>
-            </div>
-
-            <!-- Settings Section -->
-            <div id="settings-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 card-hover">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </div>
-                    <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        Settings</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Logo URL -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Logo URL</label>
-                        <div class="flex gap-3">
-                            <input type="url" id="logo-url"
-                                class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                                placeholder="./logo.png or https://...">
-                            <button onclick="pickImageForLogo()"
-                                class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-gray-700 p-4 rounded-xl border border-gray-600 flex items-center gap-3">
+                            <input type="checkbox" id="about-card-visible-input"
+                                class="w-5 h-5 text-[#1C5BAE] border-gray-600 rounded focus:ring-[#1C5BAE] cursor-pointer bg-gray-600">
+                            <label for="about-card-visible-input"
+                                class="text-sm font-semibold text-gray-200 cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                                </svg>
-                                Upload
-                            </button>
-                        </div>
-                        <div class="mt-3 flex items-center gap-4">
-                            <div
-                                class="relative bg-gray-700/50 border border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden">
-                                <img id="logo-preview" src="" alt="Logo Preview"
-                                    class="max-w-full max-h-full object-contain">
-                                <div id="logo-placeholder"
-                                    class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
-                                    <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-xs">No logo</span>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-400">Upload your logo image or paste a URL</p>
-                        </div>
-                    </div>
-
-                    <!-- Navbar Title -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Navbar Title</label>
-                        <input type="text" id="navbar-title"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="Enter navbar title">
-                    </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                        <input type="email" id="email"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="Enter email address">
-                    </div>
-
-                    <!-- Instagram Username -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Instagram Username</label>
-                        <input type="text" id="instagram-username"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="@username">
-                    </div>
-
-                    <!-- Phone -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Phone</label>
-                        <input type="tel" id="phone"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="Enter phone number">
-                    </div>
-
-                    <!-- Instagram URL -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Instagram URL</label>
-                        <input type="url" id="instagram-url"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="https://www.instagram.com/username">
-                    </div>
-
-                    <!-- Address -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                        <div class="flex gap-3">
-                            <input type="password" id="password-input"
-                                class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                                placeholder="Enter password to hash">
-                            <button onclick="hashPassword()"
-                                class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                     </path>
                                 </svg>
-                                Hash
-                            </button>
+                                Card Visible on Website
+                            </label>
                         </div>
-                        <div class="mt-2">
-                            <div class="flex items-center justify-between">
-                                <label class="block text-xs font-medium text-gray-400">Hashed Password (bcrypt)</label>
-                                <button onclick="copyHashedPassword()" id="copy-hash-btn"
-                                    class="hidden text-xs text-[#1DA6E1] hover:text-[#1C5BAE] flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    Copy
-                                </button>
-                            </div>
-                            <input type="text" id="password-hash" readonly
-                                class="w-full mt-1 px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 text-sm font-mono cursor-not-allowed"
-                                placeholder="Hashed password will appear here">
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">💡 Enter a password and click Hash to generate bcrypt hash
-                        </p>
-                    </div>
-
-                    <!-- Address -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Address</label>
-                        <textarea id="address" rows="2"
-                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
-                            placeholder="Enter address"></textarea>
                     </div>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="text-center py-8">
-                <p class="text-gray-400 text-sm">Made with ❤️ for Photography Portfolio</p>
-                <p class="text-gray-500 text-xs mt-2">All changes are saved locally • Click Save to download updated
-                    JSON
-                </p>
+            <!-- Progress Container -->
+            <div id="progressContainer" class="mt-6 hidden bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
+                <div class="w-full bg-gray-700 rounded-full h-6 overflow-hidden">
+                    <div id="progressBar"
+                        class="bg-gradient-to-r from-green-500 to-emerald-600 h-6 rounded-full transition-all duration-300 flex items-center justify-center text-sm text-white font-bold">
+                        0%
+                    </div>
+                </div>
+                <p id="progressText" class="text-center text-gray-300 font-medium mt-3"></p>
             </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Settings</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Logo URL -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Logo URL</label>
+                    <div class="flex gap-3">
+                        <input type="url" id="logo-url"
+                            class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="./logo.png or https://...">
+                        <button onclick="pickImageForLogo()"
+                            class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Upload
+                        </button>
+                    </div>
+                    <div class="mt-3 flex items-center gap-4">
+                        <div
+                            class="relative bg-gray-700/50 border border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden">
+                            <img id="logo-preview" src="" alt="Logo Preview"
+                                class="max-w-full max-h-full object-contain">
+                            <div id="logo-placeholder"
+                                class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                                <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                <span class="text-xs">No logo</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400">Upload your logo image or paste a URL</p>
+                    </div>
+                </div>
+
+                <!-- Navbar Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Navbar Title</label>
+                    <input type="text" id="navbar-title"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                        placeholder="Enter navbar title">
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input type="email" id="email"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                        placeholder="Enter email address">
+                </div>
+
+                <!-- Instagram Username -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Instagram Username</label>
+                    <input type="text" id="instagram-username"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                        placeholder="@username">
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                    <input type="tel" id="phone"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                        placeholder="Enter phone number">
+                </div>
+
+                <!-- Instagram URL -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Instagram URL</label>
+                    <input type="url" id="instagram-url"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                        placeholder="https://www.instagram.com/username">
+                </div>
+
+                <!-- Address -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <div class="flex gap-3">
+                        <input type="password" id="password-input"
+                            class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="Enter password to hash">
+                        <button onclick="hashPassword()"
+                            class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                </path>
+                            </svg>
+                            Hash
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-medium text-gray-400">Hashed Password (bcrypt)</label>
+                            <button onclick="copyHashedPassword()" id="copy-hash-btn"
+                                class="hidden text-xs text-[#1DA6E1] hover:text-[#1C5BAE] flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        <input type="text" id="password-hash" readonly
+                            class="w-full mt-1 px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 text-sm font-mono cursor-not-allowed"
+                            placeholder="Hashed password will appear here">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">💡 Enter a password and click Hash to generate bcrypt hash
+                    </p>
+                </div>
+
+                <!-- Address -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Address</label>
+                    <textarea id="address" rows="2"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
+                        placeholder="Enter address"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center py-8">
+            <p class="text-gray-400 text-sm">Made with ❤️ for Photography Portfolio</p>
+            <p class="text-gray-500 text-xs mt-2">All changes are saved locally • Click Save to download updated
+                JSON
+            </p>
+        </div>
     </main>
 
     <script>
@@ -1380,8 +1376,7 @@
                                         <label class="block text-xs font-semibold text-gray-300 mb-2">Description</label>
                                         <textarea 
                                             onchange="jsonData.categories[${index}].description = this.value"
-                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm resize-none bg-gray-800 text-white"
-                                            rows="8"
+                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm resize-none bg-gray-800 text-white h-[300px]"
                                             placeholder="Category Description">${category.description}</textarea>
                                     </div>
                                 </div>
