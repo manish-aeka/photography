@@ -560,13 +560,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         
                         <!-- Content Section -->
-                        <div class="relative p-8 z-10">
-                            <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight mb-3">${category.title}</h3>
-                            <div class="w-16 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full mb-4"></div>
-                            <p class="text-gray-200 leading-relaxed card-desc">${shortDesc}</p>
+                        <div class="relative px-6 py-8 md:px-8 md:py-10 z-10 space-y-4">
+                            <h3 class="text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight">${category.title}</h3>
+                            <div class="w-20 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
+                            <p class="text-gray-200 leading-relaxed text-base md:text-lg pt-2 card-desc">${shortDesc}</p>
                             ${fullDesc.length > 200 ? `
-                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] text-white rounded-xl font-semibold hover:from-[#1DA6E1] hover:to-[#1C5BAE] transition-all shadow-lg read-more-btn">Read More</button>
-                                <button class="mt-6 px-6 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg show-less-btn" style="display:none">Show Less</button>
+                                <button class="mt-2 px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] text-white rounded-xl font-semibold hover:from-[#1DA6E1] hover:to-[#1C5BAE] transition-all shadow-lg hover:shadow-xl transform hover:scale-105 read-more-btn">Read More</button>
+                                <button class="mt-2 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 show-less-btn" style="display:none">Show Less</button>
                             ` : ''}
                         </div>
                     `;

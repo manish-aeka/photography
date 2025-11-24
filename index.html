@@ -346,7 +346,8 @@
                 </p>
             </div>
 
-            <div id="categories-container" class="flex flex-wrap justify-center gap-8"></div>
+            <div id="categories-container"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center"></div>
         </div>
     </div>
 
@@ -685,20 +686,38 @@
             const form = event.target;
             const formData = new FormData(form);
 
-            // You can add your form submission logic here (e.g., send to backend/email service)
-            console.log('Form data:', Object.fromEntries(formData));
+            // Get form values
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const phone = formData.get('phone') || 'Not provided';
+            const message = formData.get('message');
+
+            // Get recipient email from data attribute or fetch from JSON
+            const recipientEmail = document.querySelector('[href^="mailto:"]')?.href.replace('mailto:', '') || 'anupam.d1@gmail.com';
+
+            // Create email content
+            const subject = encodeURIComponent(`Photography Inquiry from ${name}`);
+            const body = encodeURIComponent(
+                `Name: ${name}\n` +
+                `Email: ${email}\n` +
+                `Phone: ${phone}\n\n` +
+                `Message:\n${message}`
+            );
+
+            // Redirect to email client
+            window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
 
             // Show success message
             const button = form.querySelector('button[type="submit"]');
             const originalText = button.innerHTML;
-            button.innerHTML = '<span class="flex items-center justify-center gap-2">✓ Message Sent!</span>';
+            button.innerHTML = '<span class="flex items-center justify-center gap-2">✓ Opening Email Client...</span>';
             button.disabled = true;
 
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.disabled = false;
                 form.reset();
-            }, 3000);
+            }, 2000);
         }
     </script>
 
