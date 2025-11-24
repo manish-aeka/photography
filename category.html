@@ -66,7 +66,7 @@
                 <div class="absolute inset-3 bg-[#1C5BAE]/10 rounded-full animate-ping"></div>
                 <div class="absolute inset-0 flex items-center justify-center p-6">
                     <img src="./logo.png" alt="Anupam Dutta Photography"
-                        class="w-full h-full object-contain animate-pulse">
+                        class="w-full h-full object-contain animate-pulse logo-img" loading="eager">
                 </div>
             </div>
             <h1
@@ -82,9 +82,9 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center gap-3">
-                <a href="./index.html" class="group flex items-center gap-3 transition-transform hover:scale-105">
+                <a href="/" class="group flex items-center gap-3 transition-transform hover:scale-105">
                     <img id="logo-img" src="" alt="Anupam Dutta Photography"
-                        class="h-12 md:h-14 w-auto rounded-full transition-all">
+                        class="h-12 md:h-14 w-auto rounded-full transition-all" loading="eager">
                     <h1 id="navbar-title" class="md:text-3xl hidden md:block font-serif tracking-widest">
                         Anupam Dutta Photography
                     </h1>
@@ -175,7 +175,8 @@
 
         <!-- Image Container -->
         <div class="flex items-center justify-center w-full h-full p-4">
-            <img id="modal-img" src="" class="max-h-full max-w-full object-contain" alt="Gallery Image" />
+            <img id="modal-img" src="" class="max-h-full max-w-full object-contain" alt="Gallery Image"
+                loading="lazy" />
         </div>
 
         <!-- Next Button -->
@@ -297,6 +298,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <img src="${imageUrl}" alt="${categoryData.title} ${index + 1}" 
                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                            loading="lazy"
                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2220%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                         <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
                             <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>

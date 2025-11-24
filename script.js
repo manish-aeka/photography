@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <!-- Image Section with Overlay -->
                         <div class="relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}">
+                            <img class="relative w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-700" src="${category.image}" alt="${category.title}" loading="lazy">
                             <div class="absolute bottom-0 left-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-4">
                                 <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
                             </div>
@@ -397,7 +397,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <img src="${img}" 
                          class="w-full ${heightClass} object-cover object-center pointer-events-none" 
                          data-img="${img}" 
-                         alt="Gallery Image ${i + 1}" />
+                         alt="Gallery Image ${i + 1}" 
+                         loading="lazy" />
                     
                     <!-- Overlay with gradient -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">

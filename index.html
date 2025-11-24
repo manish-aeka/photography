@@ -47,7 +47,7 @@
                 <!-- Logo Image -->
                 <div class="absolute inset-0 flex items-center justify-center p-6">
                     <img src="./logo.png" alt="Anupam Dutta Photography"
-                        class="w-full h-full object-contain animate-pulse logo-img">
+                        class="w-full h-full object-contain animate-pulse logo-img" loading="eager">
                 </div>
             </div>
 
@@ -149,7 +149,7 @@
             <div class="flex items-center gap-3">
                 <a href="/" class="group flex items-center gap-3 transition-transform hover:scale-105">
                     <img src="" alt="Anupam Dutta Photography"
-                        class="h-12 md:h-14 w-auto logo-img rounded-full transition-all">
+                        class="h-12 md:h-14 w-auto logo-img rounded-full transition-all" loading="eager">
                     <h1 class="md:text-3xl hidden md:block font-serif tracking-widest navbar-title">
                         Anupam Dutta Photography
                     </h1>
@@ -182,7 +182,7 @@
 
         <img id="slider-image" src=""
             class="w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out"
-            alt="cover image" />
+            alt="cover image" loading="eager" />
 
         <!-- Hero Content (populated dynamically) -->
         <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
@@ -269,7 +269,7 @@
                     </div>
                     <img id="about-card-image" src=""
                         class="relative w-full h-80 md:h-[28rem] object-cover rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-700"
-                        alt="Anupam Dutta Photography" />
+                        alt="Anupam Dutta Photography" loading="lazy" />
                     <div
                         class="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
@@ -423,7 +423,8 @@
 
         <!-- Image Container -->
         <div class="flex items-center justify-center w-full h-full p-4">
-            <img id="modal-img" src="" class="max-h-full max-w-full object-contain" alt="Gallery Image" />
+            <img id="modal-img" src="" class="max-h-full max-w-full object-contain" alt="Gallery Image"
+                loading="lazy" />
         </div>
 
         <!-- Next Button -->
