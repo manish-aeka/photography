@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photography Data Editor - Dashboard</title>
+    <title>Anupam Dutta Photography Data Editor - Dashboard</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="">
+    <link rel="icon" type="image/png" sizes="16x16" href="">
+    <link rel="apple-touch-icon" href="">
+    <meta name="theme-color" content="#1C5BAE">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
@@ -133,6 +140,57 @@
 </head>
 
 <body class="min-h-screen bg-gray-900">
+    <!-- Password Login Modal -->
+    <div id="password-modal" class="fixed inset-0 bg-gray-900 z-[9999] flex items-center justify-center">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-8">
+                <div
+                    class="w-20 h-20 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent mb-2">
+                    Editor Access
+                </h2>
+                <p class="text-gray-400 text-sm">Enter password to access the dashboard</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <input type="password" id="login-password"
+                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent transition-all"
+                        placeholder="Enter your password" onkeypress="if(event.key === 'Enter') verifyPassword()">
+                </div>
+
+                <div id="error-message"
+                    class="hidden bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-400 text-sm">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Incorrect password. Please try again.</span>
+                    </div>
+                </div>
+
+                <button onclick="verifyPassword()"
+                    class="w-full bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                        </path>
+                    </svg>
+                    <span>Login</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Fullscreen Image Modal -->
     <div id="fullscreenModal" class="fullscreen-modal" onclick="closeFullscreen()">
         <button onclick="closeFullscreen()"
@@ -175,7 +233,7 @@
                 <div class="hidden sm:block">
                     <h1
                         class="text-lg md:text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
-                        Anupam Dutta Photography Dashboard</h1>
+                        Anupam Dutta Photography Data Editor - Dashboard</h1>
                     <p class="text-xs text-gray-400">Content Management System</p>
                 </div>
             </div>
@@ -907,6 +965,18 @@
         });
 
         function renderEditor() {
+            // Update favicon from settings
+            if (jsonData.settings && jsonData.settings['logo-url']) {
+                const favicon = document.querySelector('link[rel="icon"]');
+                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                if (favicon) favicon.href = jsonData.settings['logo-url'];
+                if (appleTouchIcon) appleTouchIcon.href = jsonData.settings['logo-url'];
+
+                // Update dashboard logo
+                const dashboardLogo = document.getElementById('dashboard-logo');
+                if (dashboardLogo) dashboardLogo.src = jsonData.settings['logo-url'];
+            }
+
             renderSliderContentSection();
             renderSettingsSection();
             renderAboutSection();
@@ -1660,6 +1730,69 @@
                 progressContainer.classList.add('hidden');
             }
         }
+
+        // Password verification function
+        async function verifyPassword() {
+            const password = document.getElementById('login-password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (!password) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.querySelector('span').textContent = 'Please enter a password.';
+                return;
+            }
+
+            try {
+                // Fetch the JSON data to get the stored password
+                const response = await fetch('anupam-dutta-photography-data-set.json');
+                const data = await response.json();
+                const storedPassword = data.settings?.password;
+
+                if (!storedPassword) {
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.querySelector('span').textContent = 'Password not configured in settings.';
+                    return;
+                }
+
+                // Compare password directly
+                if (password === storedPassword) {
+                    // Store authentication state
+                    sessionStorage.setItem('editorAuth', 'true');
+
+                    // Hide login modal
+                    document.getElementById('password-modal').classList.add('hidden');
+
+                    // Clear password field
+                    document.getElementById('login-password').value = '';
+                    errorMessage.classList.add('hidden');
+                } else {
+                    // Show error message
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.querySelector('span').textContent = 'Incorrect password. Please try again.';
+
+                    // Clear password field
+                    document.getElementById('login-password').value = '';
+                }
+            } catch (error) {
+                console.error('Error verifying password:', error);
+                errorMessage.classList.remove('hidden');
+                errorMessage.querySelector('span').textContent = 'Error verifying password. Please try again.';
+            }
+        }
+
+        // Check authentication on page load
+        function checkAuth() {
+            const isAuthenticated = sessionStorage.getItem('editorAuth') === 'true';
+
+            if (isAuthenticated) {
+                document.getElementById('password-modal').classList.add('hidden');
+            } else {
+                document.getElementById('password-modal').classList.remove('hidden');
+            }
+        }
+
+        // Initialize authentication check
+        checkAuth();
 
         // Initialize with empty structure
         renderEditor();
