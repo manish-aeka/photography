@@ -7,6 +7,11 @@
     <title>Photography Data Editor - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --primary-color: #1C5BAE;
+            --secondary-color: #1DA6E1;
+        }
+
         @keyframes gradient-shift {
 
             0%,
@@ -46,7 +51,7 @@
 
         .card-hover:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.2), 0 10px 10px -5px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(28, 91, 174, 0.2), 0 10px 10px -5px rgba(29, 166, 225, 0.1);
         }
 
         .sidebar-item {
@@ -54,8 +59,8 @@
         }
 
         .sidebar-item:hover {
-            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
-            border-left: 4px solid #6366f1;
+            background: linear-gradient(90deg, rgba(28, 91, 174, 0.1) 0%, transparent 100%);
+            border-left: 4px solid var(--primary-color);
         }
 
         .sidebar-item.active {
@@ -126,7 +131,7 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-gray-50">
+<body class="min-h-screen bg-gray-900">
     <!-- Fullscreen Image Modal -->
     <div id="fullscreenModal" class="fullscreen-modal" onclick="closeFullscreen()">
         <button onclick="closeFullscreen()"
@@ -140,10 +145,10 @@
     </div>
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 shadow-sm z-50">
+    <nav class="fixed top-0 left-0 right-0 h-16 bg-gray-800 border-b border-gray-700 shadow-sm z-50">
         <div class="h-full px-4 md:px-6 flex items-center justify-between">
             <!-- Hamburger Menu (Mobile) -->
-            <button onclick="toggleSidebar()" class="md:hidden text-gray-700 p-2 hover:bg-gray-100 rounded-lg"
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-200 p-2 hover:bg-gray-700 rounded-lg"
                 title="Toggle menu">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
@@ -152,8 +157,11 @@
             </button>
 
             <div class="flex items-center gap-2 md:gap-4">
+                <img id="dashboard-logo" src="./logo.png" alt="Logo"
+                    class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div
-                    class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg items-center justify-center hidden">
                     <svg class="w-4 h-4 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -162,20 +170,20 @@
                 </div>
                 <div class="hidden sm:block">
                     <h1
-                        class="text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        class="text-lg md:text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
                         Photography Dashboard</h1>
-                    <p class="text-xs text-gray-500">Content Management System</p>
+                    <p class="text-xs text-gray-400">Content Management System</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
                 <div id="loadingMessage" class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                    <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                    <span class="text-sm text-gray-600 font-medium ml-2 hidden sm:inline">Loading...</span>
+                    <div class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-[#1DA6E1] rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    <span class="text-sm text-gray-300 font-medium ml-2 hidden sm:inline">Loading...</span>
                 </div>
                 <button onclick="updateJSON()"
-                    class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-3 md:px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-1 md:gap-2">
+                    class="bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-3 md:px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-1 md:gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
@@ -193,15 +201,17 @@
 
     <!-- Sidebar -->
     <aside id="sidebar"
-        class="sidebar fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto z-40 md:translate-x-0 -translate-x-full transition-transform duration-300">
+        class="sidebar fixed top-16 left-0 bottom-0 w-64 bg-gray-800 border-r border-gray-700 shadow-sm overflow-y-auto z-40 md:translate-x-0 -translate-x-full transition-transform duration-300">
         <div class="p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3 flex-1">
-                    <p class="text-xs text-indigo-900 leading-relaxed">✨ Click images to upload • Auto-converts to
+                <div
+                    class="bg-gradient-to-r from-[#1C5BAE]/20 to-[#1DA6E1]/20 border border-[#1C5BAE]/50 rounded-lg p-3 flex-1">
+                    <p class="text-xs text-gray-200 leading-relaxed font-medium">✨ Click images to upload •
+                        Auto-converts to
                         base64 •
                         Real-time preview</p>
                 </div>
-                <button onclick="toggleSidebar()" class="md:hidden ml-2 text-gray-500 hover:text-gray-700 p-1"
+                <button onclick="toggleSidebar()" class="md:hidden ml-2 text-gray-400 hover:text-gray-200 p-1"
                     title="Close menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
@@ -212,7 +222,7 @@
 
             <nav class="space-y-1">
                 <a href="#slider-section" onclick="scrollToSection('slider-section')"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer">
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -221,7 +231,7 @@
                     <span>Slider Images</span>
                 </a>
                 <a href="#categories-section" onclick="scrollToSection('categories-section')"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer">
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
@@ -230,7 +240,7 @@
                     <span>Categories</span>
                 </a>
                 <a href="#gallery-section" onclick="scrollToSection('gallery-section')"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer">
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -239,7 +249,7 @@
                     <span>Gallery Images</span>
                 </a>
                 <a href="#about-section" onclick="scrollToSection('about-section')"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer">
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -255,10 +265,11 @@
         <div class="max-w-7xl mx-auto">
 
             <!-- Slider Images Section -->
-            <div id="slider-section" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6 card-hover">
+            <div id="slider-section"
+                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
                 <div class="flex items-center gap-3 mb-6">
                     <div
-                        class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -266,7 +277,7 @@
                         </svg>
                     </div>
                     <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
                         Slider Images</h2>
                 </div>
                 <div id="sliderImagesContainer" class="space-y-3"></div>
@@ -281,10 +292,10 @@
 
             <!-- Categories Section -->
             <div id="categories-section"
-                class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6 card-hover">
+                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
                 <div class="flex items-center gap-3 mb-6">
                     <div
-                        class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
@@ -292,7 +303,7 @@
                         </svg>
                     </div>
                     <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
                         Categories</h2>
                 </div>
                 <div id="categoriesContainer" class="space-y-6"></div>
@@ -306,10 +317,11 @@
             </div>
 
             <!-- Gallery Images Section -->
-            <div id="gallery-section" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6 card-hover">
+            <div id="gallery-section"
+                class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
                 <div class="flex items-center gap-3 mb-6">
                     <div
-                        class="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center">
+                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -317,7 +329,7 @@
                         </svg>
                     </div>
                     <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
                         Gallery Images</h2>
                 </div>
                 <div id="galleryImagesContainer" class="space-y-3"></div>
@@ -331,22 +343,22 @@
             </div>
 
             <!-- About Section -->
-            <div id="about-section" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6 card-hover">
+            <div id="about-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
                 <div class="flex items-center gap-3 mb-6">
                     <div
-                        class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
                     <h2
-                        class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
                         About Section</h2>
                 </div>
                 <div class="space-y-5">
-                    <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-4 rounded-xl border border-indigo-200">
-                        <label class="block text-sm font-semibold text-indigo-900 mb-2 flex items-center gap-2">
+                    <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
+                        <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
@@ -355,11 +367,11 @@
                             Title
                         </label>
                         <input type="text" id="about-title-input"
-                            class="w-full px-4 py-3 border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm"
+                            class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm"
                             placeholder="Enter about title">
                     </div>
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
-                        <label class="block text-sm font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                    <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
+                        <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 6h16M4 12h16M4 18h7"></path>
@@ -367,15 +379,15 @@
                             Description
                         </label>
                         <textarea id="about-description-input" rows="4"
-                            class="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+                            class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm"
                             placeholder="Enter about description"></textarea>
                     </div>
 
                     <!-- About Card Section -->
-                    <div class="border-t-2 border-indigo-100 pt-6 mt-6">
+                    <div class="border-t-2 border-gray-700 pt-6 mt-6">
                         <div class="flex items-center gap-2 mb-5">
                             <div
-                                class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                class="w-8 h-8 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
@@ -383,37 +395,37 @@
                                 </svg>
                             </div>
                             <h3
-                                class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                class="text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
                                 About Card</h3>
                         </div>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Card Title</label>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card Title</label>
                                 <input type="text" id="about-card-title-input"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm transition-all"
+                                    class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
                                     placeholder="Enter card title">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Card Description</label>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card Description</label>
                                 <textarea id="about-card-description-input" rows="3"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm transition-all"
+                                    class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
                                     placeholder="Enter card description"></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Card
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card
                                     Sub-Description</label>
                                 <textarea id="about-card-subdescription-input" rows="2"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm transition-all"
+                                    class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all"
                                     placeholder="Enter card sub-description"></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Card Image</label>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">Card Image</label>
                                 <div
-                                    class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
+                                    class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
                                     <div class="flex flex-col md:flex-row gap-4 p-4">
                                         <!-- Left Side - Image Preview -->
                                         <div
-                                            class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
+                                            class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
                                             <img id="about-card-image-preview" src=""
                                                 class="w-full h-full object-contain image-clickable" alt="About Card"
                                                 onclick="openFullscreen(this.src)"
@@ -438,9 +450,9 @@
                                         <div class="flex-1 flex flex-col space-y-3">
                                             <!-- Card Header -->
                                             <div class="flex items-center justify-between">
-                                                <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                                <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
                                                     <span
-                                                        class="w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs">1</span>
+                                                        class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">1</span>
                                                     About Card Image
                                                 </h3>
                                             </div>
@@ -448,7 +460,7 @@
                                             <!-- URL Input -->
                                             <div class="flex-1">
                                                 <label
-                                                    class="block text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1">
+                                                    class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5 text-gray-500" fill="none"
                                                         stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -459,7 +471,7 @@
                                                     Image URL / Base64
                                                 </label>
                                                 <textarea id="about-card-url-input"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-xs font-mono bg-gray-50 hover:bg-white transition-colors resize-none h-24"
+                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
                                                     placeholder="Paste image URL or upload to generate base64..."
                                                     readonly></textarea>
                                             </div>
@@ -467,7 +479,7 @@
                                             <!-- Action Buttons -->
                                             <div class="flex gap-2">
                                                 <button onclick="pickImageForAboutCard()"
-                                                    class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                                    class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
                                                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -479,7 +491,7 @@
                                                 </button>
                                                 <button
                                                     onclick="openFullscreen(document.getElementById('about-card-image-preview').src); event.stopPropagation();"
-                                                    class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
+                                                    class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
                                                     title="View Fullscreen">
                                                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
@@ -494,11 +506,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 flex items-center gap-3">
+                            <div class="bg-gray-700 p-4 rounded-xl border border-gray-600 flex items-center gap-3">
                                 <input type="checkbox" id="about-card-visible-input"
-                                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                                    class="w-5 h-5 text-[#1C5BAE] border-gray-600 rounded focus:ring-[#1C5BAE] cursor-pointer bg-gray-600">
                                 <label for="about-card-visible-input"
-                                    class="text-sm font-semibold text-indigo-900 cursor-pointer flex items-center gap-2">
+                                    class="text-sm font-semibold text-gray-200 cursor-pointer flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -515,20 +527,20 @@
 
                 <!-- Progress Container -->
                 <div id="progressContainer"
-                    class="mt-6 hidden bg-white rounded-xl shadow-md border border-gray-200 p-6">
-                    <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+                    class="mt-6 hidden bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
+                    <div class="w-full bg-gray-700 rounded-full h-6 overflow-hidden">
                         <div id="progressBar"
                             class="bg-gradient-to-r from-green-500 to-emerald-600 h-6 rounded-full transition-all duration-300 flex items-center justify-center text-sm text-white font-bold">
                             0%
                         </div>
                     </div>
-                    <p id="progressText" class="text-center text-gray-700 font-medium mt-3"></p>
+                    <p id="progressText" class="text-center text-gray-300 font-medium mt-3"></p>
                 </div>
             </div>
 
             <!-- Footer -->
             <div class="text-center py-8">
-                <p class="text-gray-600 text-sm">Made with ❤️ for Photography Portfolio</p>
+                <p class="text-gray-400 text-sm">Made with ❤️ for Photography Portfolio</p>
                 <p class="text-gray-500 text-xs mt-2">All changes are saved locally • Click Save to download updated
                     JSON
                 </p>
@@ -699,14 +711,14 @@
 
             jsonData['slider-images'].forEach((url, index) => {
                 container.innerHTML += `
-                    <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
+                    <div class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
                         <div class="flex flex-col md:flex-row gap-4 p-4">
                             <!-- Left Side - Image Preview -->
-                            <div class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
-                                <img src="${url}" class="w-full h-full object-contain image-clickable" alt="Slider ${index + 1}" onclick="openFullscreen('${url}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                            <div class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
+                                <img src="${url}" class="w-full h-full object-contain image-clickable" alt="Slider ${index + 1}" onclick="openFullscreen('${url}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                     <button onclick="pickImageForSlider(${index})" 
-                                        class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-indigo-50">
+                                        class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#1C5BAE] px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-gray-100">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                         </svg>
@@ -719,12 +731,12 @@
                             <div class="flex-1 flex flex-col space-y-3">
                                 <!-- Card Header -->
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                                        <span class="w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
+                                    <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
                                         Slider Image
                                     </h3>
                                     <button onclick="removeSliderImage(${index})" 
-                                        class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all" title="Remove Image">
+                                        class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition-all" title="Remove Image">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -733,29 +745,29 @@
                                 
                                 <!-- URL Input -->
                                 <div class="flex-1">
-                                    <label class="block text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                                         </svg>
                                         Image URL / Base64
                                     </label>
                                     <textarea 
                                         onchange="jsonData['slider-images'][${index}] = this.value; renderSliderImages();"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-xs font-mono bg-gray-50 hover:bg-white transition-colors resize-none h-24"
+                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
                                         placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
                                 </div>
                                 
                                 <!-- Action Buttons -->
                                 <div class="flex gap-2">
                                     <button onclick="pickImageForSlider(${index})" 
-                                        class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                        class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
                                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                         <span>Upload</span>
                                     </button>
                                     <button onclick="openFullscreen('${url}'); event.stopPropagation();" 
-                                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
+                                        class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
                                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
                                         </svg>
@@ -803,16 +815,16 @@
             container.innerHTML = '';
             jsonData.categories.forEach((category, index) => {
                 container.innerHTML += `
-                    <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden mb-4">
+                    <div class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden mb-4">
                         <div class="p-4">
                             <!-- Category Header -->
                             <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                                    <span class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
+                                <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
                                     Category ${index + 1}
                                 </h3>
                                 <button onclick="removeCategory(${index})" 
-                                    class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all" title="Remove Category">
+                                    class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition-all" title="Remove Category">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
@@ -824,39 +836,39 @@
                                 <!-- Left Side - Category Details -->
                                 <div class="flex-1 space-y-4">
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-700 mb-2">Title</label>
+                                        <label class="block text-xs font-semibold text-gray-300 mb-2">Title</label>
                                         <input type="text" value="${category.title}" 
                                             onchange="jsonData.categories[${index}].title = this.value"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm bg-gray-800 text-white"
                                             placeholder="Category Title">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-700 mb-2">Description</label>
+                                        <label class="block text-xs font-semibold text-gray-300 mb-2">Description</label>
                                         <textarea 
                                             onchange="jsonData.categories[${index}].description = this.value"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm resize-none"
+                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm resize-none bg-gray-800 text-white"
                                             rows="4"
                                             placeholder="Category Description">${category.description}</textarea>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-700 mb-2">Page URL</label>
+                                        <label class="block text-xs font-semibold text-gray-300 mb-2">Page URL</label>
                                         <input type="text" value="${category.url}" 
                                             onchange="jsonData.categories[${index}].url = this.value"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm bg-gray-800 text-white"
                                             placeholder="Link URL (e.g., #)">
                                     </div>
                                 </div>
                                 
                                 <!-- Right Side - Category Image -->
                                 <div class="flex-1">
-                                    <label class="block text-xs font-semibold text-gray-700 mb-2">Category Image</label>
-                                    <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                                    <label class="block text-xs font-semibold text-gray-300 mb-2">Category Image</label>
+                                    <div class="border border-gray-600 rounded-lg p-3 bg-gray-800">
                                         <!-- Image Preview -->
-                                        <div class="relative group bg-gray-100 rounded-lg overflow-hidden w-full h-[200px] mb-3">
-                                            <img src="${category.image}" class="w-full h-full object-contain image-clickable" alt="Category ${index + 1}" onclick="openFullscreen('${category.image}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                        <div class="relative group bg-gray-900 rounded-lg overflow-hidden w-full h-[200px] mb-3">
+                                            <img src="${category.image}" class="w-full h-full object-contain image-clickable" alt="Category ${index + 1}" onclick="openFullscreen('${category.image}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                                 <button onclick="pickImageForCategory(${index})" 
-                                                    class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-purple-50">
+                                                    class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#1C5BAE] px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-gray-100">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                                     </svg>
@@ -867,29 +879,29 @@
                                         
                                         <!-- URL Input -->
                                         <div class="mb-3">
-                                            <label class="block text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <label class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                                                 </svg>
                                                 Image URL / Base64
                                             </label>
                                             <textarea 
                                                 onchange="jsonData.categories[${index}].image = this.value; renderCategories();"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-xs font-mono bg-gray-50 hover:bg-white transition-colors resize-none h-20"
+                                                class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-900 text-gray-300 hover:bg-gray-800 transition-colors resize-none h-20"
                                                 placeholder="Paste image URL or upload to generate base64...">${category.image}</textarea>
                                         </div>
                                         
                                         <!-- Action Buttons -->
                                         <div class="flex gap-2">
                                             <button onclick="pickImageForCategory(${index})" 
-                                                class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                                class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
                                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                                 </svg>
                                                 <span>Upload</span>
                                             </button>
                                             <button onclick="openFullscreen('${category.image}'); event.stopPropagation();" 
-                                                class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
+                                                class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
                                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
                                                 </svg>
@@ -943,14 +955,14 @@
 
             jsonData['gallery-images'].forEach((url, index) => {
                 container.innerHTML += `
-                    <div class="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
+                    <div class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
                         <div class="flex flex-col md:flex-row gap-4 p-4">
                             <!-- Left Side - Image Preview -->
-                            <div class="relative group bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
-                                <img src="${url}" class="w-full h-full object-contain image-clickable" alt="Gallery ${index + 1}" onclick="openFullscreen('${url}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                            <div class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
+                                <img src="${url}" class="w-full h-full object-contain image-clickable" alt="Gallery ${index + 1}" onclick="openFullscreen('${url}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                     <button onclick="pickImageForGallery(${index})" 
-                                        class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-pink-600 px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-pink-50">
+                                        class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#1C5BAE] px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-gray-100">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                         </svg>
@@ -963,12 +975,12 @@
                             <div class="flex-1 flex flex-col space-y-3">
                                 <!-- Card Header -->
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                                        <span class="w-6 h-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
+                                    <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
                                         Gallery Image
                                     </h3>
                                     <button onclick="removeGalleryImage(${index})" 
-                                        class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all" title="Remove Image">
+                                        class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition-all" title="Remove Image">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -977,29 +989,29 @@
                                 
                                 <!-- URL Input -->
                                 <div class="flex-1">
-                                    <label class="block text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                                         </svg>
                                         Image URL / Base64
                                     </label>
                                     <textarea 
                                         onchange="jsonData['gallery-images'][${index}] = this.value; renderGalleryImages();"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-xs font-mono bg-gray-50 hover:bg-white transition-colors resize-none h-24"
+                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
                                         placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
                                 </div>
                                 
                                 <!-- Action Buttons -->
                                 <div class="flex gap-2">
                                     <button onclick="pickImageForGallery(${index})" 
-                                        class="flex-1 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                        class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
                                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                         <span>Upload</span>
                                     </button>
                                     <button onclick="openFullscreen('${url}'); event.stopPropagation();" 
-                                        class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
+                                        class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
                                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
                                         </svg>
