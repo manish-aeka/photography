@@ -61,3 +61,21 @@
     background-size: 200% 200%;
     animation: gradientShift 8s ease infinite;
 }
+
+/* Hero slider image positioning */
+#slider-image {
+    object-position: center center;
+}
+
+/* Mobile optimization for hero image */
+@media (max-width: 768px) {
+    #slider-image {
+        /* object-position: contains !important; */
+        object-fit: fill !important;
+    }
+
+    /* Hero section height for mobile */
+    .hero-section {
+        height: 70vh !important;
+    }
+}
