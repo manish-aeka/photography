@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (subjectInput) subject = subjectInput.value;
             }
             const message = form.querySelector('textarea').value;
-            const mailto = `mailto:anupam.d1@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+            const recipientEmail = form.dataset.email || 'anupam.d1@gmail.com';
+            const mailto = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
             window.location.href = mailto;
         });
     }
@@ -85,16 +86,94 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Set logo URL if available
-            if (data['logo-url']) {
-                document.querySelectorAll('.logo-img').forEach(logoImg => {
-                    logoImg.src = data['logo-url'];
-                });
-                // Also update favicon
-                const favicon = document.querySelector('link[rel="icon"]');
-                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-                if (favicon) favicon.href = data['logo-url'];
-                if (appleTouchIcon) appleTouchIcon.href = data['logo-url'];
+            // Apply settings data dynamically
+            if (data.settings) {
+                const settings = data.settings;
+
+                // Set logo URL
+                if (settings['logo-url']) {
+                    document.querySelectorAll('.logo-img').forEach(logoImg => {
+                        logoImg.src = settings['logo-url'];
+                    });
+                    // Also update favicon
+                    const favicon = document.querySelector('link[rel="icon"]');
+                    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                    if (favicon) favicon.href = settings['logo-url'];
+                    if (appleTouchIcon) appleTouchIcon.href = settings['logo-url'];
+                }
+
+                // Set navbar title
+                if (settings['navbar-title']) {
+                    const navbarTitles = document.querySelectorAll('nav h1, .navbar-title');
+                    navbarTitles.forEach(title => {
+                        if (title.tagName === 'H1') {
+                            title.textContent = settings['navbar-title'];
+                        }
+                    });
+                }
+
+                // Set email links
+                if (settings.email) {
+                    document.querySelectorAll('a[href^="mailto:"]').forEach(emailLink => {
+                        emailLink.href = `mailto:${settings.email}`;
+                        if (emailLink.textContent.includes('@')) {
+                            emailLink.textContent = settings.email;
+                        }
+                    });
+                    // Update form mailto
+                    const form = document.getElementById('contact-form');
+                    if (form) {
+                        form.dataset.email = settings.email;
+                    }
+                }
+
+                // Set phone number
+                if (settings.phone) {
+                    document.querySelectorAll('a[href^="tel:"]').forEach(phoneLink => {
+                        phoneLink.href = `tel:${settings.phone}`;
+                        phoneLink.textContent = settings.phone;
+                    });
+                }
+
+                // Set address/location
+                if (settings.address) {
+                    const locationElements = document.querySelectorAll('.location-text, [data-location]');
+                    locationElements.forEach(element => {
+                        element.textContent = settings.address;
+                    });
+                    // Also find the location in the contact section
+                    const contactDivs = document.querySelectorAll('.text-lg.font-semibold.text-white');
+                    contactDivs.forEach(div => {
+                        if (div.textContent.includes('Kolkata')) {
+                            div.textContent = settings.address;
+                        }
+                    });
+                }
+
+                // Set page title and footer brand name
+                if (settings['navbar-title']) {
+                    document.title = settings['navbar-title'];
+                    const footerTitles = document.querySelectorAll('footer h3');
+                    footerTitles.forEach(title => {
+                        if (title.textContent.includes('Anupam Dutta')) {
+                            title.textContent = settings['navbar-title'];
+                        }
+                    });
+                }
+
+                // Set Instagram links
+                if (settings['instagram-url']) {
+                    document.querySelectorAll('a[href*="instagram.com"], .instagram-link').forEach(igLink => {
+                        igLink.href = settings['instagram-url'];
+                    });
+                }
+
+                // Set Instagram username display
+                if (settings['instagram-username']) {
+                    document.querySelectorAll('.instagram-username').forEach(igUsername => {
+                        igUsername.textContent = settings['instagram-username'];
+                    });
+                }
             }
 
             // Populate About section
