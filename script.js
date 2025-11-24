@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Apply slider content data dynamically
             if (data['slider-content']) {
                 const sliderContent = data['slider-content'];
-                
+
                 // Set slider heading
                 if (sliderContent.heading) {
                     const heroHeading = document.getElementById('heroHeading');
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }
                 }
-                
+
                 // Set slider description
                 if (sliderContent.description) {
                     const heroDescription = document.getElementById('heroDescription');
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }
                 }
-                
+
                 // Show/hide latest collections button
                 if (sliderContent['show-latest-collections-button'] !== undefined) {
                     const heroButton = document.getElementById('heroButton');
@@ -227,10 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (sliderImage) {
                     // Set the first image as the current image
                     sliderImage.src = data['slider-images'][0];
-                    
+
                     // Store all images in a data attribute or global variable for slider functionality
                     window.sliderImagesData = data['slider-images'];
-                    
+
                     // If you have existing slider next/prev functions, they can now use window.sliderImagesData
                 }
             }
