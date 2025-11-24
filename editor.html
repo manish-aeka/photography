@@ -13,7 +13,6 @@
     <meta name="theme-color" content="#1C5BAE">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
         :root {
             --primary-color: #1C5BAE;
@@ -1144,14 +1143,12 @@
             passwordHashField.value = 'Hashing...';
 
             try {
-                // Check if bcrypt is loaded
-                if (typeof bcrypt === 'undefined') {
-                    throw new Error('Bcrypt library not loaded. Please refresh the page.');
-                }
-
-                // Generate salt and hash using async methods
-                const salt = await bcrypt.genSalt(10);
-                const hash = await bcrypt.hash(password, salt);
+                // Use Web Crypto API to hash the password
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
                 // Update the hash field
                 passwordHashField.value = hash;
@@ -1749,8 +1746,17 @@
                     return;
                 }
 
-                // Compare password directly
-                if (password === storedPassword) {
+                // Hash the entered password using Web Crypto API
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                // Compare password hash
+                const isValid = hash === storedPassword;
+
+                if (isValid) {
                     // Store authentication state
                     sessionStorage.setItem('editorAuth', 'true');
 
@@ -1786,11 +1792,12 @@
             }
         }
 
-        // Initialize authentication check
-        checkAuth();
-
-        // Initialize with empty structure
-        renderEditor();
+        // Initialize authentication check and editor when DOM is ready
+        window.addEventListener('load', function () {
+            console.log('Editor initialized with Web Crypto API');
+            checkAuth();
+            renderEditor();
+        });
     </script>
 </body>
 
