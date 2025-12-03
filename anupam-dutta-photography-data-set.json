@@ -77,14 +77,14 @@
         "./images/collection/collection11.jpg",
         "./images/collection/collection12.jpg",
         "./images/collection/collection13.jpg",
-        "./images/sunbird.JPG"
+        "./images/aug.jpg"
     ],
     "settings": {
         "logo-url": "./logo.png",
         "navbar-title": "Anupam Dutta Photography",
         "instagram-username": "@birds.series",
         "instagram-url": "https://www.instagram.com/birds.series",
-        "email": "anupam.d1@gamil.co",
+        "email": "anupam.d1@gamil.com",
         "phone": "9831678665",
         "address": "Kolkata, India",
         "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
