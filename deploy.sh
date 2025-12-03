@@ -40,14 +40,15 @@ BRANCH=$(git branch --show-current)
 echo -e "${BLUE}Current branch:${NC} $BRANCH"
 echo ""
 
-# Add only JSON files
-echo -e "${BLUE}Adding JSON files...${NC}"
+# Add only JSON files and images folder
+echo -e "${BLUE}Adding JSON files and images folder...${NC}"
 git add *.json
+git add images/
 
 if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓ JSON files added successfully${NC}"
+    echo -e "${GREEN}✓ Files added successfully${NC}"
 else
-    echo -e "${RED}✗ Failed to add JSON files${NC}"
+    echo -e "${RED}✗ Failed to add files${NC}"
     exit 1
 fi
 echo ""
