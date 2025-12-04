@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Category - Anupam Dutta Photography</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="" id="favicon-32">
+    <link rel="icon" type="image/png" sizes="16x16" href="" id="favicon-16">
+    <link rel="apple-touch-icon" href="" id="favicon-apple">
+    <meta name="theme-color" content="#1C5BAE">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -54,27 +61,71 @@
 
 <body class="bg-gray-900 text-white">
 
-    <!-- Loading Overlay -->
+    <!-- Attractive Loading Overlay -->
     <div id="loading-overlay"
         class="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-[100] flex items-center justify-center">
         <div class="text-center px-4">
+            <!-- Logo with Animation -->
             <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-8">
+                <!-- Outer Ring -->
                 <div class="absolute inset-0 border-4 border-[#1C5BAE]/20 rounded-full"></div>
+                <!-- Spinning Ring -->
                 <div
                     class="absolute inset-0 border-4 border-transparent border-t-[#1C5BAE] border-r-[#1DA6E1] rounded-full animate-spin">
                 </div>
+                <!-- Inner Pulse -->
                 <div class="absolute inset-3 bg-[#1C5BAE]/10 rounded-full animate-ping"></div>
+                <!-- Logo Image -->
                 <div class="absolute inset-0 flex items-center justify-center p-6">
                     <img src="./logo.png" alt="Anupam Dutta Photography"
                         class="w-full h-full object-contain animate-pulse">
                 </div>
             </div>
-            <h1
-                class="text-3xl md:text-4xl font-serif tracking-wider bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent animate-pulse">
-                Loading...
-            </h1>
+
+            <!-- Brand Name with Gradient and Animation -->
+            <div class="space-y-3">
+                <h1
+                    class="text-3xl md:text-4xl font-serif tracking-wider bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent animate-pulse">
+                    Anupam Dutta Photography
+                </h1>
+
+                <!-- Loading Text -->
+                <div class="flex items-center justify-center gap-2">
+                    <span class="text-[#1DA6E1] text-sm md:text-base font-medium">Loading</span>
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce"
+                            style="animation-delay: 0s"></span>
+                        <span class="w-2 h-2 bg-[#1DA6E1] rounded-full animate-bounce"
+                            style="animation-delay: 0.15s"></span>
+                        <span class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce"
+                            style="animation-delay: 0.3s"></span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-64 md:w-80 h-1 bg-gray-800 rounded-full mx-auto mt-4 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] animate-pulse"
+                        style="animation: loadProgress 2s ease-in-out infinite"></div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <style>
+        @keyframes loadProgress {
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 70%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+    </style>
 
     <!-- Modern Navbar -->
     <nav
@@ -92,7 +143,7 @@
             </div>
 
             <!-- Back Button -->
-            <a href="./index.html"
+            <a href="/"
                 class="group relative overflow-hidden bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] px-4 md:px-6 py-2.5 rounded-full font-semibold text-white shadow-lg hover:shadow-[#1C5BAE]/50 transition-all transform hover:scale-105">
                 <span class="relative z-10 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,6 +271,11 @@
                 // Set logo and navbar title
                 if (data.settings && data.settings['logo-url']) {
                     document.getElementById('logo-img').src = data.settings['logo-url'];
+
+                    // Update favicon
+                    document.getElementById('favicon-32').href = data.settings['logo-url'];
+                    document.getElementById('favicon-16').href = data.settings['logo-url'];
+                    document.getElementById('favicon-apple').href = data.settings['logo-url'];
                 }
                 if (data.settings && data.settings['navbar-title']) {
                     document.getElementById('navbar-title').textContent = data.settings['navbar-title'];
