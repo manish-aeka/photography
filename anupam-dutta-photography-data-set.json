@@ -28,55 +28,55 @@
         {
             "title": "My Passion for Lunar Photography",
             "description": "🌕 Lunar photography is a blend of patience and precision—capturing a world that’s always above us, yet always changing. 🌙 Every phase of the moon tells a different story, and the camera becomes the storyteller in this unique realm of nature photography. ✨ Shooting the moon isn’t just photography; it’s the art of freezing a celestial moment millions of miles away, akin to the dedication seen in wildlife photography and other photography services.",
-            "image": "./images/category/lunar.jpg",
+            "image": "./images/lunar.jpg",
             "images-url": []
         },
         {
             "title": "Nature Photography",
             "description": "Photography is more than a craft for me; it’s a connection to the wild. Nature photography is not just a subject for me— it is a realm of wonder. With every photograph, I strive to capture not just what I see, but the enchantment that moves beneath it, making my photography services a gateway to the beauty of wildlife photography.",
-            "image": "./images/category/nature.jpg",
+            "image": "./images/nature.jpg",
             "images-url": []
         },
         {
             "title": "Wild Life Photography",
             "description": "With each frame in my nature photography, I wait for that fragile moment—the pause between movement and stillness—when a creature reveals more than its form. In that heartbeat, the wild speaks… and I try to honor its magic through my photography services before it slips back into mystery.",
-            "image": "./images/category/bird.jpg",
+            "image": "./images/bird.jpg",
             "images-url": [
-                "./images/collection/collection1.jpg",
-                "./images/collection/collection2.jpg",
-                "./images/collection/collection3.jpg",
-                "./images/collection/collection4.jpg",
-                "./images/collection/collection5.jpg",
-                "./images/collection/collection6.jpg",
+                "./images/collection1.jpg",
+                "./images/collection2.jpg",
+                "./images/collection3.jpg",
+                "./images/collection4.jpg",
+                "./images/collection5.jpg",
+                "./images/collection6.jpg",
                 "./images/c2.jpg",
                 "./images/c3.jpg",
                 "./images/c4.jpg",
                 "./images/c5.jpg",
                 "./images/c6.jpg",
-                "./images/collection/collection7.jpg",
-                "./images/collection/collection8.jpg",
-                "./images/collection/collection9.jpg",
-                "./images/collection/collection10.jpg",
-                "./images/collection/collection11.jpg",
-                "./images/collection/collection12.jpg",
-                "./images/collection/collection13.jpg"
+                "./images/collection7.jpg",
+                "./images/collection8.jpg",
+                "./images/collection9.jpg",
+                "./images/collection10.jpg",
+                "./images/collection11.jpg",
+                "./images/collection12.jpg",
+                "./images/collection13.jpg"
             ]
         }
     ],
     "gallery-images": [
-        "./images/collection/collection1.jpg",
-        "./images/collection/collection2.jpg",
-        "./images/collection/collection3.jpg",
-        "./images/collection/collection4.jpg",
-        "./images/collection/collection5.jpg",
-        "./images/collection/collection6.jpg",
-        "./images/collection/collection7.jpg",
-        "./images/collection/collection8.jpg",
-        "./images/collection/collection9.jpg",
-        "./images/collection/collection10.jpg",
-        "./images/collection/collection11.jpg",
-        "./images/collection/collection12.jpg",
-        "./images/collection/collection13.jpg",
+        "./images/collection1.jpg",
+        "./images/collection2.jpg",
+        "./images/collection3.jpg",
+        "./images/collection4.jpg",
+        "./images/collection5.jpg",
+        "./images/collection6.jpg",
+        "./images/collection7.jpg",
+        "./images/collection8.jpg",
+        "./images/collection9.jpg",
+        "./images/collection10.jpg",
+        "./images/collection11.jpg",
+        "./images/collection12.jpg",
+        "./images/collection13.jpg",
         "./images/odk.jpg"
     ],
     "settings": {
@@ -88,6 +88,6 @@
         "phone": "9831678665",
         "address": "Kolkata, India",
         "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-        "fallback-image": "https://placehold.co/150x150.webp?text=No+test"
+        "fallback-image": "https://placehold.co/150x150.webp?text=Invalid+Image"
     }
 }
