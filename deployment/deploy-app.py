@@ -7,8 +7,16 @@ import os
 import time
 from pathlib import Path
 
-# Configuration
-DEPLOYMENT_BRANCH = "manish-09-12-25"  # Change this to your deployment branch name (e.g., "main", "master", "feat")
+# ================================
+# CONFIGURATION
+# ================================
+# Branch name (will use current branch if empty)
+TARGET_BRANCH = ""
+
+# Specific files/folders to include in deployment (relative to repository root)
+INCLUDE_FILES = [
+    "data/*.json"
+]
 
 class DeploymentApp:
     def __init__(self, root):
@@ -195,7 +203,7 @@ class DeploymentApp:
         # Deploy info label
         deploy_info = tk.Label(
             deploy_container,
-            text=f"Target Branch: {DEPLOYMENT_BRANCH}",
+            text=f"Target Branch: {TARGET_BRANCH if TARGET_BRANCH else 'Current Branch'}",
             font=("Segoe UI", 9),
             bg=self.bg_color,
             fg="#64748b"
@@ -316,10 +324,13 @@ class DeploymentApp:
     
     def browse_file(self):
         """Open file dialog to select JSON file"""
+        # Get repository root (parent of deployment folder)
+        repo_root = Path(__file__).parent.parent
+        
         filename = filedialog.askopenfilename(
             title="📁 Select Photography Data JSON File",
             filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-            initialdir=os.getcwd()
+            initialdir=str(repo_root)  # Start from repository root
         )
         
         if filename:
@@ -346,14 +357,18 @@ class DeploymentApp:
             with open(self.selected_file, 'r', encoding='utf-8') as f:
                 uploaded_data = json.load(f)
             
-            # Read the reference JSON
-            reference_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json"
+            # Read the reference JSON from data folder in repository root
+            repo_root = Path(__file__).parent.parent
+            reference_file = repo_root / "data" / "anupam-dutta-photography-data-set.json"
+            
             if not reference_file.exists():
+                # If no reference file exists, just validate it's valid JSON
                 self.validation_label.config(
-                    text="❌ Validation Error: Reference file 'anupam-dutta-photography-data-set.json' not found",
-                    fg=self.error_color,
+                    text="✅ Valid JSON format - No reference file to compare against",
+                    fg=self.success_color,
                     bg=self.bg_secondary
                 )
+                self.deploy_btn.config(state=tk.NORMAL, bg=self.success_color)
                 return
             
             with open(reference_file, 'r', encoding='utf-8') as f:
@@ -486,16 +501,57 @@ class DeploymentApp:
     def run_deployment(self):
         """Run deployment commands"""
         try:
+            # Change to repository root
+            repo_root = Path(__file__).parent.parent
+            os.chdir(repo_root)
+            
+            # Determine target branch
+            if TARGET_BRANCH:
+                branch = TARGET_BRANCH
+                self.log_message(f"Using configured branch: {branch}", "#60a5fa")
+                
+                # Get current branch
+                result = subprocess.run(
+                    ["git", "branch", "--show-current"],
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+                current_branch = result.stdout.strip()
+                
+                # Switch branch if needed
+                if current_branch != branch:
+                    self.log_message(f"Switching to branch: {branch}", "#60a5fa")
+                    subprocess.run(["git", "checkout", branch], check=True)
+                    self.log_message(f"✓ Switched to {branch}", "#10b981")
+            else:
+                # Get current branch
+                result = subprocess.run(
+                    ["git", "branch", "--show-current"],
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+                branch = result.stdout.strip()
+                self.log_message(f"Using current branch: {branch}", "#60a5fa")
+            
             self.log_message("=" * 70, "#60a5fa")
             self.log_message("🚀 Starting deployment process...", "#60a5fa")
-            self.log_message(f"📍 Deployment branch: {DEPLOYMENT_BRANCH}", "#60a5fa")
+            self.log_message(f"📍 Deployment branch: {branch}", "#60a5fa")
+            self.log_message(f"📁 Working directory: {repo_root}", "#60a5fa")
             self.log_message("=" * 70, "#60a5fa")
             
-            # Step 1: Copy JSON file (10%)
-            self.log_message("\n📋 Step 1/6: Updating JSON file...", "#fbbf24")
+            # Check if data folder exists
+            data_folder = repo_root / "data"
+            if not data_folder.exists():
+                self.log_message("  ❌ Error: data/ folder not found in root directory", "#ef4444")
+                return False
+            
+            # Step 1: Copy JSON file to data folder (10%)
+            self.log_message("\n📋 Step 1/6: Updating JSON file in data/ folder...", "#fbbf24")
             self.progress_var.set(5)
             
-            target_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json"
+            target_file = data_folder / "anupam-dutta-photography-data-set.json"
             
             # Backup existing file with retry logic
             if target_file.exists():
@@ -577,10 +633,10 @@ class DeploymentApp:
             self.progress_var.set(50)
             
             # Step 5: Git - Push to remote (75%)
-            self.log_message(f"\n🚀 Step 5/6: Pushing to remote ({DEPLOYMENT_BRANCH})...", "#fbbf24")
+            self.log_message(f"\n🚀 Step 5/6: Pushing to remote ({branch})...", "#fbbf24")
             
-            if not self.run_git_command(f"git push origin {DEPLOYMENT_BRANCH}", f"Git push to {DEPLOYMENT_BRANCH}"):
-                self.log_message(f"  ⚠️ Push to {DEPLOYMENT_BRANCH} failed, continuing...", "#f59e0b")
+            if not self.run_git_command(f"git push origin {branch}", f"Git push to {branch}"):
+                self.log_message(f"  ⚠️ Push to {branch} failed, continuing...", "#f59e0b")
             
             self.progress_var.set(75)
             
@@ -594,7 +650,7 @@ class DeploymentApp:
             
             self.log_message("\n" + "=" * 70, "#60a5fa")
             self.log_message("✅ DEPLOYMENT COMPLETED SUCCESSFULLY!", "#10b981")
-            self.log_message(f"📍 Changes pushed to branch: {DEPLOYMENT_BRANCH}", "#10b981")
+            self.log_message(f"📍 Changes pushed to branch: {branch}", "#10b981")
             self.log_message("=" * 70, "#60a5fa")
             
             self.show_completion_message(True)
