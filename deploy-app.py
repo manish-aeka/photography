@@ -4,11 +4,91 @@ import json
 import subprocess
 import threading
 import os
+import sys
 import time
 from pathlib import Path
 
 # Configuration
 DEPLOYMENT_BRANCH = "feat"  # Change this to your deployment branch name (e.g., "main", "master", "feat")
+
+
+class Tooltip:
+    """Simple tooltip for tkinter widgets"""
+    def __init__(self, widget, text, delay=500):
+        self.widget = widget
+        self.text = text
+        self.delay = delay
+        self.id = None
+        self.tw = None
+        try:
+            widget.bind("<Enter>", self.schedule)
+            widget.bind("<Leave>", self.hide)
+        except Exception:
+            pass
+
+    def schedule(self, _event=None):
+        try:
+            self.id = self.widget.after(self.delay, self.show)
+        except Exception:
+            self.id = None
+
+    def show(self):
+        if self.tw:
+            return
+        try:
+            x = self.widget.winfo_rootx() + 20
+            y = self.widget.winfo_rooty() + self.widget.winfo_height() + 1
+            self.tw = tk.Toplevel(self.widget)
+            self.tw.wm_overrideredirect(True)
+            self.tw.wm_geometry(f"+{x}+{y}")
+            label = tk.Label(self.tw, text=self.text, justify=tk.LEFT,
+                             background="#333333", foreground="#ffffff",
+                             relief=tk.SOLID, borderwidth=1, padx=6, pady=3,
+                             font=("Segoe UI", 9))
+            label.pack()
+        except Exception:
+            pass
+
+    def hide(self, _event=None):
+        if self.id:
+            try:
+                self.widget.after_cancel(self.id)
+            except Exception:
+                pass
+            self.id = None
+        if self.tw:
+            try:
+                self.tw.destroy()
+            except Exception:
+                pass
+            self.tw = None
+
+
+def find_data_files():
+    """Return list of candidate JSON data files from common locations"""
+    search_paths = [
+        Path.cwd(),
+        Path.home(),
+        Path.home() / "Photography",
+        Path.home() / "Documents",
+        Path.home() / "Desktop",
+        Path("/Users/saugata/Photography"),
+    ]
+    found_files = []
+    for search_path in search_paths:
+        try:
+            if search_path.exists():
+                for f in search_path.glob("*.json"):
+                    name = f.name.lower()
+                    if any(k in name for k in ("photography", "data", "anupam")):
+                        found_files.append(f)
+        except Exception:
+            continue
+    # also include cwd JSONs if nothing matched
+    if not found_files:
+        for f in Path.cwd().glob("*.json"):
+            found_files.append(f)
+    return found_files
 
 class DeploymentApp:
     def __init__(self, root):
@@ -30,13 +110,42 @@ class DeploymentApp:
         self.is_deploying = False
         
         self.setup_ui()
+        self.auto_detect_json_files()
+        
+    def auto_detect_json_files(self):
+        """Auto-detect and load JSON files from multiple locations"""
+        search_paths = [
+            Path.cwd(),  # Current working directory
+            Path.home(),  # Home directory
+            Path.home() / "Photography",  # Photography folder
+            Path.home() / "Documents",  # Documents folder
+            Path.home() / "Desktop",  # Desktop folder
+            Path("/Users/saugata/Photography"),  # Specific project directory
+        ]
+        
+        found_files = []
+        
+        # Search in all paths for JSON files
+        for search_path in search_paths:
+            if search_path.exists():
+                json_files = list(search_path.glob("*.json"))
+                # Look for common data file names
+                data_files = [f for f in json_files if "photography" in f.name.lower() or "data" in f.name.lower() or "anupam" in f.name.lower()]
+                found_files.extend(data_files)
+        
+        if found_files:
+            # Use the first matching data file
+            selected = found_files[0]
+            self.selected_file = str(selected)
+            self.file_path_var.set(f"Auto-loaded: {selected.name}")
+            self.validate_json()
         
     def setup_ui(self):
         # Header
         header_frame = tk.Frame(self.root, bg=self.accent_color, height=80)
         header_frame.pack(fill=tk.X, padx=0, pady=0)
         header_frame.pack_propagate(False)
-        
+
         title_label = tk.Label(
             header_frame,
             text="📸 Photography Portfolio Deployment",
@@ -44,79 +153,102 @@ class DeploymentApp:
             bg=self.accent_color,
             fg="white"
         )
-        title_label.pack(pady=20)
-        
-        # Main container
+        title_label.pack(side=tk.LEFT, padx=20, pady=18)
+
+        subtitle = tk.Label(
+            header_frame,
+            text="Validate and deploy your photography dataset — fast and safe",
+            font=("Segoe UI", 10),
+            bg=self.accent_color,
+            fg="#e6eef8"
+        )
+        subtitle.pack(side=tk.LEFT, padx=(10, 0), pady=22)
+
+        # Main container (two columns)
         main_frame = tk.Frame(self.root, bg=self.bg_color)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
-        
-        # File selection section
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=16, pady=12)
+        main_frame.columnconfigure(1, weight=1)
+
+        # Left: File selection & controls
+        left_frame = tk.Frame(main_frame, bg=self.bg_color, width=360)
+        left_frame.grid(row=0, column=0, sticky="nsw", padx=(0, 12), pady=4)
+
         file_frame = tk.LabelFrame(
-            main_frame,
-            text="📁 Select JSON File",
+            left_frame,
+            text="📁 File & Controls",
             font=("Segoe UI", 12, "bold"),
             bg=self.bg_color,
             fg=self.fg_color,
             relief=tk.GROOVE,
-            borderwidth=2
+            borderwidth=2,
+            padx=10,
+            pady=10
         )
-        file_frame.pack(fill=tk.X, pady=(0, 20))
-        
-        # File path display
+        file_frame.pack(fill=tk.X)
+
+        # Combobox for discovered JSON files
         self.file_path_var = tk.StringVar(value="No file selected")
-        file_path_frame = tk.Frame(file_frame, bg=self.bg_color)
-        file_path_frame.pack(fill=tk.X, padx=15, pady=(15, 10))
-        
+        self.file_combo = ttk.Combobox(file_frame, values=[], state="readonly")
+        self.file_combo.pack(fill=tk.X, pady=(4, 8))
+        self.file_combo.bind("<<ComboboxSelected>>", lambda e: self.on_file_selected())
+
+        # Small path display
         file_path_label = tk.Label(
-            file_path_frame,
+            file_frame,
             textvariable=self.file_path_var,
-            font=("Segoe UI", 10),
+            font=("Segoe UI", 9),
             bg="#374151",
             fg=self.fg_color,
             anchor="w",
             relief=tk.SUNKEN,
-            padx=10,
-            pady=8
+            padx=8,
+            pady=6
         )
-        file_path_label.pack(fill=tk.X)
-        
-        # Browse button
-        browse_btn = tk.Button(
-            file_frame,
-            text="🔍 Browse JSON File",
-            font=("Segoe UI", 11, "bold"),
-            bg=self.accent_color,
-            fg="white",
-            activebackground="#1e40af",
-            activeforeground="white",
-            cursor="hand2",
-            relief=tk.RAISED,
-            borderwidth=0,
-            padx=20,
-            pady=10,
-            command=self.browse_file
-        )
-        browse_btn.pack(pady=(0, 15))
-        
-        # Validation status
-        self.validation_frame = tk.Frame(main_frame, bg=self.bg_color)
-        self.validation_frame.pack(fill=tk.X, pady=(0, 20))
-        
+        file_path_label.pack(fill=tk.X, pady=(0, 8))
+
+        # Control buttons
+        btn_row = tk.Frame(file_frame, bg=self.bg_color)
+        btn_row.pack(fill=tk.X, pady=(0, 6))
+
+        refresh_btn = tk.Button(btn_row, text="🔄 Refresh", command=self.refresh_file_list, bg="#2563eb", fg="white", relief=tk.FLAT, padx=8)
+        refresh_btn.pack(side=tk.LEFT, padx=(0, 6))
+        Tooltip(refresh_btn, "Refresh file list (Ctrl+R)")
+
+        browse_btn = tk.Button(btn_row, text="🔍 Browse", command=self.browse_file, bg=self.accent_color, fg="white", relief=tk.FLAT, padx=8)
+        browse_btn.pack(side=tk.LEFT, padx=(0, 6))
+        Tooltip(browse_btn, "Select a JSON file (Ctrl+O)")
+
+        open_btn = tk.Button(btn_row, text="📂 Open Folder", command=self.open_selected_folder, bg="#374151", fg="white", relief=tk.FLAT, padx=8)
+        open_btn.pack(side=tk.LEFT)
+        Tooltip(open_btn, "Open folder containing selected file")
+
+        scan_btn = tk.Button(file_frame, text="🔎 Scan Locations", command=self.refresh_file_list, bg="#065f46", fg="white", relief=tk.FLAT)
+        scan_btn.pack(fill=tk.X, pady=(6, 0))
+        Tooltip(scan_btn, "Scan common locations for dataset files")
+
+        # Validation status area (under controls)
+        self.validation_frame = tk.Frame(left_frame, bg=self.bg_color)
+        self.validation_frame.pack(fill=tk.X, pady=(12, 6))
+
         self.validation_label = tk.Label(
             self.validation_frame,
             text="",
             font=("Segoe UI", 10),
             bg=self.bg_color,
             fg=self.fg_color,
-            wraplength=700,
+            wraplength=320,
             justify=tk.LEFT
         )
         self.validation_label.pack()
-        
-        # Deploy button
+
+        # Right: Progress and deploy
+        right_frame = tk.Frame(main_frame, bg=self.bg_color)
+        right_frame.grid(row=0, column=1, sticky="nsew")
+
+        # Deploy button (prominent)
         self.deploy_btn = tk.Button(
-            main_frame,
-            text="🚀 Deploy to Production",
+            right_frame,
+            text="🚀 Deploy",
             font=("Segoe UI", 14, "bold"),
             bg=self.success_color,
             fg="white",
@@ -125,16 +257,16 @@ class DeploymentApp:
             cursor="hand2",
             relief=tk.RAISED,
             borderwidth=0,
-            padx=30,
-            pady=15,
+            padx=24,
+            pady=12,
             state=tk.DISABLED,
             command=self.deploy
         )
-        self.deploy_btn.pack(pady=(0, 20))
-        
+        self.deploy_btn.pack(anchor="ne", pady=(0, 10))
+
         # Progress section
         progress_frame = tk.LabelFrame(
-            main_frame,
+            right_frame,
             text="📊 Deployment Progress",
             font=("Segoe UI", 12, "bold"),
             bg=self.bg_color,
@@ -143,7 +275,7 @@ class DeploymentApp:
             borderwidth=2
         )
         progress_frame.pack(fill=tk.BOTH, expand=True)
-        
+
         # Progress bar
         self.progress_var = tk.IntVar()
         self.progress_bar = ttk.Progressbar(
@@ -152,22 +284,22 @@ class DeploymentApp:
             maximum=100,
             mode='determinate'
         )
-        self.progress_bar.pack(fill=tk.X, padx=15, pady=(15, 10))
-        
+        self.progress_bar.pack(fill=tk.X, padx=12, pady=(12, 8))
+
         # Status text
         self.status_text = scrolledtext.ScrolledText(
             progress_frame,
-            font=("Consolas", 9),
-            bg="#1f2937",
-            fg="#10b981",
-            height=12,
+            font=("Consolas", 10),
+            bg="#0b1220",
+            fg="#a7f3d0",
+            height=14,
             wrap=tk.WORD,
             relief=tk.SUNKEN,
             borderwidth=2
         )
-        self.status_text.pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
+        self.status_text.pack(fill=tk.BOTH, expand=True, padx=12, pady=(0, 12))
         self.status_text.config(state=tk.DISABLED)
-        
+
         # Footer
         footer_label = tk.Label(
             self.root,
@@ -176,7 +308,15 @@ class DeploymentApp:
             bg=self.bg_color,
             fg="#9ca3af"
         )
-        footer_label.pack(pady=(0, 10))
+        footer_label.pack(pady=(6, 10))
+
+        # Keyboard shortcuts
+        self.root.bind('<Control-o>', lambda e: self.browse_file())
+        self.root.bind('<Control-r>', lambda e: self.refresh_file_list())
+        self.root.bind('<Control-d>', lambda e: self.deploy())
+
+        # Initial population of file list
+        self.refresh_file_list()
     
     def log_message(self, message, color="#10b981"):
         """Add message to status text"""
@@ -197,8 +337,66 @@ class DeploymentApp:
         
         if filename:
             self.selected_file = filename
+            # update combobox if present
+            try:
+                if hasattr(self, 'file_combo'):
+                    self.file_combo.set(Path(filename).name)
+            except Exception:
+                pass
             self.file_path_var.set(filename)
             self.validate_json()
+
+    def on_file_selected(self):
+        """Handle selection from combobox"""
+        name = self.file_combo.get()
+        if not name:
+            return
+        # find full path from discovered files
+        candidates = find_data_files()
+        for f in candidates:
+            if f.name == name:
+                self.selected_file = str(f)
+                self.file_path_var.set(str(f))
+                self.validate_json()
+                return
+
+    def refresh_file_list(self):
+        """Populate combobox with discovered files"""
+        files = find_data_files()
+        names = [f.name for f in files]
+        try:
+            self.file_combo['values'] = names
+        except Exception:
+            pass
+
+        if files:
+            # select first by default
+            first = files[0]
+            try:
+                self.file_combo.set(first.name)
+            except Exception:
+                pass
+            self.selected_file = str(first)
+            self.file_path_var.set(str(first))
+            self.validate_json()
+        else:
+            self.file_path_var.set("No data files found")
+
+    def open_selected_folder(self):
+        """Open the folder that contains the selected file"""
+        if not self.selected_file:
+            messagebox.showinfo("No file", "No file selected to open folder for.")
+            return
+        folder = Path(self.selected_file).parent
+        try:
+            if os.name == 'nt':
+                subprocess.run(['explorer', str(folder)])
+            elif sys.platform == 'darwin':
+                subprocess.run(['open', str(folder)])
+            else:
+                subprocess.run(['xdg-open', str(folder)])
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open folder: {e}")
     
     def validate_json(self):
         """Validate the selected JSON file"""
@@ -214,11 +412,27 @@ class DeploymentApp:
             with open(self.selected_file, 'r', encoding='utf-8') as f:
                 uploaded_data = json.load(f)
             
-            # Read the reference JSON
-            reference_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json"
-            if not reference_file.exists():
+            # Search for reference file in multiple locations
+            search_paths = [
+                Path.cwd(),
+                Path.home(),
+                Path.home() / "Photography",
+                Path.home() / "Documents",
+                Path.home() / "Desktop",
+                Path("/Users/saugata/Photography"),
+                Path(self.selected_file).parent,  # Same directory as selected file
+            ]
+            
+            reference_file = None
+            for search_path in search_paths:
+                candidate = search_path / "anupam-dutta-photography-data-set.json"
+                if candidate.exists():
+                    reference_file = candidate
+                    break
+            
+            if not reference_file:
                 self.validation_label.config(
-                    text="❌ Reference file 'anupam-dutta-photography-data-set.json' not found in the same directory",
+                    text="❌ Reference file 'anupam-dutta-photography-data-set.json' not found in common locations",
                     fg=self.error_color
                 )
                 return
