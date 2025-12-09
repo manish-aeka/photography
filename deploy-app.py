@@ -8,21 +8,25 @@ import time
 from pathlib import Path
 
 # Configuration
-DEPLOYMENT_BRANCH = "feat"  # Change this to your deployment branch name (e.g., "main", "master", "feat")
+DEPLOYMENT_BRANCH = "manish-09-12-25"  # Change this to your deployment branch name (e.g., "main", "master", "feat")
 
 class DeploymentApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Photography Portfolio Deployment")
-        self.root.geometry("800x600")
+        self.root.title("📸 Photography Portfolio Deployment Tool")
+        self.root.geometry("900x700")
         self.root.resizable(True, True)
         
-        # Set color scheme
-        self.bg_color = "#1f2937"
-        self.fg_color = "#f3f4f6"
-        self.accent_color = "#1C5BAE"
+        # Modern color scheme with gradient feel
+        self.bg_color = "#0f172a"  # Deep blue-gray
+        self.bg_secondary = "#1e293b"  # Lighter blue-gray
+        self.fg_color = "#f1f5f9"
+        self.accent_color = "#3b82f6"  # Bright blue
+        self.accent_hover = "#2563eb"  # Darker blue
         self.success_color = "#10b981"
         self.error_color = "#ef4444"
+        self.warning_color = "#f59e0b"
+        self.info_color = "#06b6d4"
         
         self.root.configure(bg=self.bg_color)
         
@@ -32,151 +36,274 @@ class DeploymentApp:
         self.setup_ui()
         
     def setup_ui(self):
-        # Header
-        header_frame = tk.Frame(self.root, bg=self.accent_color, height=80)
-        header_frame.pack(fill=tk.X, padx=0, pady=0)
-        header_frame.pack_propagate(False)
+        # Header with gradient effect (simulated with two frames)
+        header_outer = tk.Frame(self.root, bg=self.accent_color, height=100)
+        header_outer.pack(fill=tk.X, padx=0, pady=0)
+        header_outer.pack_propagate(False)
+        
+        header_inner = tk.Frame(header_outer, bg=self.accent_color)
+        header_inner.pack(fill=tk.BOTH, expand=True)
+        
+        # Icon and title container
+        title_container = tk.Frame(header_inner, bg=self.accent_color)
+        title_container.pack(expand=True)
         
         title_label = tk.Label(
-            header_frame,
-            text="📸 Photography Portfolio Deployment",
-            font=("Segoe UI", 18, "bold"),
+            title_container,
+            text="📸 Photography Portfolio",
+            font=("Segoe UI", 22, "bold"),
             bg=self.accent_color,
             fg="white"
         )
-        title_label.pack(pady=20)
+        title_label.pack()
+        
+        subtitle_label = tk.Label(
+            title_container,
+            text="Deployment Management Tool",
+            font=("Segoe UI", 11),
+            bg=self.accent_color,
+            fg="#e0f2fe"
+        )
+        subtitle_label.pack()
         
         # Main container
         main_frame = tk.Frame(self.root, bg=self.bg_color)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
-        # File selection section
-        file_frame = tk.LabelFrame(
-            main_frame,
-            text="📁 Select JSON File",
-            font=("Segoe UI", 12, "bold"),
-            bg=self.bg_color,
-            fg=self.fg_color,
-            relief=tk.GROOVE,
-            borderwidth=2
-        )
-        file_frame.pack(fill=tk.X, pady=(0, 20))
+        # File selection section with modern card design
+        file_frame = tk.Frame(main_frame, bg=self.bg_secondary, relief=tk.FLAT)
+        file_frame.pack(fill=tk.X, pady=(0, 15))
         
-        # File path display
-        self.file_path_var = tk.StringVar(value="No file selected")
-        file_path_frame = tk.Frame(file_frame, bg=self.bg_color)
-        file_path_frame.pack(fill=tk.X, padx=15, pady=(15, 10))
+        # Section header
+        file_header = tk.Label(
+            file_frame,
+            text="📁 Data File Selection",
+            font=("Segoe UI", 13, "bold"),
+            bg=self.bg_secondary,
+            fg=self.fg_color,
+            anchor="w"
+        )
+        file_header.pack(fill=tk.X, padx=20, pady=(15, 5))
+        
+        file_desc = tk.Label(
+            file_frame,
+            text="Select the JSON file containing your photography data to deploy",
+            font=("Segoe UI", 9),
+            bg=self.bg_secondary,
+            fg="#94a3b8",
+            anchor="w"
+        )
+        file_desc.pack(fill=tk.X, padx=20, pady=(0, 15))
+        
+        # File path display with icon
+        self.file_path_var = tk.StringVar(value="No file selected yet...")
+        file_display_frame = tk.Frame(file_frame, bg=self.bg_color, relief=tk.SOLID, borderwidth=1)
+        file_display_frame.pack(fill=tk.X, padx=20, pady=(0, 15))
+        
+        file_icon = tk.Label(
+            file_display_frame,
+            text="📄",
+            font=("Segoe UI", 12),
+            bg=self.bg_color,
+            fg=self.fg_color
+        )
+        file_icon.pack(side=tk.LEFT, padx=(10, 5), pady=8)
         
         file_path_label = tk.Label(
-            file_path_frame,
+            file_display_frame,
             textvariable=self.file_path_var,
             font=("Segoe UI", 10),
-            bg="#374151",
-            fg=self.fg_color,
-            anchor="w",
-            relief=tk.SUNKEN,
-            padx=10,
-            pady=8
+            bg=self.bg_color,
+            fg="#94a3b8",
+            anchor="w"
         )
-        file_path_label.pack(fill=tk.X)
+        file_path_label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 10), pady=8)
         
-        # Browse button
+        # Browse button with hover effect
+        btn_frame = tk.Frame(file_frame, bg=self.bg_secondary)
+        btn_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
+        
         browse_btn = tk.Button(
-            file_frame,
-            text="🔍 Browse JSON File",
+            btn_frame,
+            text="🔍  Browse Files",
             font=("Segoe UI", 11, "bold"),
             bg=self.accent_color,
             fg="white",
-            activebackground="#1e40af",
+            activebackground=self.accent_hover,
             activeforeground="white",
             cursor="hand2",
-            relief=tk.RAISED,
+            relief=tk.FLAT,
             borderwidth=0,
-            padx=20,
-            pady=10,
+            padx=25,
+            pady=12,
             command=self.browse_file
         )
-        browse_btn.pack(pady=(0, 15))
+        browse_btn.pack(side=tk.LEFT)
         
-        # Validation status
-        self.validation_frame = tk.Frame(main_frame, bg=self.bg_color)
-        self.validation_frame.pack(fill=tk.X, pady=(0, 20))
+        # Bind hover effects
+        browse_btn.bind("<Enter>", lambda e: browse_btn.config(bg=self.accent_hover))
+        browse_btn.bind("<Leave>", lambda e: browse_btn.config(bg=self.accent_color))
+        
+        # Validation status card
+        self.validation_frame = tk.Frame(main_frame, bg=self.bg_secondary, relief=tk.FLAT)
+        self.validation_frame.pack(fill=tk.X, pady=(0, 15))
+        
+        validation_header = tk.Label(
+            self.validation_frame,
+            text="✓ Validation Status",
+            font=("Segoe UI", 13, "bold"),
+            bg=self.bg_secondary,
+            fg=self.fg_color,
+            anchor="w"
+        )
+        validation_header.pack(fill=tk.X, padx=20, pady=(15, 10))
         
         self.validation_label = tk.Label(
             self.validation_frame,
-            text="",
+            text="ℹ️  Please select a JSON file to validate",
             font=("Segoe UI", 10),
-            bg=self.bg_color,
-            fg=self.fg_color,
-            wraplength=700,
-            justify=tk.LEFT
+            bg=self.bg_secondary,
+            fg=self.info_color,
+            wraplength=800,
+            justify=tk.LEFT,
+            anchor="w"
         )
-        self.validation_label.pack()
+        self.validation_label.pack(fill=tk.X, padx=20, pady=(0, 15))
         
-        # Deploy button
+        # Deploy button section
+        deploy_container = tk.Frame(main_frame, bg=self.bg_color)
+        deploy_container.pack(fill=tk.X, pady=(0, 15))
+        
         self.deploy_btn = tk.Button(
-            main_frame,
-            text="🚀 Deploy to Production",
-            font=("Segoe UI", 14, "bold"),
+            deploy_container,
+            text="🚀  Deploy to Production",
+            font=("Segoe UI", 13, "bold"),
             bg=self.success_color,
             fg="white",
             activebackground="#059669",
             activeforeground="white",
             cursor="hand2",
-            relief=tk.RAISED,
+            relief=tk.FLAT,
             borderwidth=0,
-            padx=30,
+            padx=40,
             pady=15,
             state=tk.DISABLED,
             command=self.deploy
         )
-        self.deploy_btn.pack(pady=(0, 20))
+        self.deploy_btn.pack()
         
-        # Progress section
-        progress_frame = tk.LabelFrame(
-            main_frame,
-            text="📊 Deployment Progress",
-            font=("Segoe UI", 12, "bold"),
+        # Deploy info label
+        deploy_info = tk.Label(
+            deploy_container,
+            text=f"Target Branch: {DEPLOYMENT_BRANCH}",
+            font=("Segoe UI", 9),
             bg=self.bg_color,
-            fg=self.fg_color,
-            relief=tk.GROOVE,
-            borderwidth=2
+            fg="#64748b"
         )
-        progress_frame.pack(fill=tk.BOTH, expand=True)
+        deploy_info.pack(pady=(8, 0))
         
-        # Progress bar
+        # Bind hover effects for deploy button
+        self.deploy_btn.bind("<Enter>", lambda e: self.deploy_btn.config(bg="#059669") if self.deploy_btn['state'] == tk.NORMAL else None)
+        self.deploy_btn.bind("<Leave>", lambda e: self.deploy_btn.config(bg=self.success_color) if self.deploy_btn['state'] == tk.NORMAL else None)
+        
+        # Progress section with modern design
+        progress_outer = tk.Frame(main_frame, bg=self.bg_secondary, relief=tk.FLAT)
+        progress_outer.pack(fill=tk.BOTH, expand=True)
+        
+        # Progress header
+        progress_header = tk.Label(
+            progress_outer,
+            text="📊 Deployment Console",
+            font=("Segoe UI", 13, "bold"),
+            bg=self.bg_secondary,
+            fg=self.fg_color,
+            anchor="w"
+        )
+        progress_header.pack(fill=tk.X, padx=20, pady=(15, 10))
+        
+        # Progress bar container
+        progress_container = tk.Frame(progress_outer, bg=self.bg_color, relief=tk.SOLID, borderwidth=1)
+        progress_container.pack(fill=tk.X, padx=20, pady=(0, 10))
+        
+        progress_label = tk.Label(
+            progress_container,
+            text="Progress:",
+            font=("Segoe UI", 9, "bold"),
+            bg=self.bg_color,
+            fg="#94a3b8"
+        )
+        progress_label.pack(anchor="w", padx=10, pady=(8, 2))
+        
         self.progress_var = tk.IntVar()
+        
+        # Style the progress bar
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("Custom.Horizontal.TProgressbar",
+                       troughcolor=self.bg_color,
+                       bordercolor=self.bg_color,
+                       background=self.success_color,
+                       lightcolor=self.success_color,
+                       darkcolor=self.success_color)
+        
         self.progress_bar = ttk.Progressbar(
-            progress_frame,
+            progress_container,
             variable=self.progress_var,
             maximum=100,
-            mode='determinate'
+            mode='determinate',
+            style="Custom.Horizontal.TProgressbar"
         )
-        self.progress_bar.pack(fill=tk.X, padx=15, pady=(15, 10))
+        self.progress_bar.pack(fill=tk.X, padx=10, pady=(0, 8))
         
-        # Status text
-        self.status_text = scrolledtext.ScrolledText(
-            progress_frame,
-            font=("Consolas", 9),
-            bg="#1f2937",
-            fg="#10b981",
-            height=12,
-            wrap=tk.WORD,
-            relief=tk.SUNKEN,
-            borderwidth=2
+        # Console output
+        console_label = tk.Label(
+            progress_outer,
+            text="Console Output:",
+            font=("Segoe UI", 9, "bold"),
+            bg=self.bg_secondary,
+            fg="#94a3b8",
+            anchor="w"
         )
-        self.status_text.pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
+        console_label.pack(fill=tk.X, padx=20, pady=(5, 5))
+        
+        console_frame = tk.Frame(progress_outer, bg="#0a0f1a", relief=tk.SOLID, borderwidth=1)
+        console_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 15))
+        
+        self.status_text = scrolledtext.ScrolledText(
+            console_frame,
+            font=("Consolas", 9),
+            bg="#0a0f1a",
+            fg="#10b981",
+            height=10,
+            wrap=tk.WORD,
+            relief=tk.FLAT,
+            borderwidth=0,
+            insertbackground="#10b981"
+        )
+        self.status_text.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         self.status_text.config(state=tk.DISABLED)
         
-        # Footer
+        # Footer with version info
+        footer_frame = tk.Frame(self.root, bg=self.bg_color)
+        footer_frame.pack(fill=tk.X, pady=(5, 10))
+        
         footer_label = tk.Label(
-            self.root,
+            footer_frame,
             text="Made with ❤️ for Anupam Dutta Photography",
             font=("Segoe UI", 9),
             bg=self.bg_color,
-            fg="#9ca3af"
+            fg="#64748b"
         )
-        footer_label.pack(pady=(0, 10))
+        footer_label.pack()
+        
+        version_label = tk.Label(
+            footer_frame,
+            text="Version 1.0  •  Git Deployment Tool",
+            font=("Segoe UI", 8),
+            bg=self.bg_color,
+            fg="#475569"
+        )
+        version_label.pack()
     
     def log_message(self, message, color="#10b981"):
         """Add message to status text"""
@@ -190,14 +317,19 @@ class DeploymentApp:
     def browse_file(self):
         """Open file dialog to select JSON file"""
         filename = filedialog.askopenfilename(
-            title="Select JSON File",
+            title="📁 Select Photography Data JSON File",
             filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
             initialdir=os.getcwd()
         )
         
         if filename:
             self.selected_file = filename
-            self.file_path_var.set(filename)
+            # Show just filename if path is too long
+            display_name = os.path.basename(filename)
+            if len(filename) > 60:
+                self.file_path_var.set(f"...{filename[-57:]}")
+            else:
+                self.file_path_var.set(filename)
             self.validate_json()
     
     def validate_json(self):
@@ -205,7 +337,7 @@ class DeploymentApp:
         if not self.selected_file:
             return
         
-        self.validation_label.config(text="⏳ Validating JSON file...", fg="#f59e0b")
+        self.validation_label.config(text="⏳ Validating JSON structure...", fg=self.warning_color, bg=self.bg_secondary)
         self.deploy_btn.config(state=tk.DISABLED)
         self.root.update()
         
@@ -218,8 +350,9 @@ class DeploymentApp:
             reference_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json"
             if not reference_file.exists():
                 self.validation_label.config(
-                    text="❌ Reference file 'anupam-dutta-photography-data-set.json' not found in the same directory",
-                    fg=self.error_color
+                    text="❌ Validation Error: Reference file 'anupam-dutta-photography-data-set.json' not found",
+                    fg=self.error_color,
+                    bg=self.bg_secondary
                 )
                 return
             
@@ -230,28 +363,33 @@ class DeploymentApp:
             errors = self.validate_structure(uploaded_data, reference_data)
             
             if errors:
-                error_msg = "❌ Validation failed:\n" + "\n".join(errors)
-                self.validation_label.config(text=error_msg, fg=self.error_color)
-                self.deploy_btn.config(state=tk.DISABLED)
+                error_msg = "❌ Validation Failed - Missing or invalid fields:\n" + "\n".join(errors[:5])
+                if len(errors) > 5:
+                    error_msg += f"\n...and {len(errors) - 5} more errors"
+                self.validation_label.config(text=error_msg, fg=self.error_color, bg=self.bg_secondary)
+                self.deploy_btn.config(state=tk.DISABLED, bg="#6b7280")
             else:
                 self.validation_label.config(
-                    text="✅ JSON validation successful! All required fields are present.",
-                    fg=self.success_color
+                    text="✅ Validation Successful - All required fields are present and valid",
+                    fg=self.success_color,
+                    bg=self.bg_secondary
                 )
-                self.deploy_btn.config(state=tk.NORMAL)
+                self.deploy_btn.config(state=tk.NORMAL, bg=self.success_color)
                 
         except json.JSONDecodeError as e:
             self.validation_label.config(
-                text=f"❌ Invalid JSON format: {str(e)}",
-                fg=self.error_color
+                text=f"❌ JSON Parse Error: Invalid JSON format at line {e.lineno}",
+                fg=self.error_color,
+                bg=self.bg_secondary
             )
-            self.deploy_btn.config(state=tk.DISABLED)
+            self.deploy_btn.config(state=tk.DISABLED, bg="#6b7280")
         except Exception as e:
             self.validation_label.config(
-                text=f"❌ Error: {str(e)}",
-                fg=self.error_color
+                text=f"❌ Validation Error: {str(e)}",
+                fg=self.error_color,
+                bg=self.bg_secondary
             )
-            self.deploy_btn.config(state=tk.DISABLED)
+            self.deploy_btn.config(state=tk.DISABLED, bg="#6b7280")
     
     def validate_structure(self, uploaded, reference, path=""):
         """Recursively validate JSON structure"""
