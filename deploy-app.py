@@ -4,10 +4,11 @@ import json
 import subprocess
 import threading
 import os
+import time
 from pathlib import Path
 
 # Configuration
-DEPLOYMENT_BRANCH = "deploy-test-9-12-25"  # Change this to your deployment branch name
+DEPLOYMENT_BRANCH = "feat"  # Change this to your deployment branch name (e.g., "main", "master", "feat")
 
 class DeploymentApp:
     def __init__(self, root):
@@ -358,17 +359,46 @@ class DeploymentApp:
             
             target_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json"
             
-            # Backup existing file
+            # Backup existing file with retry logic
             if target_file.exists():
                 backup_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json.backup"
                 import shutil
-                shutil.copy2(target_file, backup_file)
-                self.log_message(f"  ✓ Backup created: {backup_file.name}", "#10b981")
+                
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        shutil.copy2(target_file, backup_file)
+                        self.log_message(f"  ✓ Backup created: {backup_file.name}", "#10b981")
+                        break
+                    except PermissionError as e:
+                        if attempt < max_retries - 1:
+                            self.log_message(f"  ⏳ File in use, retrying... (attempt {attempt + 1}/{max_retries})", "#f59e0b")
+                            time.sleep(1)
+                        else:
+                            raise Exception(f"Cannot create backup: {str(e)}. Please close the JSON file in any editors and try again.")
             
-            # Copy new file
+            # Copy new file with retry logic
             import shutil
-            shutil.copy2(self.selected_file, target_file)
-            self.log_message(f"  ✓ JSON file updated successfully", "#10b981")
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    # Read the source file content
+                    with open(self.selected_file, 'r', encoding='utf-8') as src:
+                        content = src.read()
+                    
+                    # Write to target file
+                    with open(target_file, 'w', encoding='utf-8') as dst:
+                        dst.write(content)
+                    
+                    self.log_message(f"  ✓ JSON file updated successfully", "#10b981")
+                    break
+                except PermissionError as e:
+                    if attempt < max_retries - 1:
+                        self.log_message(f"  ⏳ File in use, retrying... (attempt {attempt + 1}/{max_retries})", "#f59e0b")
+                        time.sleep(1)
+                    else:
+                        raise Exception(f"Cannot update JSON file: {str(e)}. Please close the file 'anupam-dutta-photography-data-set.json' in VS Code or any other editor and try again.")
+            
             self.progress_var.set(10)
             
             # Step 2: Git - Check status (20%)
