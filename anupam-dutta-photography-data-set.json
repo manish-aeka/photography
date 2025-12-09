@@ -88,6 +88,7 @@
         "phone": "9831678665",
         "address": "Kolkata, India",
         "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-        "fallback-image": "https://placehold.co/150x150.webp?text=Invalid+Image"
+        "fallback-image": "https://placehold.co/150x150.webp?text=Invalid+Image",
+        "max-upload-size-mb": 5
     }
 }

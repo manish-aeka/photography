@@ -14,8 +14,15 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Toastify -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
     <!-- Fallback Image Handler -->
     <script src="./fallback-handler.js"></script>
+
+    <!-- Cloudinary Uploader -->
+    <script src="./cloudinary-uploader.js"></script>
 
     <style>
         :root {
@@ -78,6 +85,16 @@
             background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, transparent 100%);
             border-left: 4px solid #6366f1;
             font-weight: 600;
+        }
+
+        /* Toastify Custom Styles */
+        .toastify {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
 
         /* Fullscreen Image Modal */
@@ -607,12 +624,37 @@
                                 class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
                                 <div class="flex flex-col md:flex-row gap-4 p-4">
                                     <!-- Left Side - Image Preview -->
-                                    <div
+                                    <div id="about-card-container"
                                         class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px]">
                                         <img id="about-card-image-preview" src=""
                                             class="w-full h-full object-contain image-clickable" alt="About Card"
                                             onclick="openFullscreen(this.src)"
                                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+
+                                        <!-- Upload Progress Overlay -->
+                                        <div id="about-card-progress"
+                                            class="absolute inset-0 bg-black bg-opacity-90 hidden flex-col items-center justify-center z-50">
+                                            <div class="text-center">
+                                                <svg class="animate-spin h-12 w-12 text-blue-500 mx-auto mb-3"
+                                                    fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                        stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                    </path>
+                                                </svg>
+                                                <div class="text-white font-bold text-lg mb-2"
+                                                    id="about-card-progress-text">Uploading...</div>
+                                                <div class="w-48 bg-gray-700 rounded-full h-2 mb-2">
+                                                    <div id="about-card-progress-bar"
+                                                        class="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                                                        style="width: 0%"></div>
+                                                </div>
+                                                <div class="text-blue-400 font-semibold text-sm"
+                                                    id="about-card-progress-percent">0%</div>
+                                            </div>
+                                        </div>
+
                                         <div
                                             class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                             <button onclick="pickImageForAboutCard()"
@@ -642,21 +684,28 @@
 
                                         <!-- URL Input -->
                                         <div class="flex-1">
-                                            <label
-                                                class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
+                                            <button type="button" title="Toggle Image URL Input"
+                                                onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                                                class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
                                                 <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                                                        stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
                                                     </path>
                                                 </svg>
-                                                Image URL / Base64
-                                            </label>
-                                            <textarea id="about-card-url-input"
-                                                class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
-                                                placeholder="Paste image URL or upload to generate base64..."
-                                                readonly></textarea>
+                                                <span class="flex-1">Image URL / Base64</span>
+                                                <svg class="w-4 h-4 transition-transform" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <div class="hidden">
+                                                <textarea id="about-card-url-input"
+                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
+                                                    placeholder="Paste image URL or upload to generate base64..."
+                                                    readonly></textarea>
+                                            </div>
                                         </div>
 
                                         <!-- Action Buttons -->
@@ -710,13 +759,15 @@
 
             <!-- Progress Container -->
             <div id="progressContainer" class="mt-6 hidden bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
-                <div class="w-full bg-gray-700 rounded-full h-6 overflow-hidden">
+                <div class="mb-2">
+                    <p id="progressText" class="text-center text-gray-300 font-bold text-lg"></p>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-8 overflow-hidden shadow-inner">
                     <div id="progressBar"
-                        class="bg-gradient-to-r from-green-500 to-emerald-600 h-6 rounded-full transition-all duration-300 flex items-center justify-center text-sm text-white font-bold">
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-sm text-white font-bold shadow-lg">
                         0%
                     </div>
                 </div>
-                <p id="progressText" class="text-center text-gray-300 font-medium mt-3"></p>
             </div>
         </div>
 
@@ -738,118 +789,268 @@
                     Settings</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Logo URL -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Logo URL</label>
-                    <div class="flex gap-3">
-                        <input type="url" id="logo-url"
-                            class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="./logo.png or https://...">
-                        <button onclick="pickImageForLogo()"
-                            class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                            Upload
-                        </button>
-                    </div>
-                    <div class="mt-3 flex items-center gap-4">
-                        <div
-                            class="relative bg-gray-700/50 border border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden">
-                            <img id="logo-preview" src="" alt="Logo Preview"
-                                class="max-w-full max-h-full object-contain">
-                            <div id="logo-placeholder"
-                                class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
-                                <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                                <span class="text-xs">No logo</span>
+            <!-- Branding Section -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                        </path>
+                    </svg>
+                    Branding & Identity
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Logo -->
+                    <div class="md:col-span-2 bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                        <div class="flex gap-4 mb-3">
+                            <div
+                                class="relative bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden hover:border-[#1DA6E1] transition-colors">
+                                <img id="logo-preview" src="" alt="Logo Preview"
+                                    class="max-w-full max-h-full object-contain">
+                                <div id="logo-placeholder"
+                                    class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                                    <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-xs">Logo</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    Website Logo
+                                </label>
+                                <button onclick="pickImageForLogo()"
+                                    class="w-full px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Upload Logo Image
+                                </button>
+                                <p class="text-xs text-gray-400 mt-2">📌 Recommended: PNG with transparent background
+                                </p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-400">Upload your logo image or paste a URL</p>
-                    </div>
-                </div>
-
-                <!-- Navbar Title -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Navbar Title</label>
-                    <input type="text" id="navbar-title"
-                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                        placeholder="Enter navbar title">
-                </div>
-
-                <!-- Email -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                    <input type="email" id="email"
-                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                        placeholder="Enter email address">
-                </div>
-
-                <!-- Instagram Username -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Instagram Username</label>
-                    <input type="text" id="instagram-username"
-                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                        placeholder="@username">
-                </div>
-
-                <!-- Phone -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Phone</label>
-                    <input type="tel" id="phone"
-                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                        placeholder="Enter phone number">
-                </div>
-
-                <!-- Instagram URL -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Instagram URL</label>
-                    <input type="url" id="instagram-url"
-                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                        placeholder="https://www.instagram.com/username">
-                </div>
-
-                <!-- Address -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                    <div class="flex gap-3">
-                        <div class="relative flex-1">
-                            <input type="password" id="password-input"
-                                class="w-full px-4 py-3 pr-12 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                                placeholder="Enter password to hash">
-                            <button type="button"
-                                onclick="togglePasswordVisibility('password-input', 'hash-toggle-icon')"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors">
-                                <svg id="hash-toggle-icon" class="w-5 h-5" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                        <button onclick="hashPassword()"
-                            class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button type="button" title="Toggle Logo URL Input"
+                            onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                            class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all">
+                            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                            <span class="flex-1">Logo URL / Base64</span>
+                            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="hidden mt-2">
+                            <input type="url" id="logo-url"
+                                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all font-mono text-xs"
+                                placeholder="./logo.png or https://...">
+                        </div>
+                    </div>
+
+                    <!-- Navbar Title -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
                                 </path>
                             </svg>
-                            Hash
-                        </button>
+                            Navbar Title
+                        </label>
+                        <input type="text" id="navbar-title"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="Anupam Dutta Photography">
+                        <p class="text-xs text-gray-400 mt-1">Displayed in the website header</p>
                     </div>
-                    <div class="mt-2">
-                        <div class="flex items-center justify-between">
-                            <label class="block text-xs font-medium text-gray-400">Hashed Password (bcrypt)</label>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    Contact Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207">
+                                </path>
+                            </svg>
+                            Email Address
+                        </label>
+                        <input type="email" id="email"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="your@email.com">
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                </path>
+                            </svg>
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Location / Address
+                        </label>
+                        <textarea id="address" rows="2"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
+                            placeholder="City, State, Country"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                    Social Media Links
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Instagram Username -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                            Instagram Username
+                        </label>
+                        <input type="text" id="instagram-username"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="@your_username">
+                    </div>
+
+                    <!-- Instagram URL -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                </path>
+                            </svg>
+                            Instagram Profile URL
+                        </label>
+                        <button type="button" title="Toggle Instagram URL Input"
+                            onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                            class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                            <span class="flex-1">Instagram URL / Base64</span>
+                            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="hidden">
+                            <input type="url" id="instagram-url"
+                                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all font-mono text-xs"
+                                placeholder="https://www.instagram.com/your_username">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security & Advanced -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    Security & Advanced Settings
+                </h3>
+                <div class="space-y-4">
+                    <!-- Password Hash -->
+                    <div class="bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                        <label class="block text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                                </path>
+                            </svg>
+                            Admin Password
+                        </label>
+                        <div class="flex gap-3 mb-3">
+                            <div class="relative flex-1">
+                                <input type="password" id="password-input"
+                                    class="w-full px-4 py-3 pr-12 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                                    placeholder="Enter password to hash">
+                                <button type="button"
+                                    onclick="togglePasswordVisibility('password-input', 'hash-toggle-icon')"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors">
+                                    <svg id="hash-toggle-icon" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <button onclick="hashPassword()"
+                                class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                    </path>
+                                </svg>
+                                Generate Hash
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-medium text-gray-400">Hashed Password (SHA-256)</label>
                             <button onclick="copyHashedPassword()" id="copy-hash-btn"
-                                class="hidden text-xs text-[#1DA6E1] hover:text-[#1C5BAE] flex items-center gap-1">
+                                class="hidden text-xs text-[#1DA6E1] hover:text-[#1C5BAE] flex items-center gap-1 transition-colors">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -859,54 +1060,90 @@
                             </button>
                         </div>
                         <input type="text" id="password-hash" readonly
-                            class="w-full mt-1 px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 text-sm font-mono cursor-not-allowed"
+                            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 text-sm font-mono cursor-not-allowed"
                             placeholder="Hashed password will appear here">
+                        <p class="text-xs text-gray-400 mt-2">🔒 Secure password hashing for admin access</p>
                     </div>
-                    <p class="text-xs text-gray-500 mt-2">💡 Enter a password and click Hash to generate bcrypt hash
-                    </p>
-                </div>
 
-                <!-- Address -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Address</label>
-                    <textarea id="address" rows="2"
-                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
-                        placeholder="Enter address"></textarea>
-                </div>
+                    <!-- Upload Settings -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Max Upload Size -->
+                        <div class="bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                            <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                Max Upload Size
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <input type="number" id="max-upload-size" min="1" max="50" step="1"
+                                    class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                                    placeholder="5">
+                                <span
+                                    class="text-sm font-semibold text-gray-300 bg-gray-700/50 px-3 py-3 rounded-lg border border-gray-600">MB</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2">📏 Maximum size for image uploads (1-50 MB)</p>
+                        </div>
 
-                <!-- Fallback Image URL -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Fallback Image URL</label>
-                    <div class="flex gap-3">
-                        <input type="url" id="fallback-image-url"
-                            class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
-                            placeholder="https://placehold.co/150x150.webp?text=No+Image">
-                        <button onclick="pickImageForFallback()"
-                            class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            Upload
-                        </button>
-                    </div>
-                    <div class="mt-3 flex items-center gap-4">
-                        <div
-                            class="relative bg-gray-700/50 border border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden">
-                            <img id="fallback-preview" src="" alt="Fallback Preview"
-                                class="max-w-full max-h-full object-contain">
-                            <div id="fallback-placeholder"
-                                class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
-                                <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Fallback Image -->
+                        <div class="bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                            <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                     </path>
                                 </svg>
-                                <span class="text-xs">No image</span>
+                                Fallback Image
+                            </label>
+                            <div class="flex items-center gap-3 mb-2">
+                                <div id="fallback-container"
+                                    class="relative bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-2 w-16 h-16 flex items-center justify-center overflow-hidden hover:border-[#1DA6E1] transition-colors flex-shrink-0">
+                                    <img id="fallback-preview" src="" alt="Fallback Preview"
+                                        class="max-w-full max-h-full object-contain">
+                                    <div id="fallback-placeholder"
+                                        class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <button onclick="pickImageForFallback()"
+                                    class="flex-1 px-4 py-2 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Upload
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-400">🖼️ Shown when images fail to load</p>
+                            <button type="button" title="Toggle Fallback Image URL Input"
+                                onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                                class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 mt-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all">
+                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                                <span class="flex-1">Fallback URL / Base64</span>
+                                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="hidden mt-2">
+                                <input type="url" id="fallback-image-url"
+                                    class="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all font-mono text-xs"
+                                    placeholder="https://placehold.co/150x150.webp?text=No+Image">
                             </div>
                         </div>
-                        <p class="text-sm text-gray-400">This image will be shown when an image fails to load</p>
                     </div>
                 </div>
             </div>
@@ -1021,6 +1258,21 @@
         // Add scroll event listener
         window.addEventListener('scroll', updateActiveSectionOnScroll);
 
+        // Helper function to format bytes to MB
+        function formatFileSize(bytes) {
+            const mb = bytes / (1024 * 1024);
+            return mb.toFixed(2) + ' MB';
+        }
+
+        // Helper function to format error messages with byte sizes to MB
+        function formatErrorMessage(message) {
+            // Match patterns like "Got 38928845" or "Maximum is 10485760" (numbers with 5+ digits)
+            return message.replace(/(Got|Maximum is|exceeds)\s+(\d{5,})/gi, (match, prefix, bytes) => {
+                const mb = (parseInt(bytes) / (1024 * 1024)).toFixed(2);
+                return `${prefix} ${mb} MB`;
+            });
+        }
+
         let jsonData = {
             "logo-url": "./logo.png",
             "about": {
@@ -1042,6 +1294,17 @@
 
         // Auto-load anupam-dutta-photography-data-set.json on page load
         window.addEventListener('DOMContentLoaded', async function () {
+            // Check Cloudinary configuration
+            if (typeof cloudinaryUploader === 'undefined') {
+                console.error('❌ Cloudinary uploader not loaded! Check if cloudinary-uploader.js is loaded.');
+            } else {
+                console.log('✅ Cloudinary uploader loaded successfully');
+                console.log('📋 Cloud Name:', cloudinaryUploader.cloudName);
+                console.log('📋 Upload Preset:', cloudinaryUploader.uploadPreset);
+                console.log('📋 Folder:', cloudinaryUploader.folder);
+                console.log('📋 Upload URL:', cloudinaryUploader.uploadUrl);
+            }
+
             try {
                 const response = await fetch('./anupam-dutta-photography-data-set.json');
                 jsonData = await response.json();
@@ -1116,26 +1379,120 @@
             });
         }
 
-        function pickImageForAboutCard() {
+        async function pickImageForAboutCard() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            input.onchange = function (event) {
+            input.onchange = async function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        jsonData.about.card.url = e.target.result;
-                        document.getElementById('about-card-url-input').value = e.target.result;
-                        document.getElementById('about-card-image-preview').src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
+                    const overlay = document.getElementById('about-card-progress');
+                    const progressBar = document.getElementById('about-card-progress-bar');
+                    const progressPercent = document.getElementById('about-card-progress-percent');
+                    const progressText = document.getElementById('about-card-progress-text');
+
+                    if (!overlay || !progressBar || !progressPercent || !progressText) {
+                        console.error('Progress elements not found');
+                        Toastify({
+                            text: "❌ Error: Progress elements not found. Please refresh the page.",
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#dc2626",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+
+                    // Validate file size before showing overlay
+                    const maxSizeMB = jsonData.settings && jsonData.settings['max-upload-size-mb'] ? jsonData.settings['max-upload-size-mb'] : 10;
+                    const validation = cloudinaryUploader.validateFile(file, maxSizeMB);
+                    if (!validation.valid) {
+                        Toastify({
+                            text: `❌ Upload Failed: ${formatErrorMessage(validation.error)}`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#dc2626",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+
+                    // Show overlay
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+
+                    // Freeze screen during upload
+                    document.body.style.pointerEvents = 'none';
+                    overlay.style.pointerEvents = 'auto';
+
+                    try {
+                        const result = await cloudinaryUploader.upload(file, (percentage) => {
+                            progressBar.style.width = percentage + '%';
+                            progressPercent.textContent = percentage + '%';
+                            progressText.textContent = percentage < 100 ? 'Uploading...' : 'Processing...';
+                        }, { maxSizeMB });
+
+                        if (result.success) {
+                            progressText.textContent = '✓ Upload Complete!';
+                            progressBar.classList.remove('bg-blue-500');
+                            progressBar.classList.add('bg-green-500');
+
+                            jsonData.about.card.url = result.url;
+                            document.getElementById('about-card-url-input').value = result.url;
+                            document.getElementById('about-card-image-preview').src = result.url;
+
+                            Toastify({
+                                text: "✅ About card image uploaded successfully!",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "center",
+                                backgroundColor: "#16a34a",
+                                className: "toastify-custom",
+                            }).showToast();
+
+                            setTimeout(() => {
+                                overlay.classList.add('hidden');
+                                overlay.classList.remove('flex');
+                                progressBar.classList.remove('bg-green-500');
+                                progressBar.classList.add('bg-blue-500');
+                                progressBar.style.width = '0%';
+                                // Re-enable screen
+                                document.body.style.pointerEvents = 'auto';
+                            }, 1500);
+                        } else {
+                            throw new Error(result.error || 'Upload failed');
+                        }
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        progressText.textContent = '✗ Upload Failed';
+                        progressBar.classList.remove('bg-blue-500');
+                        progressBar.classList.add('bg-red-500');
+
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                            overlay.classList.remove('flex');
+                            progressBar.classList.remove('bg-red-500');
+                            progressBar.classList.add('bg-blue-500');
+                            progressBar.style.width = '0%';
+                            // Re-enable screen
+                            document.body.style.pointerEvents = 'auto';
+                        }, 2000);
+
+                        Toastify({
+                            text: "❌ Upload Failed: " + formatErrorMessage(error.message),
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#dc2626",
+                            className: "toastify-custom",
+                        }).showToast();
+                    }
                 }
             };
             input.click();
-        }
-
-        // Render Settings Section
+        }        // Render Settings Section
         function renderSettingsSection() {
             if (jsonData.settings) {
                 const logoUrl = jsonData.settings['logo-url'] || '';
@@ -1178,6 +1535,9 @@
                     fallbackPreview.style.display = 'none';
                     fallbackPlaceholder.style.display = 'flex';
                 }
+
+                // Load max upload size
+                document.getElementById('max-upload-size').value = jsonData.settings['max-upload-size-mb'] || 5;
             }
 
             // Add event listeners for settings inputs
@@ -1226,51 +1586,51 @@
                     fallbackPlaceholder.style.display = 'flex';
                 }
             });
+
+            document.getElementById('max-upload-size').addEventListener('input', function () {
+                const value = parseInt(this.value) || 5;
+                jsonData.settings['max-upload-size-mb'] = Math.max(1, Math.min(50, value)); // Clamp between 1-50
+                this.value = jsonData.settings['max-upload-size-mb']; // Update display
+            });
         }
 
-        function pickImageForLogo() {
+        async function pickImageForLogo() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            input.onchange = function (event) {
+            input.onchange = async function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const base64Data = e.target.result;
-                        jsonData.settings['logo-url'] = base64Data;
-                        document.getElementById('logo-url').value = base64Data;
+                    await uploadWithInlineProgress(file, 'logo-container', (result) => {
+                        jsonData.settings['logo-url'] = result.url;
+                        document.getElementById('logo-url').value = result.url;
                         const logoPreview = document.getElementById('logo-preview');
                         const logoPlaceholder = document.getElementById('logo-placeholder');
-                        logoPreview.src = base64Data;
+                        logoPreview.src = result.url;
                         logoPreview.style.display = 'block';
                         logoPlaceholder.style.display = 'none';
-                    };
-                    reader.readAsDataURL(file);
+                    });
                 }
             };
             input.click();
         }
 
-        function pickImageForFallback() {
+        async function pickImageForFallback() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            input.onchange = function (event) {
+            input.onchange = async function (event) {
                 const file = event.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const base64Data = e.target.result;
-                        jsonData.settings['fallback-image'] = base64Data;
-                        document.getElementById('fallback-image-url').value = base64Data;
+                    await uploadWithInlineProgress(file, 'fallback-container', (result) => {
+                        jsonData.settings['fallback-image'] = result.url;
+                        document.getElementById('fallback-image-url').value = result.url;
                         const fallbackPreview = document.getElementById('fallback-preview');
                         const fallbackPlaceholder = document.getElementById('fallback-placeholder');
-                        fallbackPreview.src = base64Data;
+                        fallbackPreview.src = result.url;
                         fallbackPreview.style.display = 'block';
                         fallbackPlaceholder.style.display = 'none';
-                    };
-                    reader.readAsDataURL(file);
+                    });
                 }
             };
             input.click();
@@ -1388,7 +1748,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     ${jsonData['slider-images'].map((url, index) => `
                         <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-                            <div class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
+                            <div id="slider-img-${index}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
                                 <img src="${url}" class="w-full h-full object-cover" alt="Slider ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
                                     <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1411,10 +1771,22 @@
                                 </div>
                             </div>
                             <div class="p-3">
-                                <textarea 
-                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
-                                    onchange="jsonData['slider-images'][${index}] = this.value; renderSliderImages();"
-                                    placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
+                                <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                    class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                    <span class="flex-1">Image URL / Base64</span>
+                                    <svg class="w-4 h-4 transition-transform ${jsonData['slider-images'][index] ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="${jsonData['slider-images'][index] ? 'hidden' : ''}">
+                                    <textarea 
+                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
+                                        onchange="jsonData['slider-images'][${index}] = this.value; renderSliderImages();"
+                                        placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
+                                </div>
                             </div>
                         </div>
                     `).join('')}
@@ -1432,19 +1804,32 @@
             renderSliderImages();
         }
 
-        function pickImageForSlider(index) {
+        async function pickImageForSlider(index) {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        jsonData['slider-images'][index] = event.target.result;
+                    const containerId = `slider-img-${index}`;
+                    console.log('Uploading slider image', index, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        jsonData['slider-images'][index] = result.url;
                         renderSliderImages();
-                    };
-                    reader.readAsDataURL(file);
+                    });
                 }
             };
             input.click();
@@ -1496,7 +1881,7 @@
                                     <label class="block text-xs font-semibold text-gray-300 mb-2">Category Image</label>
                                     <div class="border border-gray-600 rounded-lg p-3 bg-gray-800">
                                         <!-- Image Preview -->
-                                        <div class="relative group bg-gray-900 rounded-lg overflow-hidden w-full h-[200px] mb-3">
+                                        <div id="category-img-${index}" class="relative group bg-gray-900 rounded-lg overflow-hidden w-full h-[200px] mb-3">
                                             <img src="${category.image}" class="w-full h-full object-contain image-clickable" alt="Category ${index + 1}" onclick="openFullscreen('${category.image}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                                 <button onclick="pickImageForCategory(${index})" 
@@ -1511,16 +1896,22 @@
                                         
                                         <!-- URL Input -->
                                         <div class="mb-3">
-                                            <label class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                            <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                                class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                                                 </svg>
-                                                Image URL / Base64
-                                            </label>
-                                            <textarea 
-                                                onchange="jsonData.categories[${index}].image = this.value; renderCategories();"
-                                                class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-900 text-gray-300 hover:bg-gray-800 transition-colors resize-none h-20"
-                                                placeholder="Paste image URL or upload to generate base64...">${category.image}</textarea>
+                                                <span class="flex-1">Image URL / Base64</span>
+                                                <svg class="w-4 h-4 transition-transform ${category.image ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <div class="${category.image ? 'hidden' : ''}">
+                                                <textarea 
+                                                    onchange="jsonData.categories[${index}].image = this.value; renderCategories();"
+                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-900 text-gray-300 hover:bg-gray-800 transition-colors resize-none h-20"
+                                                    placeholder="Paste image URL or upload to generate base64...">${category.image}</textarea>
+                                            </div>
                                         </div>
                                         
                                         <!-- Action Buttons -->
@@ -1556,7 +1947,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     ${(category['images-url'] || []).map((imgUrl, imgIndex) => `
                                         <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-                                            <div class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${imgUrl}')">
+                                            <div id="category-${index}-img-${imgIndex}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${imgUrl}')">
                                                 <img src="${imgUrl}" class="w-full h-full object-cover" alt="Image ${imgIndex + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
                                                     <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1579,10 +1970,22 @@
                                                 </div>
                                             </div>
                                             <div class="p-3">
-                                                <textarea 
-                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
-                                                    onchange="updateCategoryImage(${index}, ${imgIndex}, this.value)"
-                                                    placeholder="Paste image URL or upload to generate base64...">${imgUrl}</textarea>
+                                                <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                                    class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                                    </svg>
+                                                    <span class="flex-1">Image URL / Base64</span>
+                                                    <svg class="w-4 h-4 transition-transform ${imgUrl ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
+                                                <div class="${imgUrl ? 'hidden' : ''}">
+                                                    <textarea 
+                                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
+                                                        onchange="updateCategoryImage(${index}, ${imgIndex}, this.value)"
+                                                        placeholder="Paste image URL or upload to generate base64...">${imgUrl}</textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     `).join('')}
@@ -1619,19 +2022,32 @@
             renderCategories();
         }
 
-        function pickImageForCategory(index) {
+        async function pickImageForCategory(index) {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        jsonData.categories[index].image = event.target.result;
+                    const containerId = `category-img-${index}`;
+                    console.log('Uploading category image', index, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        jsonData.categories[index].image = result.url;
                         renderCategories();
-                    };
-                    reader.readAsDataURL(file);
+                    });
                 }
             };
             input.click();
@@ -1660,22 +2076,35 @@
             }
         }
 
-        function pickCategoryImage(categoryIndex, imageIndex) {
+        async function pickCategoryImage(categoryIndex, imageIndex) {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
+                    const containerId = `category-${categoryIndex}-img-${imageIndex}`;
+                    console.log('Uploading category sub-image', categoryIndex, imageIndex, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
                         if (!jsonData.categories[categoryIndex]['images-url']) {
                             jsonData.categories[categoryIndex]['images-url'] = [];
                         }
-                        jsonData.categories[categoryIndex]['images-url'][imageIndex] = event.target.result;
+                        jsonData.categories[categoryIndex]['images-url'][imageIndex] = result.url;
                         renderCategories();
-                    };
-                    reader.readAsDataURL(file);
+                    });
                 }
             };
             input.click();
@@ -1689,7 +2118,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     ${jsonData['gallery-images'].map((url, index) => `
                         <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-                            <div class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
+                            <div id="gallery-img-${index}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
                                 <img src="${url}" class="w-full h-full object-cover" alt="Gallery ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
                                     <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1712,10 +2141,22 @@
                                 </div>
                             </div>
                             <div class="p-3">
-                                <textarea 
-                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
-                                    onchange="jsonData['gallery-images'][${index}] = this.value; renderGalleryImages();"
-                                    placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
+                                <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                    class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                    <span class="flex-1">Image URL / Base64</span>
+                                    <svg class="w-4 h-4 transition-transform ${jsonData['gallery-images'][index] ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="${jsonData['gallery-images'][index] ? 'hidden' : ''}">
+                                    <textarea 
+                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
+                                        onchange="jsonData['gallery-images'][${index}] = this.value; renderGalleryImages();"
+                                        placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
+                                </div>
                             </div>
                         </div>
                     `).join('')}
@@ -1733,19 +2174,32 @@
             renderGalleryImages();
         }
 
-        function pickImageForGallery(index) {
+        async function pickImageForGallery(index) {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        jsonData['gallery-images'][index] = event.target.result;
+                    const containerId = `gallery-img-${index}`;
+                    console.log('Uploading gallery image', index, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        jsonData['gallery-images'][index] = result.url;
                         renderGalleryImages();
-                    };
-                    reader.readAsDataURL(file);
+                    });
                 }
             };
             input.click();
@@ -1768,7 +2222,140 @@
             }
         }
 
-        // Update JSON with base64 images
+        // Inline Upload Progress Helper Functions
+        function createProgressOverlay(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return null;
+
+            const overlayId = containerId + '-upload-overlay';
+            let overlay = document.getElementById(overlayId);
+
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = overlayId;
+                overlay.className = 'absolute inset-0 bg-black bg-opacity-90 hidden flex-col items-center justify-center z-50';
+                overlay.innerHTML = `
+                    <div class="text-center">
+                        <svg class="animate-spin h-12 w-12 text-blue-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <div class="text-white font-bold text-lg mb-2" id="${overlayId}-text">Uploading...</div>
+                        <div class="w-64 bg-gray-700 rounded-full h-3">
+                            <div id="${overlayId}-bar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <div class="text-blue-400 font-semibold mt-2" id="${overlayId}-percent">0%</div>
+                    </div>
+                `;
+                container.appendChild(overlay);
+            }
+
+            return {
+                overlay: overlay,
+                bar: document.getElementById(overlayId + '-bar'),
+                percent: document.getElementById(overlayId + '-percent'),
+                text: document.getElementById(overlayId + '-text')
+            };
+        }
+
+        async function uploadWithInlineProgress(file, containerId, onSuccess) {
+            const elements = createProgressOverlay(containerId);
+            if (!elements) {
+                console.error('Could not create progress overlay for container:', containerId);
+                Toastify({
+                    text: "❌ Error: Upload container not found",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#dc2626",
+                    className: "toastify-custom",
+                }).showToast();
+                return;
+            }
+
+            // Validate file size before showing overlay
+            const maxSizeMB = jsonData.settings && jsonData.settings['max-upload-size-mb'] ? jsonData.settings['max-upload-size-mb'] : 10;
+            const validation = cloudinaryUploader.validateFile(file, maxSizeMB);
+            if (!validation.valid) {
+                Toastify({
+                    text: `❌ Upload Failed: ${formatErrorMessage(validation.error)}`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#dc2626",
+                    className: "toastify-custom",
+                }).showToast();
+                return;
+            }
+
+            elements.overlay.classList.remove('hidden');
+            elements.overlay.classList.add('flex');
+
+            // Freeze screen during upload
+            document.body.style.pointerEvents = 'none';
+            elements.overlay.style.pointerEvents = 'auto';
+
+            try {
+                const result = await cloudinaryUploader.upload(file, (percentage) => {
+                    elements.bar.style.width = percentage + '%';
+                    elements.percent.textContent = percentage + '%';
+                    elements.text.textContent = percentage < 100 ? 'Uploading...' : 'Processing...';
+                }, { maxSizeMB });
+
+                if (result.success) {
+                    elements.text.textContent = '✓ Upload Complete!';
+                    elements.bar.classList.remove('bg-blue-500');
+                    elements.bar.classList.add('bg-green-500');
+
+                    if (onSuccess) onSuccess(result);
+
+                    Toastify({
+                        text: "✅ Image uploaded successfully!",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#16a34a",
+                        className: "toastify-custom",
+                    }).showToast();
+
+                    setTimeout(() => {
+                        elements.overlay.classList.add('hidden');
+                        elements.overlay.classList.remove('flex');
+                        elements.bar.classList.remove('bg-green-500');
+                        elements.bar.classList.add('bg-blue-500');
+                        elements.bar.style.width = '0%';
+                        // Re-enable screen
+                        document.body.style.pointerEvents = 'auto';
+                    }, 1500);
+                } else {
+                    throw new Error(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                elements.text.textContent = '✗ Upload Failed';
+                elements.bar.classList.remove('bg-blue-500');
+                elements.bar.classList.add('bg-red-500');
+
+                setTimeout(() => {
+                    elements.overlay.classList.add('hidden');
+                    elements.overlay.classList.remove('flex');
+                    elements.bar.classList.remove('bg-red-500');
+                    elements.bar.classList.add('bg-blue-500');
+                    elements.bar.style.width = '0%';
+                    // Re-enable screen
+                    document.body.style.pointerEvents = 'auto';
+                }, 2000);
+
+                Toastify({
+                    text: "❌ Upload Failed: " + formatErrorMessage(error.message),
+                    duration: 5000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#dc2626",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }        // Update JSON with base64 images
         async function updateJSON() {
             const progressContainer = document.getElementById('progressContainer');
             const progressBar = document.getElementById('progressBar');
