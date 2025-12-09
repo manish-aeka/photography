@@ -321,6 +321,14 @@ class DeploymentApp:
         self.status_text.tag_config("color", foreground=color)
         self.status_text.see(tk.END)
         self.status_text.config(state=tk.DISABLED)
+        self.root.update_idletasks()  # Force UI update
+        self.root.update()  # Process all pending events
+    
+    def update_progress(self, value):
+        """Update progress bar and refresh UI"""
+        self.progress_var.set(value)
+        self.root.update_idletasks()
+        self.root.update()
     
     def browse_file(self):
         """Open file dialog to select JSON file"""
@@ -464,7 +472,7 @@ class DeploymentApp:
         
         self.is_deploying = True
         self.deploy_btn.config(state=tk.DISABLED, text="⏳ Deploying...")
-        self.progress_var.set(0)
+        self.update_progress(0)
         
         # Run deployment in separate thread
         thread = threading.Thread(target=self.run_deployment)
@@ -473,18 +481,25 @@ class DeploymentApp:
     
     def run_git_command(self, command, description):
         """Execute a git command and log the result"""
-        self.log_message(f"  Executing: {command}", "#9ca3af")
+        self.log_message(f"  🔧 Executing: {command}", "#9ca3af")
         try:
+            # Get repository root
+            repo_root = Path(__file__).parent.parent
+            
             result = subprocess.run(
                 command,
                 shell=True,
                 capture_output=True,
                 text=True,
-                cwd=Path(__file__).parent
+                cwd=repo_root  # Run from repository root
             )
             
+            # Always show output for better debugging
             if result.stdout.strip():
-                self.log_message(f"  Output: {result.stdout.strip()}", "#9ca3af")
+                self.log_message(f"  📄 Output:\n{result.stdout.strip()}", "#9ca3af")
+            
+            if result.stderr.strip():
+                self.log_message(f"  ⚠️ Stderr:\n{result.stderr.strip()}", "#f59e0b")
             
             if result.returncode == 0:
                 self.log_message(f"  ✓ {description} completed", "#10b981")
@@ -549,29 +564,11 @@ class DeploymentApp:
             
             # Step 1: Copy JSON file to data folder (10%)
             self.log_message("\n📋 Step 1/6: Updating JSON file in data/ folder...", "#fbbf24")
-            self.progress_var.set(5)
+            self.update_progress(5)
             
             target_file = data_folder / "anupam-dutta-photography-data-set.json"
             
-            # Backup existing file with retry logic
-            if target_file.exists():
-                backup_file = Path(__file__).parent / "anupam-dutta-photography-data-set.json.backup"
-                import shutil
-                
-                max_retries = 3
-                for attempt in range(max_retries):
-                    try:
-                        shutil.copy2(target_file, backup_file)
-                        self.log_message(f"  ✓ Backup created: {backup_file.name}", "#10b981")
-                        break
-                    except PermissionError as e:
-                        if attempt < max_retries - 1:
-                            self.log_message(f"  ⏳ File in use, retrying... (attempt {attempt + 1}/{max_retries})", "#f59e0b")
-                            time.sleep(1)
-                        else:
-                            raise Exception(f"Cannot create backup: {str(e)}. Please close the JSON file in any editors and try again.")
-            
-            # Copy new file with retry logic
+            # No backup - directly update the file with retry logic
             import shutil
             max_retries = 3
             for attempt in range(max_retries):
@@ -580,11 +577,18 @@ class DeploymentApp:
                     with open(self.selected_file, 'r', encoding='utf-8') as src:
                         content = src.read()
                     
-                    # Write to target file
+                    self.log_message(f"  📄 Source file: {Path(self.selected_file).name}", "#60a5fa")
+                    self.log_message(f"  📁 Target file: {target_file}", "#60a5fa")
+                    
+                    # Write to target file (this overwrites the existing file)
                     with open(target_file, 'w', encoding='utf-8') as dst:
                         dst.write(content)
                     
-                    self.log_message(f"  ✓ JSON file updated successfully", "#10b981")
+                    self.log_message(f"  ✓ Successfully updated {target_file.name} with new content", "#10b981")
+                    
+                    # Verify the update
+                    file_size = target_file.stat().st_size
+                    self.log_message(f"  ℹ️ Updated file size: {file_size:,} bytes", "#60a5fa")
                     break
                 except PermissionError as e:
                     if attempt < max_retries - 1:
@@ -593,7 +597,7 @@ class DeploymentApp:
                     else:
                         raise Exception(f"Cannot update JSON file: {str(e)}. Please close the file 'anupam-dutta-photography-data-set.json' in VS Code or any other editor and try again.")
             
-            self.progress_var.set(10)
+            self.update_progress(10)
             
             # Step 2: Git - Check status (20%)
             self.log_message("\n🔍 Step 2/6: Checking Git repository status...", "#fbbf24")
@@ -602,7 +606,7 @@ class DeploymentApp:
             git_check = subprocess.run("git --version", shell=True, capture_output=True, text=True)
             if git_check.returncode != 0:
                 self.log_message("  ⚠️ Git is not installed. Skipping Git operations.", "#f59e0b")
-                self.progress_var.set(100)
+                self.update_progress(100)
                 self.log_message("\n✅ Deployment completed (JSON updated only)", "#10b981")
                 self.show_completion_message(True)
                 return
@@ -610,15 +614,30 @@ class DeploymentApp:
             if not self.run_git_command("git status", "Git status check"):
                 raise Exception("Git status check failed")
             
-            self.progress_var.set(20)
+            self.update_progress(20)
             
             # Step 3: Git - Add changes (35%)
-            self.log_message("\n➕ Step 3/6: Adding changes to Git...", "#fbbf24")
+            self.log_message("\n➕ Step 3/6: Adding .json files from data/ folder to Git...", "#fbbf24")
             
-            if not self.run_git_command("git add .", "Git add"):
-                raise Exception("Git add failed")
+            # Check if there are changes in data folder
+            status_result = subprocess.run(
+                ["git", "status", "--short", "data/"],
+                capture_output=True,
+                text=True,
+                cwd=repo_root
+            )
             
-            self.progress_var.set(35)
+            if status_result.stdout.strip():
+                self.log_message(f"  📝 Changes detected:\n{status_result.stdout}", "#60a5fa")
+                
+                # Add the entire data folder (only contains JSON)
+                if not self.run_git_command("git add data/", "Git add data/"):
+                    raise Exception("Git add failed")
+                self.log_message("  ✓ Changes added successfully", "#10b981")
+            else:
+                self.log_message("  ℹ️ No changes detected in data/ folder", "#60a5fa")
+            
+            self.update_progress(35)
             
             # Step 4: Git - Commit changes (50%)
             self.log_message("\n💾 Step 4/6: Committing changes...", "#fbbf24")
@@ -630,7 +649,7 @@ class DeploymentApp:
             if not self.run_git_command(f'git commit -m "{commit_message}"', "Git commit"):
                 self.log_message("  ℹ️ No changes to commit or commit completed", "#60a5fa")
             
-            self.progress_var.set(50)
+            self.update_progress(50)
             
             # Step 5: Git - Push to remote (75%)
             self.log_message(f"\n🚀 Step 5/6: Pushing to remote ({branch})...", "#fbbf24")
@@ -638,7 +657,7 @@ class DeploymentApp:
             if not self.run_git_command(f"git push origin {branch}", f"Git push to {branch}"):
                 self.log_message(f"  ⚠️ Push to {branch} failed, continuing...", "#f59e0b")
             
-            self.progress_var.set(75)
+            self.update_progress(75)
             
             # Step 6: Verify deployment (100%)
             self.log_message("\n✨ Step 6/6: Verifying deployment...", "#fbbf24")
@@ -646,7 +665,7 @@ class DeploymentApp:
             if not self.run_git_command("git status", "Final status check"):
                 self.log_message("  ⚠️ Final status check warning", "#f59e0b")
             
-            self.progress_var.set(100)
+            self.update_progress(100)
             
             self.log_message("\n" + "=" * 70, "#60a5fa")
             self.log_message("✅ DEPLOYMENT COMPLETED SUCCESSFULLY!", "#10b981")
@@ -657,7 +676,7 @@ class DeploymentApp:
             
         except Exception as e:
             self.log_message(f"\n❌ Deployment failed: {str(e)}", "#ef4444")
-            self.progress_var.set(0)
+            self.update_progress(0)
             self.show_completion_message(False, str(e))
         
         finally:
