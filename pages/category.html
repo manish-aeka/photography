@@ -15,7 +15,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Fallback Image Handler -->
-    <script src="./fallback-handler.js"></script>
+    <script src="../scripts/fallback-handler.js"></script>
 
     <style>
         :root {
@@ -137,7 +137,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center gap-3">
-                <a href="./index.html" class="group flex items-center gap-3 transition-transform hover:scale-105">
+                <a href="../index.html" class="group flex items-center gap-3 transition-transform hover:scale-105">
                     <img id="logo-img" src="" alt="Anupam Dutta Photography"
                         class="h-12 md:h-14 w-auto rounded-full transition-all">
                     <h1 id="navbar-title" class="md:text-3xl hidden md:block font-serif tracking-widest">
@@ -269,7 +269,7 @@
         const categoryIndex = parseInt(urlParams.get('category'));
 
         // Load data
-        fetch('./anupam-dutta-photography-data-set.json')
+        fetch('../data/anupam-dutta-photography-data-set.json')
             .then(response => response.json())
             .then(data => {
                 // Set logo and navbar title
@@ -316,7 +316,7 @@
                     document.getElementById('category-description').textContent = 'The requested category could not be found.';
                     document.getElementById('gallery').innerHTML = `
                         <div class="col-span-full text-center py-20">
-                            <p class="text-gray-400 text-xl">Category not found. <a href="./index.html" class="text-[#1DA6E1] hover:underline">Return to home</a></p>
+                            <p class="text-gray-400 text-xl">Category not found. <a href="../index.html" class="text-[#1DA6E1] hover:underline">Return to home</a></p>
                         </div>
                     `;
                 }

@@ -20,10 +20,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
 
     <!-- Fallback Image Handler -->
-    <script src="./fallback-handler.js"></script>
+    <script src="./scripts/fallback-handler.js"></script>
 
 
 
@@ -49,7 +49,7 @@
                 <div class="absolute inset-3 bg-[#1C5BAE]/10 rounded-full animate-ping"></div>
                 <!-- Logo Image -->
                 <div class="absolute inset-0 flex items-center justify-center p-6">
-                    <img src="./logo.png" alt="Anupam Dutta Photography"
+                    <img src="./assets/logo.png" alt="Anupam Dutta Photography"
                         class="w-full h-full object-contain animate-pulse">
                 </div>
             </div>
@@ -653,7 +653,8 @@
                                 class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Gallery</a></li>
                         <li><a href="mailto:anupam.d1@gmail.com"
                                 class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Contact</a></li>
-                        <li><a href="editor.html" class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Admin</a>
+                        <li><a href="./pages/editor.html"
+                                class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Admin</a>
                         </li>
                     </ul>
                 </div>
@@ -684,7 +685,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="./scripts/script.js"></script>
 
     <script>
         document.getElementById("year").textContent = new Date().getFullYear();

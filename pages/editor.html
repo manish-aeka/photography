@@ -19,10 +19,10 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <!-- Fallback Image Handler -->
-    <script src="./fallback-handler.js"></script>
+    <script src="../scripts/fallback-handler.js"></script>
 
     <!-- Cloudinary Uploader -->
-    <script src="./cloudinary-uploader.js"></script>
+    <script src="../scripts/cloudinary-uploader.js"></script>
 
     <style>
         :root {
@@ -278,8 +278,8 @@
             </button>
 
             <div class="flex items-center gap-2 md:gap-4">
-                <a href="./index.html" class="group" title="Go to Homepage">
-                    <img id="dashboard-logo" src="./logo.png" alt="Logo"
+                <a href="../index.html" class="group" title="Go to Homepage">
+                    <img id="dashboard-logo" src="../assets/logo.png" alt="Logo"
                         class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover transition-transform group-hover:scale-110"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div
@@ -1389,14 +1389,14 @@
             }
 
             try {
-                const response = await fetch('./anupam-dutta-photography-data-set.json');
+                const response = await fetch('../data/anupam-dutta-photography-data-set.json');
                 jsonData = await response.json();
                 document.getElementById('loadingMessage').classList.add('hidden');
                 renderEditor();
             } catch (error) {
                 document.getElementById('loadingMessage').innerHTML = `
                     <div class="text-red-600 font-semibold">Error loading anupam-dutta-photography-data-set.json: ${error.message}</div>
-                    <p class="text-gray-600 mt-2">Make sure anupam-dutta-photography-data-set.json is in the same folder as editor.html</p>
+                    <p class="text-gray-600 mt-2">Make sure anupam-dutta-photography-data-set.json is in the data folder</p>
                 `;
             }
         });
@@ -2525,7 +2525,7 @@
 
             try {
                 // Fetch the JSON data to get the stored password
-                const response = await fetch('anupam-dutta-photography-data-set.json');
+                const response = await fetch('../data/anupam-dutta-photography-data-set.json');
                 const data = await response.json();
                 const storedPassword = data.settings?.password;
 

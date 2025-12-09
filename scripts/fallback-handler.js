@@ -7,7 +7,11 @@
     // Function to load fallback image from JSON settings
     async function loadFallbackImage() {
         try {
-            const response = await fetch('anupam-dutta-photography-data-set.json');
+            // Determine correct path based on current page location
+            const jsonPath = window.location.pathname.includes('/pages/')
+                ? '../data/anupam-dutta-photography-data-set.json'
+                : './data/anupam-dutta-photography-data-set.json';
+            const response = await fetch(jsonPath);
             if (!response.ok) return;
 
             const data = await response.json();
