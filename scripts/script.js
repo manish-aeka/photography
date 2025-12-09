@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (e.target.classList.contains('read-more-btn') || e.target.classList.contains('show-less-btn')) return;
                         const categoryIndex = card.getAttribute('data-category-index');
                         if (categoryIndex !== null) {
-                            window.location.href = `category.html?category=${categoryIndex}`;
+                            window.location.href = `./pages/category.html?category=${categoryIndex}`;
                         }
                     });
                     // Read More / Show Less button logic
@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (e.target.classList.contains('read-more-btn') || e.target.classList.contains('show-less-btn')) return;
                         const categoryIndex = card.getAttribute('data-category-index');
                         if (categoryIndex !== null) {
-                            window.location.href = `category.html?category=${categoryIndex}`;
+                            window.location.href = `./pages/category.html?category=${categoryIndex}`;
                         }
                     });
                     // Read More / Show Less button logic

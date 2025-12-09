@@ -3,6 +3,29 @@
 # Auto Git Deploy Script
 # This script automatically adds, commits, and pushes changes to the repository
 
+# ================================
+# CONFIGURATION
+# ================================
+# Branch name (will use current branch if empty)
+TARGET_BRANCH=""
+
+# Specific files/folders to include in deployment (relative to repository root)
+INCLUDE_FILES=(
+    "data/*.json"
+)
+
+# Files/folders to exclude from deployment (space-separated)
+EXCLUDE_FILES=(
+    "deployment/"
+    "docs/"
+    ".git/"
+    ".gitignore"
+    "*.md"
+    "*.ps1"
+    "*.py"
+    "test-*.html"
+)
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -12,6 +35,11 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}================================${NC}"
 echo -e "${BLUE}  Auto Git Deploy Script${NC}"
 echo -e "${BLUE}================================${NC}"
+echo ""
+
+# Change to repository root
+cd "$(dirname "$0")/.." || exit 1
+echo -e "${BLUE}Working directory:${NC} $(pwd)"
 echo ""
 
 # Check if there are any changes
@@ -35,15 +63,35 @@ else
 fi
 echo ""
 
-# Get current branch
-BRANCH=$(git branch --show-current)
-echo -e "${BLUE}Current branch:${NC} $BRANCH"
+# Determine target branch
+if [ -z "$TARGET_BRANCH" ]; then
+    BRANCH=$(git branch --show-current)
+    echo -e "${BLUE}Using current branch:${NC} $BRANCH"
+else
+    BRANCH="$TARGET_BRANCH"
+    echo -e "${BLUE}Using configured branch:${NC} $BRANCH"
+    
+    # Switch to target branch if not already on it
+    CURRENT_BRANCH=$(git branch --show-current)
+    if [ "$CURRENT_BRANCH" != "$BRANCH" ]; then
+        echo -e "${BLUE}Switching to branch:${NC} $BRANCH"
+        git checkout "$BRANCH"
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}✗ Failed to switch to branch $BRANCH${NC}"
+            exit 1
+        fi
+        echo -e "${GREEN}✓ Switched to $BRANCH${NC}"
+    fi
+fi
 echo ""
 
-# Add only JSON files and images folder
-echo -e "${BLUE}Adding JSON files and images folder...${NC}"
-git add *.json
-git add images/
+# Add specific files
+echo -e "${BLUE}Adding specific files to deployment...${NC}"
+
+for file in "${INCLUDE_FILES[@]}"; do
+    echo -e "  ${GREEN}Including:${NC} $file"
+    git add $file
+done
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Files added successfully${NC}"
