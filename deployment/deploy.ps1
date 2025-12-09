@@ -1,21 +1,51 @@
 # Auto Git Deploy Script
 # This PowerShell script automatically adds, commits, and pushes changes to the repository
 
+# ================================
+# CONFIGURATION
+# ================================
+# Branch name (will use current branch if empty)
+$TARGET_BRANCH = ""
+
+# Specific files/folders to include in deployment (relative to repository root)
+$INCLUDE_FILES = @(
+    "data/*.json"
+)
+
 Write-Host "================================" -ForegroundColor Blue
 Write-Host "  Auto Git Deploy Script" -ForegroundColor Blue
 Write-Host "================================" -ForegroundColor Blue
 Write-Host ""
 
-# Check if there are any changes
-$status = git status --short
-if ([string]::IsNullOrWhiteSpace($status)) {
-    Write-Host "No changes to commit. Working directory clean." -ForegroundColor Green
+# Change to repository root
+Set-Location "$PSScriptRoot\.."
+Write-Host "Working directory: $(Get-Location)" -ForegroundColor Blue
+Write-Host ""
+
+# Check if data folder exists
+if (-not (Test-Path "data")) {
+    Write-Host "[ERROR] data/ folder not found in root directory" -ForegroundColor Red
+    exit 1
+}
+
+# Check if any JSON files exist in data folder
+$jsonFiles = Get-ChildItem "data\*.json" -ErrorAction SilentlyContinue
+if (-not $jsonFiles) {
+    Write-Host "[ERROR] No .json files found in data/ folder" -ForegroundColor Red
+    exit 1
+}
+
+# Check if there are any changes to JSON files in data folder
+$dataJsonChanges = git status --short data/*.json 2>$null
+if ([string]::IsNullOrWhiteSpace($dataJsonChanges)) {
+    Write-Host "No changes to .json files in data/ folder." -ForegroundColor Green
+    Write-Host "Working directory clean for deployment files." -ForegroundColor Blue
     exit 0
 }
 
-# Show current status
-Write-Host "Current Status:" -ForegroundColor Blue
-git status --short
+# Show current status of data JSON files
+Write-Host "Changes in data/ folder:" -ForegroundColor Blue
+git status --short data/*.json
 Write-Host ""
 
 # Get commit message from parameter or use default
@@ -28,22 +58,54 @@ if ($args.Count -eq 0) {
 }
 Write-Host ""
 
-# Get current branch
-$branch = git branch --show-current
-Write-Host "Current branch: $branch" -ForegroundColor Blue
+# Determine target branch
+if ([string]::IsNullOrWhiteSpace($TARGET_BRANCH)) {
+    $branch = git branch --show-current
+    Write-Host "Using current branch: $branch" -ForegroundColor Blue
+} else {
+    $branch = $TARGET_BRANCH
+    Write-Host "Using configured branch: $branch" -ForegroundColor Blue
+    
+    # Switch to target branch if not already on it
+    $currentBranch = git branch --show-current
+    if ($currentBranch -ne $branch) {
+        Write-Host "Switching to branch: $branch" -ForegroundColor Blue
+        git checkout $branch
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[ERROR] Failed to switch to branch $branch" -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "[OK] Switched to $branch" -ForegroundColor Green
+    }
+}
 Write-Host ""
 
-# Add only JSON files and images folder
-Write-Host "Adding JSON files and images folder..." -ForegroundColor Blue
-git add *.json
-git add images/
+# Add .json files from data/ folder
+Write-Host "Adding .json files from data/ folder..." -ForegroundColor Blue
 
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "[OK] Files added successfully" -ForegroundColor Green
-} else {
-    Write-Host "[ERROR] Failed to add files" -ForegroundColor Red
+$addedCount = 0
+foreach ($file in $INCLUDE_FILES) {
+    $matchingFiles = Get-ChildItem $file -ErrorAction SilentlyContinue
+    if ($matchingFiles) {
+        Write-Host "  Including: $file" -ForegroundColor Green
+        git add $file
+        if ($LASTEXITCODE -eq 0) {
+            $addedCount++
+        } else {
+            Write-Host "[ERROR] Failed to add $file" -ForegroundColor Red
+            exit 1
+        }
+    } else {
+        Write-Host "  Warning: No files matching $file" -ForegroundColor Red
+    }
+}
+
+if ($addedCount -eq 0) {
+    Write-Host "[ERROR] No files were added" -ForegroundColor Red
     exit 1
 }
+
+Write-Host "[OK] Successfully added $addedCount file(s)" -ForegroundColor Green
 Write-Host ""
 
 # Commit changes

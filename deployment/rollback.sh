@@ -3,6 +3,12 @@
 # Git Rollback Script
 # This script rolls back to the previous commit
 
+# ================================
+# CONFIGURATION
+# ================================
+# Branch name (will use current branch if empty)
+TARGET_BRANCH=""
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -16,9 +22,31 @@ echo -e "${BLUE}  Git Rollback Script${NC}"
 echo -e "${BLUE}================================${NC}"
 echo ""
 
-# Get current branch
-BRANCH=$(git branch --show-current)
-echo -e "${BLUE}Current branch:${NC} $BRANCH"
+# Change to repository root
+cd "$(dirname "$0")/.." || exit 1
+echo -e "${BLUE}Working directory:${NC} $(pwd)"
+echo ""
+
+# Determine target branch
+if [ -z "$TARGET_BRANCH" ]; then
+    BRANCH=$(git branch --show-current)
+    echo -e "${BLUE}Using current branch:${NC} $BRANCH"
+else
+    BRANCH="$TARGET_BRANCH"
+    echo -e "${BLUE}Using configured branch:${NC} $BRANCH"
+    
+    # Switch to target branch if not already on it
+    CURRENT_BRANCH=$(git branch --show-current)
+    if [ "$CURRENT_BRANCH" != "$BRANCH" ]; then
+        echo -e "${BLUE}Switching to branch:${NC} $BRANCH"
+        git checkout "$BRANCH"
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}✗ Failed to switch to branch $BRANCH${NC}"
+            exit 1
+        fi
+        echo -e "${GREEN}✓ Switched to $BRANCH${NC}"
+    fi
+fi
 echo ""
 
 # Show last 5 commits

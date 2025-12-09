@@ -42,15 +42,30 @@ cd "$(dirname "$0")/.." || exit 1
 echo -e "${BLUE}Working directory:${NC} $(pwd)"
 echo ""
 
-# Check if there are any changes
-if [[ -z $(git status -s) ]]; then
-    echo -e "${GREEN}No changes to commit. Working directory clean.${NC}"
+# Check if data folder exists
+if [ ! -d "data" ]; then
+    echo -e "${RED}✗ Error: data/ folder not found in root directory${NC}"
+    exit 1
+fi
+
+# Check if any JSON files exist in data folder
+JSON_FILES=(data/*.json)
+if [ ! -e "${JSON_FILES[0]}" ]; then
+    echo -e "${RED}✗ Error: No .json files found in data/ folder${NC}"
+    exit 1
+fi
+
+# Check if there are any changes to JSON files in data folder
+DATA_JSON_CHANGES=$(git status --short data/*.json 2>/dev/null)
+if [[ -z "$DATA_JSON_CHANGES" ]]; then
+    echo -e "${GREEN}No changes to .json files in data/ folder.${NC}"
+    echo -e "${BLUE}Working directory clean for deployment files.${NC}"
     exit 0
 fi
 
-# Show current status
-echo -e "${BLUE}Current Status:${NC}"
-git status --short
+# Show current status of data JSON files
+echo -e "${BLUE}Changes in data/ folder:${NC}"
+git status --short data/*.json
 echo ""
 
 # Get commit message from user or use default
@@ -86,19 +101,32 @@ fi
 echo ""
 
 # Add specific files
-echo -e "${BLUE}Adding specific files to deployment...${NC}"
+echo -e "${BLUE}Adding .json files from data/ folder...${NC}"
 
+# Add only the JSON files from data folder
+ADDED_COUNT=0
 for file in "${INCLUDE_FILES[@]}"; do
-    echo -e "  ${GREEN}Including:${NC} $file"
-    git add $file
+    # Check if file pattern matches any files
+    if ls $file 1> /dev/null 2>&1; then
+        echo -e "  ${GREEN}Including:${NC} $file"
+        git add $file
+        if [ $? -eq 0 ]; then
+            ADDED_COUNT=$((ADDED_COUNT + 1))
+        else
+            echo -e "${RED}✗ Failed to add $file${NC}"
+            exit 1
+        fi
+    else
+        echo -e "  ${RED}Warning: No files matching $file${NC}"
+    fi
 done
 
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓ Files added successfully${NC}"
-else
-    echo -e "${RED}✗ Failed to add files${NC}"
+if [ $ADDED_COUNT -eq 0 ]; then
+    echo -e "${RED}✗ No files were added${NC}"
     exit 1
 fi
+
+echo -e "${GREEN}✓ Successfully added $ADDED_COUNT file(s)${NC}"
 echo ""
 
 # Commit changes
