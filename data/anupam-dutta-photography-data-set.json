@@ -18,77 +18,77 @@
         "show-latest-collections-button": true
     },
     "slider-images": [
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1765343049/photography/cover_5_ysjnll.jpg",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1765282628/photography/cover_7_k65ex4.jpg",
-        "../images/c5.jpg",
-        "../images/c2.jpg",
-        "../images/c6.jpg"
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1765271449/photography/Screenshot_2025-12-09_at_2.40.08_PM_eszdj4.png",
+        "./images/c4.jpg",
+        "./images/c5.jpg",
+        "./images/c2.jpg",
+        "./images/c6.jpg"
     ],
     "categories": [
         {
             "title": "My Passion for Lunar Photography",
             "description": "🌕 Lunar photography is a blend of patience and precision—capturing a world that’s always above us, yet always changing. 🌙 Every phase of the moon tells a different story, and the camera becomes the storyteller in this unique realm of nature photography. ✨ Shooting the moon isn’t just photography; it’s the art of freezing a celestial moment millions of miles away, akin to the dedication seen in wildlife photography and other photography services.",
-            "image": "../images/lunar.jpg",
+            "image": "./images/lunar.jpg",
             "images-url": []
         },
         {
             "title": "Nature Photography",
             "description": "Photography is more than a craft for me; it’s a connection to the wild. Nature photography is not just a subject for me— it is a realm of wonder. With every photograph, I strive to capture not just what I see, but the enchantment that moves beneath it, making my photography services a gateway to the beauty of wildlife photography.",
-            "image": "../images/nature.jpg",
+            "image": "./images/nature.jpg",
             "images-url": []
         },
         {
             "title": "Wild Life Photography",
             "description": "With each frame in my nature photography, I wait for that fragile moment—the pause between movement and stillness—when a creature reveals more than its form. In that heartbeat, the wild speaks… and I try to honor its magic through my photography services before it slips back into mystery.",
-            "image": "../images/bird.jpg",
+            "image": "./images/bird.jpg",
             "images-url": [
-                "../images/collection1.jpg",
-                "../images/collection2.jpg",
-                "../images/collection3.jpg",
-                "../images/collection4.jpg",
-                "../images/collection5.jpg",
-                "../images/collection6.jpg",
-                "../images/c2.jpg",
-                "../images/c3.jpg",
-                "../images/c4.jpg",
-                "../images/c5.jpg",
-                "../images/c6.jpg",
-                "../images/collection7.jpg",
-                "../images/collection8.jpg",
-                "../images/collection9.jpg",
-                "../images/collection10.jpg",
-                "../images/collection11.jpg",
-                "../images/collection12.jpg",
-                "../images/collection13.jpg"
+                "./images/collection1.jpg",
+                "./images/collection2.jpg",
+                "./images/collection3.jpg",
+                "./images/collection4.jpg",
+                "./images/collection5.jpg",
+                "./images/collection6.jpg",
+                "./images/c2.jpg",
+                "./images/c3.jpg",
+                "./images/c4.jpg",
+                "./images/c5.jpg",
+                "./images/c6.jpg",
+                "./images/collection7.jpg",
+                "./images/collection8.jpg",
+                "./images/collection9.jpg",
+                "./images/collection10.jpg",
+                "./images/collection11.jpg",
+                "./images/collection12.jpg",
+                "./images/collection13.jpg"
             ]
         }
     ],
     "gallery-images": [
-        "../images/collection1.jpg",
-        "../images/collection2.jpg",
-        "../images/collection3.jpg",
-        "../images/collection4.jpg",
-        "../images/collection5.jpg",
-        "../images/collection6.jpg",
-        "../images/collection7.jpg",
-        "../images/collection8.jpg",
-        "../images/collection9.jpg",
-        "../images/collection10.jpg",
-        "../images/collection11.jpg",
-        "../images/collection12.jpg",
-        "../images/collection13.jpg",
-        "../images/odk.jpg"
+        "./images/collection1.jpg",
+        "./images/collection2.jpg",
+        "./images/collection3.jpg",
+        "./images/collection4.jpg",
+        "./images/collection5.jpg",
+        "./images/collection6.jpg",
+        "./images/collection7.jpg",
+        "./images/collection8.jpg",
+        "./images/collection9.jpg",
+        "./images/collection10.jpg",
+        "./images/collection11.jpg",
+        "./images/collection12.jpg",
+        "./images/collection13.jpg",
+        "./images/odk.jpg"
     ],
     "settings": {
-        "logo-url": "../assets/logo.png",
+        "logo-url": "./logo.png",
         "navbar-title": "Anupam Dutta Photography",
         "instagram-username": "@birds.series",
         "instagram-url": "https://www.instagram.com/birds.series",
         "email": "anupam.d1@gamil.com",
         "phone": "9831678665",
         "address": "Kolkata, India",
-        "password": "ef260e9aa3c673af240d17a2660480361a8e081d1ffeca2a5ed0e3219fc18567",
+        "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
         "fallback-image": "https://placehold.co/150x150.webp?text=Invalid+Image",
-        "max-upload-size-mb": 10
+        "max-upload-size-mb": 5
     }
 }
