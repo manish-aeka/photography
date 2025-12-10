@@ -35,5 +35,10 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='NONE',
+)
+app = BUNDLE(
+    exe,
+    name='PhotoDeploymentApp.app',
+    icon=None,
+    bundle_identifier=None,
 )

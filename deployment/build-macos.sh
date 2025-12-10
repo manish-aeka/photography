@@ -14,16 +14,37 @@ PYTHON_VERSION=$(python3 --version)
 echo "Python found: $PYTHON_VERSION"
 
 # Install dependencies
-echo "Installing dependencies..."
-python3 -m pip install --upgrade pip
-python3 -m pip install pyinstaller "PySide6>=6.6.0"
+echo "Installing dependencies in a local virtualenv..."
+
+# Determine script directory (so venv is created next to this script)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VENV_DIR="$SCRIPT_DIR/.venv"
+
+# Create venv if it doesn't exist
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Creating virtual environment at $VENV_DIR"
+    python3 -m venv "$VENV_DIR" || { echo "Failed to create virtualenv"; exit 1; }
+fi
+
+# Activate venv
+source "$VENV_DIR/bin/activate"
+
+# Upgrade pip and install required packages into venv
+python -m pip install --upgrade pip
+python -m pip install pyinstaller "PySide6>=6.6.0"
+
+# Use the venv python for the rest of the script (PyInstaller will be available)
+PYTHON_EXEC=python
 
 echo ""
 echo "Building executable with PyInstaller..."
 echo ""
 
 # Build the executable for macOS
-python3 -m PyInstaller \
+# Ensure we run PyInstaller from the script directory so relative paths resolve
+cd "$SCRIPT_DIR"
+
+$PYTHON_EXEC -m PyInstaller \
     --name "PhotoDeploymentApp" \
     --onefile \
     --windowed \

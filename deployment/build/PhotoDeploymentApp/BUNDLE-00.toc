@@ -1,0 +1,3 @@
+([('PhotoDeploymentApp',
+   '/Users/saugata/Photography/photography/deployment/dist/PhotoDeploymentApp',
+   'EXECUTABLE')],)

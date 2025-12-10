@@ -147,40 +147,88 @@ class DeploymentWorker(threading.Thread):
             
             self.log(f"✓ Git repository detected", "#10b981")
             
-            # Determine branch - handle the check=True error properly
+            # Determine branch - handle detached HEADs and missing info gracefully
             branch = TARGET_BRANCH
+            skip_git = False
             if not branch:
                 try:
-                    # Get current directory
                     cwd = str(self.repo_root)
-                    
-                    # Try to get current branch
+
+                    # Try the modern, reliable command first
                     result = subprocess.run(
-                        "git branch --show-current",
+                        "git rev-parse --abbrev-ref HEAD",
                         capture_output=True,
                         text=True,
                         cwd=cwd,
                         shell=True,
                         timeout=10
                     )
-                    
-                    if result.returncode != 0:
-                        # Git command failed, log the error
-                        self.log(f"❌ Git error (exit {result.returncode}): {result.stderr}", "#ef4444")
-                        raise Exception(f"Failed to get current branch: {result.stderr}")
-                    
-                    branch = result.stdout.strip()
-                    if not branch:
-                        raise Exception("Could not determine current branch")
-                        
-                    self.log(f"Using current branch: {branch}", "#60a5fa")
+
+                    if result.returncode == 0:
+                        candidate = result.stdout.strip()
+                    else:
+                        # Fallback to the other command
+                        self.log(f"  ⚠️ rev-parse failed (exit {result.returncode}), trying branch --show-current", "#f59e0b")
+                        result2 = subprocess.run(
+                            "git branch --show-current",
+                            capture_output=True,
+                            text=True,
+                            cwd=cwd,
+                            shell=True,
+                            timeout=10
+                        )
+                        if result2.returncode == 0:
+                            candidate = result2.stdout.strip()
+                        else:
+                            candidate = ""
+
+                    # If git reports HEAD, we're in a detached HEAD state
+                    if not candidate or candidate == "HEAD":
+                        # Try reading .git/HEAD to see if a ref is available
+                        head_file = Path(self.repo_root) / ".git" / "HEAD"
+                        if head_file.exists():
+                            try:
+                                head_text = head_file.read_text(encoding='utf-8').strip()
+                                if head_text.startswith("ref:"):
+                                    # format: ref: refs/heads/<branch>
+                                    ref = head_text.split(" ", 1)[1].strip()
+                                    candidate = Path(ref).name
+                                else:
+                                    # It's a detached HEAD with a commit hash; use short hash
+                                    short = subprocess.run(
+                                        "git rev-parse --short HEAD",
+                                        capture_output=True,
+                                        text=True,
+                                        cwd=cwd,
+                                        shell=True,
+                                        timeout=10
+                                    )
+                                    if short.returncode == 0:
+                                        candidate = short.stdout.strip()
+                                    else:
+                                        candidate = ""
+                            except Exception:
+                                candidate = ""
+
+                    if not candidate:
+                        # Can't determine branch; avoid failing the whole deployment just for this
+                        self.log("❌ Could not determine current branch; skipping Git operations.", "#ef4444")
+                        skip_git = True
+                    else:
+                        branch = candidate
+                        self.log(f"Using current branch: {branch}", "#60a5fa")
+
                 except subprocess.TimeoutExpired:
-                    raise Exception("Git command timed out")
+                    self.log("❌ Git command timed out; skipping Git operations.", "#ef4444")
+                    skip_git = True
                 except Exception as e:
-                    self.log(f"❌ Branch detection failed: {str(e)}", "#ef4444")
-                    raise
-            
-            self.log(f"📍 Deployment branch: {branch}", "#60a5fa")
+                    self.log(f"❌ Branch detection failed: {str(e)}; skipping Git operations.", "#ef4444")
+                    skip_git = True
+
+            if skip_git:
+                self.log("📍 Deployment branch: (unknown) - Git steps will be skipped", "#f59e0b")
+            else:
+                self.log(f"📍 Deployment branch: {branch}", "#60a5fa")
             self.log("=" * 70, "#60a5fa")
             
             # Check data folder
