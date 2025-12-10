@@ -6,6 +6,7 @@ import threading
 import os
 import time
 from pathlib import Path
+import queue
 
 # ================================
 # CONFIGURATION
@@ -40,8 +41,13 @@ class DeploymentApp:
         
         self.selected_file = None
         self.is_deploying = False
+        self.loading_dots = 0
+        self.loading_spinner_chars = ["⏳", "⌛"]
+        self.loading_spinner_index = 0
+        self.message_queue = queue.Queue()
         
         self.setup_ui()
+        self.process_queue()
         
     def setup_ui(self):
         # Header with gradient effect (simulated with two frames)
@@ -277,6 +283,30 @@ class DeploymentApp:
         console_frame = tk.Frame(progress_outer, bg="#0a0f1a", relief=tk.SOLID, borderwidth=1)
         console_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 15))
         
+        # Loading indicator (horizontal bar above console)
+        self.loading_frame = tk.Frame(console_frame, bg="#1e293b", height=50)
+        
+        loading_inner = tk.Frame(self.loading_frame, bg="#1e293b")
+        loading_inner.pack(expand=True)
+        
+        self.loading_spinner = tk.Label(
+            loading_inner,
+            text="⏳",
+            font=("Segoe UI", 18),
+            bg="#1e293b",
+            fg=self.accent_color
+        )
+        self.loading_spinner.pack(side=tk.LEFT, padx=(10, 5))
+        
+        self.loading_text = tk.Label(
+            loading_inner,
+            text="Initializing deployment",
+            font=("Segoe UI", 10, "bold"),
+            bg="#1e293b",
+            fg=self.fg_color
+        )
+        self.loading_text.pack(side=tk.LEFT, padx=(0, 10))
+        
         self.status_text = scrolledtext.ScrolledText(
             console_frame,
             font=("Consolas", 9),
@@ -314,21 +344,75 @@ class DeploymentApp:
         version_label.pack()
     
     def log_message(self, message, color="#10b981"):
-        """Add message to status text"""
-        self.status_text.config(state=tk.NORMAL)
-        self.status_text.insert(tk.END, message + "\n")
-        self.status_text.tag_add("color", "end-2c linestart", "end-1c")
-        self.status_text.tag_config("color", foreground=color)
-        self.status_text.see(tk.END)
-        self.status_text.config(state=tk.DISABLED)
-        self.root.update_idletasks()  # Force UI update
-        self.root.update()  # Process all pending events
+        """Add message to queue for thread-safe display"""
+        self.message_queue.put(("log", message, color))
+    
+    def process_queue(self):
+        """Process queued messages from worker thread"""
+        try:
+            while True:
+                msg_type, *args = self.message_queue.get_nowait()
+                
+                if msg_type == "log":
+                    message, color = args
+                    self.status_text.config(state=tk.NORMAL)
+                    self.status_text.insert(tk.END, message + "\n")
+                    # Tag the last line with color
+                    line_start = self.status_text.index("end-2l")
+                    line_end = self.status_text.index("end-1c")
+                    tag_name = f"color_{id(message)}"
+                    self.status_text.tag_add(tag_name, line_start, line_end)
+                    self.status_text.tag_config(tag_name, foreground=color)
+                    self.status_text.see(tk.END)
+                    self.status_text.config(state=tk.DISABLED)
+                elif msg_type == "progress":
+                    value = args[0]
+                    self.progress_var.set(value)
+        except queue.Empty:
+            pass
+        
+        # Schedule next check
+        self.root.after(50, self.process_queue)
     
     def update_progress(self, value):
-        """Update progress bar and refresh UI"""
-        self.progress_var.set(value)
-        self.root.update_idletasks()
-        self.root.update()
+        """Update progress bar (thread-safe)"""
+        self.message_queue.put(("progress", value))
+    
+    def show_loading(self, message="Initializing deployment"):
+        """Show loading indicator above console"""
+        def _show():
+            self.loading_text.config(text=message)
+            if not self.loading_frame.winfo_ismapped():
+                self.loading_frame.pack(fill=tk.X, before=self.status_text, padx=2, pady=5)
+                self.animate_loading()
+        
+        self.root.after(0, _show)
+    
+    def animate_loading(self):
+        """Animate loading spinner"""
+        if not self.is_deploying:
+            return
+        
+        # Rotate spinner icons
+        self.loading_spinner_index = (self.loading_spinner_index + 1) % len(self.loading_spinner_chars)
+        self.loading_spinner.config(text=self.loading_spinner_chars[self.loading_spinner_index])
+        
+        # Animate dots
+        self.loading_dots = (self.loading_dots + 1) % 4
+        dots = "." * self.loading_dots
+        current_text = self.loading_text.cget("text")
+        base_text = current_text.rstrip(".")
+        self.loading_text.config(text=f"{base_text}{dots}")
+        
+        self.root.after(400, self.animate_loading)
+    
+    def hide_loading(self):
+        """Hide loading indicator"""
+        def _hide():
+            if self.loading_frame.winfo_ismapped():
+                self.loading_frame.pack_forget()
+        
+        self.root.after(0, _hide)
     
     def browse_file(self):
         """Open file dialog to select JSON file"""
@@ -474,6 +558,12 @@ class DeploymentApp:
         self.deploy_btn.config(state=tk.DISABLED, text="⏳ Deploying...")
         self.update_progress(0)
         
+        # Clear console and show loading
+        self.status_text.config(state=tk.NORMAL)
+        self.status_text.delete(1.0, tk.END)
+        self.status_text.config(state=tk.DISABLED)
+        self.show_loading()
+        
         # Run deployment in separate thread
         thread = threading.Thread(target=self.run_deployment)
         thread.daemon = True
@@ -563,6 +653,7 @@ class DeploymentApp:
                 return False
             
             # Step 1: Copy JSON file to data folder (10%)
+            self.show_loading("Step 1/6: Updating JSON file")
             self.log_message("\n📋 Step 1/6: Updating JSON file in data/ folder...", "#fbbf24")
             self.update_progress(5)
             
@@ -600,7 +691,8 @@ class DeploymentApp:
             self.update_progress(10)
             
             # Step 2: Git - Check status (20%)
-            self.log_message("\n🔍 Step 2/6: Checking Git repository status...", "#fbbf24")
+            self.show_loading("Step 2/6: Checking Git status")
+            self.log_message("\n🔍 Step 2/6: Checking Git status...", "#fbbf24")
             
             # Check if git is installed
             git_check = subprocess.run("git --version", shell=True, capture_output=True, text=True)
@@ -617,6 +709,7 @@ class DeploymentApp:
             self.update_progress(20)
             
             # Step 3: Git - Add changes (35%)
+            self.show_loading("Step 3/6: Staging changes")
             self.log_message("\n➕ Step 3/6: Adding .json files from data/ folder to Git...", "#fbbf24")
             
             # Check if there are changes in data folder
@@ -640,6 +733,7 @@ class DeploymentApp:
             self.update_progress(35)
             
             # Step 4: Git - Commit changes (50%)
+            self.show_loading("Step 4/6: Committing changes")
             self.log_message("\n💾 Step 4/6: Committing changes...", "#fbbf24")
             
             import datetime
@@ -652,6 +746,7 @@ class DeploymentApp:
             self.update_progress(50)
             
             # Step 5: Git - Push to remote (75%)
+            self.show_loading(f"Step 5/6: Pushing to {branch}")
             self.log_message(f"\n🚀 Step 5/6: Pushing to remote ({branch})...", "#fbbf24")
             
             if not self.run_git_command(f"git push origin {branch}", f"Git push to {branch}"):
@@ -660,6 +755,7 @@ class DeploymentApp:
             self.update_progress(75)
             
             # Step 6: Verify deployment (100%)
+            self.show_loading("Step 6/6: Verifying deployment")
             self.log_message("\n✨ Step 6/6: Verifying deployment...", "#fbbf24")
             
             if not self.run_git_command("git status", "Final status check"):
@@ -681,6 +777,7 @@ class DeploymentApp:
         
         finally:
             self.is_deploying = False
+            self.hide_loading()
             self.root.after(0, lambda: self.deploy_btn.config(state=tk.NORMAL, text="🚀 Deploy to Production"))
     
     def show_completion_message(self, success, error_msg=""):
