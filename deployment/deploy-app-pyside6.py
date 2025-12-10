@@ -8,6 +8,7 @@ import json
 import subprocess
 import threading
 import time
+import os
 from pathlib import Path
 from datetime import datetime
 import queue
@@ -43,7 +44,40 @@ class DeploymentWorker(threading.Thread):
         super().__init__(daemon=True)
         self.selected_file = selected_file
         self.signals = signals
-        self.repo_root = Path(__file__).parent.parent
+        
+        # Find git repository root from the executable's location
+        # When frozen (EXE), use the executable's directory
+        # When running as script, use script's parent
+        if getattr(sys, 'frozen', False):
+            # Running as compiled executable
+            exe_dir = Path(sys.executable).parent
+        else:
+            # Running as script
+            exe_dir = Path(__file__).parent
+        
+        # Search for .git folder starting from exe directory
+        self.repo_root = self.find_git_root(exe_dir)
+        if not self.repo_root:
+            # If not found, try current working directory
+            self.repo_root = self.find_git_root(Path.cwd())
+        
+        if not self.repo_root:
+            # Default to exe directory even if no .git found (will show error later)
+            self.repo_root = exe_dir
+    
+    def find_git_root(self, start_path):
+        """Find the git repository root by looking for .git folder"""
+        current = Path(start_path).resolve()
+        
+        # Search up to 5 levels up
+        for _ in range(5):
+            if (current / ".git").exists():
+                return current
+            if current.parent == current:  # Reached filesystem root
+                break
+            current = current.parent
+        
+        return None
         
     def log(self, message, color="#10b981"):
         self.signals.log.emit(message, color)
@@ -57,23 +91,33 @@ class DeploymentWorker(threading.Thread):
     def run_git_command(self, command, description):
         """Execute git command and log result"""
         self.log(f"  🔧 Executing: {command}", "#9ca3af")
+    def run_git_command(self, command, description):
+        """Run a git command and log the output"""
         try:
+            self.log(f"  🔧 Running: {command}", "#60a5fa")
+            
+            # Ensure Git is in PATH and we're in the right directory
+            cwd = str(self.repo_root)
+            
+            # Use shell=True and ensure proper working directory
             result = subprocess.run(
                 command,
                 shell=True,
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root,
+                cwd=cwd,
                 timeout=60
             )
             
             if result.stdout.strip():
                 self.log(f"  ✓ {result.stdout.strip()}", "#60a5fa")
             
-            if result.returncode != 0 and result.stderr.strip():
-                self.log(f"  ⚠️ {result.stderr.strip()}", "#f59e0b")
+            if result.returncode != 0:
+                if result.stderr.strip():
+                    self.log(f"  ⚠️ {result.stderr.strip()}", "#f59e0b")
+                return False
                 
-            return result.returncode == 0
+            return True
             
         except subprocess.TimeoutExpired:
             self.log(f"  ❌ Command timed out: {command}", "#ef4444")
@@ -85,31 +129,66 @@ class DeploymentWorker(threading.Thread):
     def run(self):
         """Main deployment logic"""
         try:
-            # Determine branch
-            branch = TARGET_BRANCH
-            if not branch:
-                result = subprocess.run(
-                    ["git", "branch", "--show-current"],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                    cwd=self.repo_root
-                )
-                branch = result.stdout.strip()
-                self.log(f"Using current branch: {branch}", "#60a5fa")
-            
             self.log("=" * 70, "#60a5fa")
             self.log("🚀 Starting deployment process...", "#60a5fa")
+            self.log(f"📁 Repository root: {self.repo_root}", "#60a5fa")
+            
+            # Ensure we're in a git repository
+            if not (self.repo_root / ".git").exists():
+                self.log(f"❌ ERROR: Not a git repository!", "#ef4444")
+                self.log(f"📍 Searched in: {self.repo_root}", "#f59e0b")
+                self.log(f"💡 Solution: Copy the .exe file to your git repository folder", "#fbbf24")
+                raise Exception(
+                    f"Not a git repository.\n\n"
+                    f"Current location: {self.repo_root}\n\n"
+                    f"Please copy PhotoDeploymentApp.exe to the root of your git repository "
+                    f"(the folder containing the .git folder)."
+                )
+            
+            self.log(f"✓ Git repository detected", "#10b981")
+            
+            # Determine branch - handle the check=True error properly
+            branch = TARGET_BRANCH
+            if not branch:
+                try:
+                    # Get current directory
+                    cwd = str(self.repo_root)
+                    
+                    # Try to get current branch
+                    result = subprocess.run(
+                        "git branch --show-current",
+                        capture_output=True,
+                        text=True,
+                        cwd=cwd,
+                        shell=True,
+                        timeout=10
+                    )
+                    
+                    if result.returncode != 0:
+                        # Git command failed, log the error
+                        self.log(f"❌ Git error (exit {result.returncode}): {result.stderr}", "#ef4444")
+                        raise Exception(f"Failed to get current branch: {result.stderr}")
+                    
+                    branch = result.stdout.strip()
+                    if not branch:
+                        raise Exception("Could not determine current branch")
+                        
+                    self.log(f"Using current branch: {branch}", "#60a5fa")
+                except subprocess.TimeoutExpired:
+                    raise Exception("Git command timed out")
+                except Exception as e:
+                    self.log(f"❌ Branch detection failed: {str(e)}", "#ef4444")
+                    raise
+            
             self.log(f"📍 Deployment branch: {branch}", "#60a5fa")
-            self.log(f"📁 Working directory: {self.repo_root}", "#60a5fa")
             self.log("=" * 70, "#60a5fa")
             
             # Check data folder
             data_folder = self.repo_root / "data"
             if not data_folder.exists():
-                self.log("  ❌ Error: data/ folder not found", "#ef4444")
-                self.signals.finished.emit(False, "data/ folder not found")
-                return
+                self.log("  ⚠️ data/ folder not found, creating it...", "#f59e0b")
+                data_folder.mkdir(parents=True, exist_ok=True)
+                self.log("  ✓ Created data/ folder", "#10b981")
             
             # Step 1: Update JSON file (10%)
             self.set_step("Step 1/6: Updating JSON file")
@@ -140,9 +219,25 @@ class DeploymentWorker(threading.Thread):
             self.set_step("Step 2/6: Checking Git status")
             self.log("\n🔍 Step 2/6: Checking Git status...", "#fbbf24")
             
-            git_check = subprocess.run("git --version", shell=True, capture_output=True, text=True)
-            if git_check.returncode != 0:
-                self.log("  ⚠️ Git is not installed. Skipping Git operations.", "#f59e0b")
+            # Check if git is available
+            try:
+                git_check = subprocess.run(
+                    "git --version", 
+                    shell=True, 
+                    capture_output=True, 
+                    text=True,
+                    timeout=10
+                )
+                if git_check.returncode != 0:
+                    self.log("  ⚠️ Git is not installed or not in PATH. Skipping Git operations.", "#f59e0b")
+                    self.set_progress(100)
+                    self.log("\n✅ Deployment completed (JSON updated only)", "#10b981")
+                    self.signals.finished.emit(True, "JSON file updated successfully")
+                    return
+                else:
+                    self.log(f"  ✓ Git found: {git_check.stdout.strip()}", "#10b981")
+            except Exception as e:
+                self.log(f"  ⚠️ Git check failed: {str(e)}. Skipping Git operations.", "#f59e0b")
                 self.set_progress(100)
                 self.log("\n✅ Deployment completed (JSON updated only)", "#10b981")
                 self.signals.finished.emit(True, "JSON file updated successfully")
@@ -155,20 +250,35 @@ class DeploymentWorker(threading.Thread):
             
             # Step 3: Git add (35%)
             self.set_step("Step 3/6: Staging changes")
-            self.log("\n➕ Step 3/6: Adding .json files from data/ folder to Git...", "#fbbf24")
+            self.log("\n➕ Step 3/6: Adding only .json files from data/ folder to Git...", "#fbbf24")
             
+            # Check for changes in data/ folder
             status_result = subprocess.run(
-                ["git", "status", "--short", "data/"],
+                "git status --short data/",
+                shell=True,
                 capture_output=True,
                 text=True,
-                cwd=self.repo_root
+                cwd=str(self.repo_root),
+                timeout=10
             )
             
             if status_result.stdout.strip():
-                self.log(f"  📝 Changes detected:\n{status_result.stdout}", "#60a5fa")
-                if not self.run_git_command("git add data/", "Git add data/"):
-                    raise Exception("Git add failed")
-                self.log("  ✓ Changes added successfully", "#10b981")
+                self.log(f"  📝 Changes detected in data/ folder:\n{status_result.stdout}", "#60a5fa")
+                
+                # Only add .json files from data/ folder
+                add_result = subprocess.run(
+                    "git add data/*.json",
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    cwd=str(self.repo_root),
+                    timeout=10
+                )
+                
+                if add_result.returncode != 0:
+                    raise Exception(f"Git add failed: {add_result.stderr}")
+                    
+                self.log("  ✓ Only .json files from data/ folder added successfully", "#10b981")
             else:
                 self.log("  ℹ️ No changes detected in data/ folder", "#60a5fa")
             
@@ -368,6 +478,9 @@ class DeploymentApp(QMainWindow):
         # Set modern dark theme
         self.setup_theme()
         
+        # Check if Git is available on startup
+        self.check_git_availability()
+        
         # Create central widget with scroll area
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -418,8 +531,7 @@ class DeploymentApp(QMainWindow):
         # Material Design 3 Dark Theme Colors matching editor
         self.setStyleSheet("""
             QMainWindow {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 #111827, stop:1 #1f2937);
+                background-color: #000000;
             }
             QWidget {
                 color: #E6E1E5;
@@ -427,9 +539,8 @@ class DeploymentApp(QMainWindow):
                 font-size: 14px;
             }
             QGroupBox {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(31, 41, 55, 0.95), stop:1 rgba(17, 24, 39, 0.95));
-                border: 1px solid rgba(75, 85, 99, 0.3);
+                background-color: rgba(20, 20, 20, 0.95);
+                border: 1px solid rgba(96, 165, 250, 0.2);
                 border-radius: 16px;
                 padding: 24px;
                 margin: 0px;
@@ -460,94 +571,153 @@ class DeploymentApp(QMainWindow):
                 font-family: 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
                 font-size: 13px;
                 padding: 16px;
-                selection-background-color: #1C5BAE;
-                selection-color: #FFFFFF;
-            }
-            QProgressBar {
-                border: none;
-                border-radius: 10px;
-                background: rgba(75, 85, 99, 0.3);
-                text-align: center;
-                height: 10px;
-                color: transparent;
-            }
-            QProgressBar::chunk {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 #1C5BAE, stop:1 #1DA6E1);
-                border-radius: 10px;
             }
         """)
+    
+    def check_git_availability(self):
+        """Check if Git is available in PATH"""
+        try:
+            result = subprocess.run(
+                "git --version",
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0:
+                # Git is available
+                return True
+            else:
+                self.show_git_warning()
+                return False
+        except Exception:
+            self.show_git_warning()
+            return False
+    
+    def show_git_warning(self):
+        """Show warning if Git is not available"""
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Git Not Found")
+        msg_box.setText("Git is not installed or not in PATH")
+        msg_box.setInformativeText(
+            "The deployment features require Git to be installed.\n\n"
+            "You can still:\n"
+            "• Browse and validate JSON files\n"
+            "• View file statistics\n\n"
+            "To enable deployment:\n"
+            "1. Install Git from https://git-scm.com\n"
+            "2. Ensure Git is added to your PATH\n"
+            "3. Restart this application"
+        )
+        msg_box.setIcon(QMessageBox.Warning)
+        msg_box.setStyleSheet("""
+            QMessageBox {
+                background-color: #1a1a1a;
+            }
+            QMessageBox QLabel {
+                color: #E6E1E5;
+                font-size: 14px;
+                min-width: 400px;
+            }
+            QPushButton {
+                background-color: #f59e0b;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 24px;
+                font-size: 13px;
+                font-weight: 500;
+                min-width: 80px;
+            }
+        """)
+        msg_box.exec()
         
     def create_dashboard_header(self, layout):
         """Create dashboard header with welcome message"""
         header = QWidget()
+        header.setFixedHeight(100)
         header.setStyleSheet("""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #1C5BAE, stop:1 #1DA6E1);
-            border-radius: 20px;
-            padding: 24px;
+                stop:0 rgba(28, 91, 174, 0.8), stop:1 rgba(29, 166, 225, 0.8));
+            border-radius: 16px;
         """)
         header_layout = QHBoxLayout(header)
-        header_layout.setContentsMargins(32, 24, 32, 24)
+        header_layout.setContentsMargins(32, 20, 32, 20)
+        header_layout.setSpacing(24)
         
-        # Left side - Title and subtitle
-        left_layout = QVBoxLayout()
-        left_layout.setSpacing(8)
+        # Left side - Icon and Title
+        left_layout = QHBoxLayout()
+        left_layout.setSpacing(16)
         
-        title = QLabel("📸 Photography Portfolio Deployment")
+        icon_label = QLabel("📸")
+        icon_label.setStyleSheet("""
+            font-size: 42px;
+            background-color: transparent;
+        """)
+        left_layout.addWidget(icon_label)
+        
+        text_layout = QVBoxLayout()
+        text_layout.setSpacing(4)
+        
+        title = QLabel("Photography Portfolio Deployment")
         title.setStyleSheet("""
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             color: #FFFFFF;
             background-color: transparent;
         """)
-        left_layout.addWidget(title)
+        text_layout.addWidget(title)
         
-        subtitle = QLabel("Professional Git Deployment Dashboard • Deploy your portfolio with one click")
+        subtitle = QLabel("Professional Git Deployment Dashboard")
         subtitle.setStyleSheet("""
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.85);
             background-color: transparent;
         """)
-        left_layout.addWidget(subtitle)
+        text_layout.addWidget(subtitle)
         
+        left_layout.addLayout(text_layout)
         header_layout.addLayout(left_layout, 1)
         
         # Right side - Status indicator
         status_widget = QWidget()
+        status_widget.setFixedSize(140, 60)
         status_widget.setStyleSheet("""
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
         """)
         status_layout = QVBoxLayout(status_widget)
-        status_layout.setSpacing(4)
+        status_layout.setContentsMargins(12, 8, 12, 8)
+        status_layout.setSpacing(2)
         
         self.status_label = QLabel("● Ready")
         self.status_label.setStyleSheet("""
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: #10b981;
             background-color: transparent;
         """)
+        self.status_label.setAlignment(Qt.AlignCenter)
         status_layout.addWidget(self.status_label)
         
         status_desc = QLabel("System Status")
         status_desc.setStyleSheet("""
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
             background-color: transparent;
         """)
+        status_desc.setAlignment(Qt.AlignCenter)
         status_layout.addWidget(status_desc)
         
         header_layout.addWidget(status_widget)
         
-        # Add shadow
+        # Add subtle shadow
         shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setColor(QColor(0, 0, 0, 100))
-        shadow.setOffset(0, 4)
+        shadow.setBlurRadius(15)
+        shadow.setColor(QColor(0, 0, 0, 80))
+        shadow.setOffset(0, 3)
         header.setGraphicsEffect(shadow)
         
         layout.addWidget(header)
@@ -727,6 +897,54 @@ class DeploymentApp(QMainWindow):
         files_stat.addLayout(files_info, 1)
         stats_layout.addLayout(files_stat)
         
+        # Another separator
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.HLine)
+        sep2.setStyleSheet("background: rgba(96, 165, 250, 0.2); max-height: 1px;")
+        stats_layout.addWidget(sep2)
+        
+        # Validation status
+        validation_stat = QHBoxLayout()
+        validation_icon = QLabel("✓")
+        self.validation_icon = validation_icon
+        validation_icon.setStyleSheet("font-size: 20px; color: #9CA3AF; background: transparent;")
+        validation_stat.addWidget(validation_icon)
+        
+        validation_info = QVBoxLayout()
+        validation_label = QLabel("Validation Status")
+        validation_label.setStyleSheet("color: #9CA3AF; font-size: 12px; background: transparent;")
+        validation_info.addWidget(validation_label)
+        
+        self.validation_value = QLabel("No file selected")
+        self.validation_value.setStyleSheet("color: #9CA3AF; font-size: 14px; font-weight: 600; background: transparent;")
+        validation_info.addWidget(self.validation_value)
+        validation_stat.addLayout(validation_info, 1)
+        stats_layout.addLayout(validation_stat)
+        
+        # Missing fields display
+        self.missing_fields_widget = QWidget()
+        self.missing_fields_widget.setStyleSheet("""
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        """)
+        missing_fields_layout = QVBoxLayout(self.missing_fields_widget)
+        missing_fields_layout.setSpacing(6)
+        missing_fields_layout.setContentsMargins(8, 8, 8, 8)
+        
+        self.missing_title = QLabel("⚠️ Missing Optional Fields:")
+        self.missing_title.setStyleSheet("color: #FBBF24; font-size: 12px; font-weight: 600; background: transparent;")
+        missing_fields_layout.addWidget(self.missing_title)
+        
+        self.missing_fields_label = QLabel("None")
+        self.missing_fields_label.setStyleSheet("color: #FCD34D; font-size: 11px; background: transparent;")
+        self.missing_fields_label.setWordWrap(True)
+        missing_fields_layout.addWidget(self.missing_fields_label)
+        
+        stats_layout.addWidget(self.missing_fields_widget)
+        self.missing_fields_widget.hide()
+        
         group_layout.addWidget(stats_container)
         group_layout.addStretch()
         
@@ -751,7 +969,7 @@ class DeploymentApp(QMainWindow):
         """Create dashboard footer section"""
         footer_widget = QWidget()
         footer_widget.setStyleSheet("""
-            background: rgba(31, 41, 55, 0.5);
+            background: rgba(20, 20, 20, 0.5);
             border-radius: 12px;
             padding: 16px;
         """)
@@ -778,6 +996,174 @@ class DeploymentApp(QMainWindow):
         
         layout.addWidget(footer_widget)
         
+    def validate_json_file(self, file_path):
+        """Validate JSON file structure and check for required fields"""
+        try:
+            # Read and parse JSON
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Check if it's the main portfolio data structure or photo items
+            if isinstance(data, dict):
+                # Check if it has portfolio structure keys
+                portfolio_keys = ['about', 'slider-content', 'slider-images', 'categories', 'gallery-images']
+                has_portfolio_structure = any(key in data for key in portfolio_keys)
+                
+                if has_portfolio_structure:
+                    # Portfolio structure validation
+                    required_sections = ['about', 'slider-content', 'slider-images', 'categories', 'gallery-images']
+                    missing_sections = [section for section in required_sections if section not in data]
+                    
+                    if missing_sections:
+                        return {
+                            'valid': False,
+                            'error': f'Missing required sections: {", ".join(missing_sections)}',
+                            'missing_fields': []
+                        }
+                    
+                    # Validate nested structure
+                    errors = []
+                    missing_fields = []
+                    
+                    # Validate 'about' section
+                    if 'about' in data and isinstance(data['about'], dict):
+                        about_required = ['title', 'description']
+                        about_optional = ['card']
+                        for field in about_required:
+                            if field not in data['about'] or not data['about'][field]:
+                                errors.append(f"about.{field} is missing or empty")
+                        for field in about_optional:
+                            if field not in data['about']:
+                                missing_fields.append(f"about.{field}")
+                    
+                    # Validate 'slider-content' section
+                    if 'slider-content' in data and isinstance(data['slider-content'], dict):
+                        slider_required = ['heading', 'description']
+                        slider_optional = ['show-heading', 'show-description', 'show-latest-collections-button']
+                        for field in slider_required:
+                            if field not in data['slider-content'] or not data['slider-content'][field]:
+                                errors.append(f"slider-content.{field} is missing or empty")
+                        for field in slider_optional:
+                            if field not in data['slider-content']:
+                                missing_fields.append(f"slider-content.{field}")
+                    
+                    # Validate 'slider-images' section
+                    if 'slider-images' in data:
+                        if not isinstance(data['slider-images'], list) or len(data['slider-images']) == 0:
+                            errors.append("slider-images must be a non-empty array")
+                    
+                    # Validate 'categories' section
+                    if 'categories' in data:
+                        if not isinstance(data['categories'], list) or len(data['categories']) == 0:
+                            errors.append("categories must be a non-empty array")
+                        else:
+                            for idx, cat in enumerate(data['categories']):
+                                cat_required = ['title', 'description', 'image']
+                                for field in cat_required:
+                                    if field not in cat or not cat[field]:
+                                        errors.append(f"categories[{idx}].{field} is missing or empty")
+                    
+                    # Validate 'gallery-images' section
+                    if 'gallery-images' in data:
+                        if not isinstance(data['gallery-images'], list) or len(data['gallery-images']) == 0:
+                            errors.append("gallery-images must be a non-empty array")
+                    
+                    if errors:
+                        return {
+                            'valid': False,
+                            'error': '\n'.join(errors),
+                            'missing_fields': []
+                        }
+                    
+                    # All required fields present
+                    return {
+                        'valid': True,
+                        'error': None,
+                        'missing_fields': sorted(missing_fields)
+                    }
+                else:
+                    # Single photo item validation
+                    required_fields = ['id', 'title', 'category', 'imageUrl', 'description']
+                    optional_fields = ['date', 'location', 'camera', 'lens', 'settings', 'tags', 'featured', 'cloudinaryPublicId']
+                    
+                    missing_required = [field for field in required_fields if field not in data or not data[field]]
+                    if missing_required:
+                        return {
+                            'valid': False,
+                            'error': f'Missing required fields: {", ".join(missing_required)}',
+                            'missing_fields': []
+                        }
+                    
+                    missing_optional = [field for field in optional_fields if field not in data]
+                    
+                    return {
+                        'valid': True,
+                        'error': None,
+                        'missing_fields': sorted(missing_optional)
+                    }
+                
+            elif isinstance(data, list):
+                # Photo items array validation
+                required_fields = ['id', 'title', 'category', 'imageUrl', 'description']
+                optional_fields = ['date', 'location', 'camera', 'lens', 'settings', 'tags', 'featured', 'cloudinaryPublicId']
+                
+                if not data:
+                    return {
+                        'valid': False,
+                        'error': 'JSON file is empty.',
+                        'missing_fields': []
+                    }
+                
+                # Validate each item
+                all_missing_fields = set()
+                errors = []
+                
+                for idx, item in enumerate(data):
+                    if not isinstance(item, dict):
+                        errors.append(f"Item {idx + 1}: Not a valid object")
+                        continue
+                    
+                    # Check required fields
+                    missing_required = [field for field in required_fields if field not in item or not item[field]]
+                    if missing_required:
+                        errors.append(f"Item {idx + 1}: Missing required fields: {', '.join(missing_required)}")
+                    
+                    # Track optional missing fields
+                    missing_optional = [field for field in optional_fields if field not in item]
+                    all_missing_fields.update(missing_optional)
+                
+                if errors:
+                    return {
+                        'valid': False,
+                        'error': '\n'.join(errors),
+                        'missing_fields': []
+                    }
+                
+                return {
+                    'valid': True,
+                    'error': None,
+                    'missing_fields': sorted(list(all_missing_fields))
+                }
+            else:
+                return {
+                    'valid': False,
+                    'error': 'Invalid JSON structure. Expected object or array.',
+                    'missing_fields': []
+                }
+            
+        except json.JSONDecodeError as e:
+            return {
+                'valid': False,
+                'error': f'Invalid JSON syntax: {str(e)}',
+                'missing_fields': []
+            }
+        except Exception as e:
+            return {
+                'valid': False,
+                'error': f'Error reading file: {str(e)}',
+                'missing_fields': []
+            }
+    
     def browse_file(self):
         """Open file dialog to select JSON file"""
         repo_root = Path(__file__).parent.parent
@@ -790,6 +1176,47 @@ class DeploymentApp(QMainWindow):
         )
         
         if file_path:
+            # Validate JSON file
+            validation_result = self.validate_json_file(file_path)
+            
+            # Log validation details
+            self.log_message(f"🔍 Validating file: {file_path}", "#60A5FA")
+            
+            if not validation_result['valid']:
+                # Show validation error
+                self.log_message(f"❌ Validation failed: {validation_result['error']}", "#EF4444")
+                
+                # Update UI to show error state
+                self.validation_icon.setStyleSheet("font-size: 20px; color: #EF4444; background: transparent;")
+                self.validation_value.setText("Invalid ✗")
+                self.validation_value.setStyleSheet("color: #EF4444; font-size: 14px; font-weight: 600; background: transparent;")
+                
+                # Show error in missing fields widget
+                self.missing_fields_label.setText(validation_result['error'])
+                self.missing_fields_widget.setStyleSheet("""
+                    background: rgba(239, 68, 68, 0.1);
+                    border: 1px solid rgba(239, 68, 68, 0.3);
+                    border-radius: 8px;
+                    padding: 12px;
+                """)
+                missing_title_label = self.missing_fields_widget.findChild(QLabel)
+                if missing_title_label:
+                    missing_title_label.setText("❌ Validation Errors:")
+                    missing_title_label.setStyleSheet("color: #EF4444; font-size: 12px; font-weight: 600; background: transparent;")
+                self.missing_fields_widget.show()
+                
+                # Don't enable deploy button
+                self.deploy_btn.setEnabled(False)
+                return
+            
+            # Show validation success with missing fields if any
+            if validation_result['missing_fields']:
+                # Don't show popup, just log to console
+                self.log_message(f"⚠️  File validated with {len(validation_result['missing_fields'])} missing optional fields:", "#f59e0b")
+                # Log each missing field
+                for field in validation_result['missing_fields']:
+                    self.log_message(f"    • {field}", "#FCD34D")
+            
             self.selected_file = file_path
             self.file_path_label.setText(file_path)
             self.file_path_label.setStyleSheet("""
@@ -803,7 +1230,37 @@ class DeploymentApp(QMainWindow):
                 letter-spacing: 0.25px;
             """)
             self.deploy_btn.setEnabled(True)
-            self.log_message("✅ File selected successfully", "#4DB6AC")
+            
+            # Update validation status in UI
+            if validation_result['missing_fields']:
+                self.validation_icon.setStyleSheet("font-size: 20px; color: #FBBF24; background: transparent;")
+                self.validation_value.setText(f"Valid ({len(validation_result['missing_fields'])} warnings)")
+                self.validation_value.setStyleSheet("color: #FBBF24; font-size: 14px; font-weight: 600; background: transparent;")
+                
+                # Reset missing fields widget style
+                self.missing_fields_widget.setStyleSheet("""
+                    background: rgba(251, 191, 36, 0.1);
+                    border: 1px solid rgba(251, 191, 36, 0.3);
+                    border-radius: 8px;
+                    padding: 12px;
+                """)
+                self.missing_title.setText("⚠️ Missing Optional Fields:")
+                self.missing_title.setStyleSheet("color: #FBBF24; font-size: 12px; font-weight: 600; background: transparent;")
+                
+                # Show missing fields - format nicely with line breaks
+                missing_display = "\n".join(validation_result['missing_fields'])
+                self.missing_fields_label.setText(missing_display)
+                self.missing_fields_label.setStyleSheet("color: #FCD34D; font-size: 11px; background: transparent;")
+                self.missing_fields_widget.show()
+            else:
+                self.validation_icon.setStyleSheet("font-size: 20px; color: #10b981; background: transparent;")
+                self.validation_value.setText("Valid ✓")
+                self.validation_value.setStyleSheet("color: #10b981; font-size: 14px; font-weight: 600; background: transparent;")
+                
+                # Hide missing fields
+                self.missing_fields_widget.hide()
+                
+                self.log_message("✅ File validated successfully - All fields present", "#10b981")
             
     def start_deployment(self):
         """Start the deployment process"""
@@ -818,6 +1275,32 @@ class DeploymentApp(QMainWindow):
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         msg_box.setDefaultButton(QMessageBox.No)
         msg_box.setIcon(QMessageBox.Question)
+        msg_box.setStyleSheet("""
+            QMessageBox {
+                background-color: #1a1a1a;
+            }
+            QMessageBox QLabel {
+                color: #E6E1E5;
+                font-size: 14px;
+                min-width: 300px;
+            }
+            QPushButton {
+                background-color: #6750A4;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 24px;
+                font-size: 13px;
+                font-weight: 500;
+                min-width: 80px;
+            }
+            QPushButton:hover {
+                background-color: #7c63b8;
+            }
+            QPushButton:pressed {
+                background-color: #5a4492;
+            }
+        """)
         
         reply = msg_box.exec()
         
@@ -888,6 +1371,29 @@ class DeploymentApp(QMainWindow):
             msg_box.setText("Your photography portfolio has been deployed successfully!")
             msg_box.setInformativeText("The website is now live with your updates.")
             msg_box.setIcon(QMessageBox.Information)
+            msg_box.setStyleSheet("""
+                QMessageBox {
+                    background-color: #1a1a1a;
+                }
+                QMessageBox QLabel {
+                    color: #E6E1E5;
+                    font-size: 14px;
+                    min-width: 300px;
+                }
+                QPushButton {
+                    background-color: #10b981;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 24px;
+                    font-size: 13px;
+                    font-weight: 500;
+                    min-width: 80px;
+                }
+                QPushButton:hover {
+                    background-color: #14c48d;
+                }
+            """)
             msg_box.exec()
         else:
             self.status_label.setText("● Failed")
@@ -903,6 +1409,29 @@ class DeploymentApp(QMainWindow):
             msg_box.setText("Deployment failed with error:")
             msg_box.setInformativeText(f"{message}\n\nPlease check the console for details.")
             msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setStyleSheet("""
+                QMessageBox {
+                    background-color: #1a1a1a;
+                }
+                QMessageBox QLabel {
+                    color: #E6E1E5;
+                    font-size: 14px;
+                    min-width: 300px;
+                }
+                QPushButton {
+                    background-color: #EF4444;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 24px;
+                    font-size: 13px;
+                    font-weight: 500;
+                    min-width: 80px;
+                }
+                QPushButton:hover {
+                    background-color: #f35555;
+                }
+            """)
             msg_box.exec()
 
 
