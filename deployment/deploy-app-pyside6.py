@@ -183,31 +183,43 @@ class DeploymentWorker(threading.Thread):
             self.log(f"📍 Deployment branch: {branch}", "#60a5fa")
             self.log("=" * 70, "#60a5fa")
             
-            # Check data folder
+            # Check/create data folder
             data_folder = self.repo_root / "data"
             if not data_folder.exists():
                 self.log("  ⚠️ data/ folder not found, creating it...", "#f59e0b")
                 data_folder.mkdir(parents=True, exist_ok=True)
                 self.log("  ✓ Created data/ folder", "#10b981")
             
-            # Step 1: Update JSON file (10%)
+            # Step 1: Replace JSON file data (10%)
             self.set_step("Step 1/6: Updating JSON file")
-            self.log("\n📋 Step 1/6: Updating JSON file in data/ folder...", "#fbbf24")
+            self.log("\n📋 Step 1/6: Replacing JSON file data in repository...", "#fbbf24")
             self.set_progress(5)
             
+            # Target file is always anupam-dutta-photography-data-set.json
             target_file = data_folder / "anupam-dutta-photography-data-set.json"
             
             try:
-                with open(self.selected_file, 'r', encoding='utf-8') as src:
-                    content = src.read()
+                # Read and validate uploaded JSON
+                with open(self.selected_file, 'r', encoding='utf-8') as f:
+                    uploaded_data = f.read()
+                    json.loads(uploaded_data)  # Validate JSON
                 
-                self.log(f"  📄 Source file: {Path(self.selected_file).name}", "#60a5fa")
-                self.log(f"  📁 Target file: {target_file}", "#60a5fa")
+                self.log(f"  📄 Uploaded file: {Path(self.selected_file).name}", "#60a5fa")
+                self.log(f"  📍 Source: {self.selected_file}", "#60a5fa")
+                self.log("  ✓ JSON is valid", "#10b981")
                 
-                with open(target_file, 'w', encoding='utf-8') as dst:
-                    dst.write(content)
+                # Replace the existing file's data
+                self.log(f"  📁 Replacing: data/anupam-dutta-photography-data-set.json", "#60a5fa")
                 
-                self.log("  ✓ File updated successfully", "#10b981")
+                with open(target_file, 'w', encoding='utf-8') as f:
+                    f.write(uploaded_data)
+                
+                self.log("  ✓ File data replaced successfully", "#10b981")
+                
+            except json.JSONDecodeError as e:
+                self.log(f"  ❌ Invalid JSON: {str(e)}", "#ef4444")
+                self.signals.finished.emit(False, f"Invalid JSON file: {str(e)}")
+                return
             except Exception as e:
                 self.log(f"  ❌ Error updating file: {str(e)}", "#ef4444")
                 self.signals.finished.emit(False, f"File update failed: {str(e)}")
@@ -250,11 +262,11 @@ class DeploymentWorker(threading.Thread):
             
             # Step 3: Git add (35%)
             self.set_step("Step 3/6: Staging changes")
-            self.log("\n➕ Step 3/6: Adding only .json files from data/ folder to Git...", "#fbbf24")
+            self.log("\n➕ Step 3/6: Adding JSON files to Git...", "#fbbf24")
             
-            # Check for changes in data/ folder
-            status_result = subprocess.run(
-                "git status --short data/",
+            # Add all JSON files from data folder
+            add_result = subprocess.run(
+                'git add data/*.json',
                 shell=True,
                 capture_output=True,
                 text=True,
@@ -262,25 +274,10 @@ class DeploymentWorker(threading.Thread):
                 timeout=10
             )
             
-            if status_result.stdout.strip():
-                self.log(f"  📝 Changes detected in data/ folder:\n{status_result.stdout}", "#60a5fa")
-                
-                # Only add .json files from data/ folder
-                add_result = subprocess.run(
-                    "git add data/*.json",
-                    shell=True,
-                    capture_output=True,
-                    text=True,
-                    cwd=str(self.repo_root),
-                    timeout=10
-                )
-                
-                if add_result.returncode != 0:
-                    raise Exception(f"Git add failed: {add_result.stderr}")
-                    
-                self.log("  ✓ Only .json files from data/ folder added successfully", "#10b981")
+            if add_result.returncode != 0:
+                self.log(f"  ⚠️ Git add warning: {add_result.stderr}", "#f59e0b")
             else:
-                self.log("  ℹ️ No changes detected in data/ folder", "#60a5fa")
+                self.log("  ✓ JSON files staged successfully", "#10b981")
             
             self.set_progress(35)
             
@@ -351,50 +348,54 @@ class MaterialButton(QPushButton):
             # Filled button (primary action)
             self.setStyleSheet("""
                 QPushButton {
-                    background-color: #6750A4;
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                        stop:0 #6366f1, stop:1 #8b5cf6);
                     color: #FFFFFF;
                     border: none;
-                    border-radius: 20px;
-                    padding: 10px 24px;
+                    border-radius: 12px;
+                    padding: 12px 28px;
                     font-size: 14px;
-                    font-weight: 500;
-                    letter-spacing: 0.1px;
+                    font-weight: 600;
+                    letter-spacing: 0.3px;
                     min-height: 40px;
                 }
                 QPushButton:hover {
-                    background-color: #7965AF;
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                        stop:0 #4f46e5, stop:1 #7c3aed);
                 }
                 QPushButton:pressed {
-                    background-color: #5A4793;
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                        stop:0 #4338ca, stop:1 #6d28d9);
                 }
                 QPushButton:disabled {
-                    background-color: rgba(31, 31, 31, 0.12);
-                    color: rgba(31, 31, 31, 0.38);
+                    background-color: #334155;
+                    color: #64748b;
                 }
             """)
         elif self.button_type == "tonal":
             # Tonal button (secondary action)
             self.setStyleSheet("""
                 QPushButton {
-                    background-color: #E8DEF8;
-                    color: #1D192B;
+                    background-color: rgba(99, 102, 241, 0.15);
+                    color: #a5b4fc;
                     border: none;
-                    border-radius: 20px;
-                    padding: 10px 24px;
+                    border-radius: 12px;
+                    padding: 12px 28px;
                     font-size: 14px;
-                    font-weight: 500;
-                    letter-spacing: 0.1px;
+                    font-weight: 600;
+                    letter-spacing: 0.3px;
                     min-height: 40px;
                 }
                 QPushButton:hover {
-                    background-color: #D5C9E9;
+                    background-color: rgba(99, 102, 241, 0.25);
+                    color: #c7d2fe;
                 }
                 QPushButton:pressed {
-                    background-color: #C2B5D8;
+                    background-color: rgba(99, 102, 241, 0.35);
                 }
                 QPushButton:disabled {
-                    background-color: rgba(31, 31, 31, 0.12);
-                    color: rgba(31, 31, 31, 0.38);
+                    background-color: #334155;
+                    color: #64748b;
                 }
             """)
         elif self.button_type == "outlined":
@@ -402,48 +403,50 @@ class MaterialButton(QPushButton):
             self.setStyleSheet("""
                 QPushButton {
                     background-color: transparent;
-                    color: #6750A4;
-                    border: 1px solid #79747E;
-                    border-radius: 20px;
+                    color: #818cf8;
+                    border: 2px solid #6366f1;
+                    border-radius: 12px;
                     padding: 10px 24px;
                     font-size: 14px;
-                    font-weight: 500;
-                    letter-spacing: 0.1px;
+                    font-weight: 600;
+                    letter-spacing: 0.3px;
                     min-height: 40px;
                 }
                 QPushButton:hover {
-                    background-color: rgba(103, 80, 164, 0.08);
-                    border-color: #6750A4;
+                    background-color: rgba(99, 102, 241, 0.1);
+                    border-color: #818cf8;
+                    color: #a5b4fc;
                 }
                 QPushButton:pressed {
-                    background-color: rgba(103, 80, 164, 0.12);
+                    background-color: rgba(99, 102, 241, 0.2);
                 }
                 QPushButton:disabled {
-                    border-color: rgba(31, 31, 31, 0.12);
-                    color: rgba(31, 31, 31, 0.38);
+                    border-color: #334155;
+                    color: #64748b;
                 }
             """)
         else:  # text button
             self.setStyleSheet("""
                 QPushButton {
                     background-color: transparent;
-                    color: #6750A4;
+                    color: #818cf8;
                     border: none;
-                    border-radius: 20px;
-                    padding: 10px 12px;
+                    border-radius: 12px;
+                    padding: 10px 16px;
                     font-size: 14px;
-                    font-weight: 500;
-                    letter-spacing: 0.1px;
+                    font-weight: 600;
+                    letter-spacing: 0.3px;
                     min-height: 40px;
                 }
                 QPushButton:hover {
-                    background-color: rgba(103, 80, 164, 0.08);
+                    background-color: rgba(99, 102, 241, 0.1);
+                    color: #a5b4fc;
                 }
                 QPushButton:pressed {
-                    background-color: rgba(103, 80, 164, 0.12);
+                    background-color: rgba(99, 102, 241, 0.2);
                 }
                 QPushButton:disabled {
-                    color: rgba(31, 31, 31, 0.38);
+                    color: #64748b;
                 }
             """)
         
@@ -527,20 +530,21 @@ class DeploymentApp(QMainWindow):
         self.create_footer(main_layout)
         
     def setup_theme(self):
-        """Apply Material Design 3 theme"""
-        # Material Design 3 Dark Theme Colors matching editor
+        """Apply Material Design 3 Dark Mode theme"""
+        # Modern Dark Theme with comfortable colors
         self.setStyleSheet("""
             QMainWindow {
-                background-color: #000000;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #1a1a2e, stop:1 #16213e);
             }
             QWidget {
-                color: #E6E1E5;
+                color: #e4e4e7;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
                 font-size: 14px;
             }
             QGroupBox {
-                background-color: rgba(20, 20, 20, 0.95);
-                border: 1px solid rgba(96, 165, 250, 0.2);
+                background-color: #1e293b;
+                border: 1px solid #334155;
                 border-radius: 16px;
                 padding: 24px;
                 margin: 0px;
@@ -554,23 +558,54 @@ class DeploymentApp(QMainWindow):
                 padding: 8px 16px;
                 margin-left: 8px;
                 margin-top: -8px;
-                color: #60A5FA;
-                background: rgba(96, 165, 250, 0.1);
-                border: 1px solid rgba(96, 165, 250, 0.3);
+                color: #818cf8;
+                background: rgba(99, 102, 241, 0.15);
+                border: 1px solid rgba(99, 102, 241, 0.3);
                 border-radius: 8px;
             }
             QLabel {
-                color: #D1D5DB;
+                color: #e4e4e7;
                 background-color: transparent;
             }
             QTextEdit {
-                background-color: #0a0f1a;
-                border: 1px solid #374151;
+                background-color: #0f172a;
+                border: 1px solid #334155;
                 border-radius: 12px;
-                color: #10b981;
+                color: #a5f3fc;
                 font-family: 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
                 font-size: 13px;
                 padding: 16px;
+                selection-background-color: #6366f1;
+            }
+            QProgressBar {
+                background-color: #0f172a;
+                border: 1px solid #334155;
+                border-radius: 5px;
+                text-align: center;
+                color: #e4e4e7;
+                height: 10px;
+            }
+            QProgressBar::chunk {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #6366f1, stop:1 #8b5cf6);
+                border-radius: 5px;
+            }
+            QScrollBar:vertical {
+                background: #0f172a;
+                width: 10px;
+                border-radius: 5px;
+                margin: 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: #475569;
+                border-radius: 5px;
+                min-height: 30px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background: #64748b;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
             }
         """)
     
@@ -612,22 +647,27 @@ class DeploymentApp(QMainWindow):
         msg_box.setIcon(QMessageBox.Warning)
         msg_box.setStyleSheet("""
             QMessageBox {
-                background-color: #1a1a1a;
+                background-color: #1e293b;
             }
             QMessageBox QLabel {
-                color: #E6E1E5;
+                color: #e4e4e7;
                 font-size: 14px;
                 min-width: 400px;
             }
             QPushButton {
-                background-color: #f59e0b;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #fbbf24, stop:1 #f59e0b);
                 color: white;
                 border: none;
                 border-radius: 8px;
                 padding: 8px 24px;
                 font-size: 13px;
-                font-weight: 500;
+                font-weight: 600;
                 min-width: 80px;
+            }
+            QPushButton:hover {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #f59e0b, stop:1 #d97706);
             }
         """)
         msg_box.exec()
@@ -638,7 +678,7 @@ class DeploymentApp(QMainWindow):
         header.setFixedHeight(100)
         header.setStyleSheet("""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 rgba(28, 91, 174, 0.8), stop:1 rgba(29, 166, 225, 0.8));
+                stop:0 #6366f1, stop:1 #8b5cf6);
             border-radius: 16px;
         """)
         header_layout = QHBoxLayout(header)
@@ -735,7 +775,7 @@ class DeploymentApp(QMainWindow):
         # Description
         desc = QLabel("Select the JSON file to deploy to your photography portfolio")
         desc.setStyleSheet("""
-            color: #CAC4D0;
+            color: #94a3b8;
             font-size: 14px;
             background-color: transparent;
         """)
@@ -752,11 +792,11 @@ class DeploymentApp(QMainWindow):
         # File path display
         self.file_path_label = QLabel("No file selected")
         self.file_path_label.setStyleSheet("""
-            background-color: #211F26;
-            border: 1px solid #49454F;
+            background-color: #0f172a;
+            border: 2px dashed #475569;
             border-radius: 12px;
             padding: 16px;
-            color: #938F99;
+            color: #94a3b8;
             font-family: 'Cascadia Mono', 'Consolas', monospace;
             font-size: 13px;
         """)
@@ -778,25 +818,26 @@ class DeploymentApp(QMainWindow):
         branch_text = TARGET_BRANCH if TARGET_BRANCH else "Current Branch"
         branch_label = QLabel(f"🌿 Target Branch: {branch_text}")
         branch_label.setStyleSheet("""
-            color: #D0BCFF;
+            color: #a5b4fc;
             font-size: 14px;
             padding: 12px 16px;
             font-weight: 500;
-            background-color: rgba(208, 188, 255, 0.12);
+            background-color: rgba(99, 102, 241, 0.15);
             border-radius: 8px;
+            border-left: 3px solid #6366f1;
         """)
         group_layout.addWidget(branch_label)
         
         # Current step label
         self.step_label = QLabel("")
         self.step_label.setStyleSheet("""
-            color: #E8DEF8;
+            color: #e4e4e7;
             font-size: 14px;
             font-weight: 500;
             padding: 12px 16px;
-            background-color: rgba(208, 188, 255, 0.08);
-            border-radius: 12px;
-            border-left: 3px solid #D0BCFF;
+            background-color: #0f172a;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
         """)
         self.step_label.setFixedHeight(45)
         self.step_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -809,7 +850,7 @@ class DeploymentApp(QMainWindow):
         
         self.progress_label = QLabel("0%")
         self.progress_label.setStyleSheet("""
-            color: #CAC4D0;
+            color: #94a3b8;
             font-size: 12px;
             font-weight: 500;
             background-color: transparent;
