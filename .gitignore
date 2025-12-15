@@ -54,9 +54,9 @@ yarn-error.log*
 .env.*.local
 
 # Build outputs
-deployment/build/
-deployment/dist/
-*.exe
+deployment/build/**/*
+deployment/dist/**/*
+!deployment/dist/*.exe
 *.spec
 
 # Temporary files
