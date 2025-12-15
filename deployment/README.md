@@ -120,6 +120,24 @@ rm -rf .venv
 - **Building executable:** Run `./build.sh`
 - **Clean install:** Delete `.venv` folder and re-run setup
 
+### macOS Build (Create .app and DMG) ✅
+
+If you want a native macOS application bundle and an optional DMG, there's a dedicated script:
+
+```bash
+cd deployment
+./build-mac.sh            # Build PhotoDeploymentApp.app
+CODESIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" ./build-mac.sh  # sign during build
+CREATE_DMG=1 ./build-mac.sh  # build + create a DMG
+```
+
+Notes:
+- The script only runs on macOS (Darwin).
+- Codesigning and notarization are optional. Provide `CODESIGN_IDENTITY` as an environment variable to sign the .app.
+- To notarize, use Apple's `xcrun notarytool` or `altool` with your Apple ID / App-specific password; this script outputs a DMG which is convenient to submit for notarization.
+- An example entitlements file is included at `deployment/entitlements.plist` and can be used with codesign if you need extra entitlements.
+
+
 ## 🤝 Contributing
 
 Found a bug or want to improve something? Feel free to open an issue or submit a pull request!
