@@ -156,6 +156,52 @@
                 transition: transform 0.3s ease-in-out;
             }
         }
+
+        /* Floating Preview Button */
+        .preview-fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1C5BAE 0%, #1DA6E1 100%);
+            box-shadow: 0 8px 24px rgba(28, 91, 174, 0.4), 0 0 0 0 rgba(29, 166, 225, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            animation: pulse-ring 2s infinite;
+        }
+
+        .preview-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 32px rgba(28, 91, 174, 0.6), 0 0 0 8px rgba(29, 166, 225, 0.3);
+        }
+
+        .preview-fab:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% {
+                box-shadow: 0 8px 24px rgba(28, 91, 174, 0.4), 0 0 0 0 rgba(29, 166, 225, 0.7);
+            }
+            50% {
+                box-shadow: 0 8px 24px rgba(28, 91, 174, 0.4), 0 0 0 8px rgba(29, 166, 225, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .preview-fab {
+                width: 56px;
+                height: 56px;
+                bottom: 1.5rem;
+                right: 1.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -264,6 +310,19 @@
         </button>
         <img id="fullscreenImage" src="" alt="Fullscreen view" onclick="event.stopPropagation()">
     </div>
+
+    <!-- Floating Preview Button -->
+    <button id="preview-fab" class="preview-fab" onclick="openPreview()" 
+        title="Preview Website (Ctrl + P)" aria-label="Preview Website">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+            </path>
+        </svg>
+        <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900 animate-pulse"></div>
+    </button>
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 h-16 bg-gray-800 border-b border-gray-700 shadow-sm z-50">
@@ -1333,10 +1392,31 @@
             document.body.style.overflow = '';
         }
 
+        // Preview Website Function
+        function openPreview() {
+            // Open the main website in a new tab
+            window.open('../index.html', '_blank', 'noopener,noreferrer');
+            
+            // Optional: Show a toast notification
+            Toastify({
+                text: "🎨 Preview opened in new tab!",
+                duration: 2000,
+                gravity: "bottom",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #1C5BAE, #1DA6E1)",
+                className: "toastify-custom",
+            }).showToast();
+        }
+
         // Close on ESC key
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeFullscreen();
+            }
+            // Ctrl+P or Cmd+P for preview
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                openPreview();
             }
         });
 
