@@ -690,7 +690,7 @@ fetch("./data/anupam-dutta-photography-data-set.json")
                         
                         <!-- Content -->
                         <div class="flex-1 min-w-0">
-                            <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-[#1DA6E1] transition-colors duration-300">
+                            <h3 class="md:text-xl font-semibold text-white mb-2 group-hover:text-[#1DA6E1] transition-colors duration-300">
                                 ${link.title}
                             </h3>
                             <p class="text-gray-400 text-sm flex items-center gap-1">
