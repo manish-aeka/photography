@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- CATEGORY CARD RENDER & CLICK REDIRECT ---
-    fetch("../data/anupam-dutta-photography-data-set.json")
+    fetch("./data/anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             // Populate Hero Content from slider-content
@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Set logo URL
                 if (settings['logo-url']) {
-                    document.querySelectorAll('.logo-img').forEach(logoImg => {
+                    // Update all logo images including navbar and loading overlay
+                    document.querySelectorAll('.logo-img, #loading-overlay img').forEach(logoImg => {
                         logoImg.src = settings['logo-url'];
                     });
                     // Also update favicon
@@ -356,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // --- GALLERY MASONRY/COLLAGE RENDER ---
-    fetch("../data/anupam-dutta-photography-data-set.json")
+    fetch("./data/anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             const gallery = document.getElementById('gallery');
@@ -531,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // --- CATEGORY CARD RENDER & CLICK REDIRECT ---
 document.addEventListener('DOMContentLoaded', function () {
-    fetch("../data/anupam-dutta-photography-data-set.json")
+    fetch("./data/anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             // Render categories
@@ -614,7 +615,7 @@ let slider_images = [];
 let current_slider_image = 0;
 
 // Load JSON images
-fetch("../data/anupam-dutta-photography-data-set.json")
+fetch("./data/anupam-dutta-photography-data-set.json")
     .then(res => res.json())
     .then(data => {
         slider_images = data["slider-images"];
@@ -663,3 +664,50 @@ function updateDots() {
             (i === current_slider_image ? "bg-white" : "bg-white/50");
     }
 }
+
+// --- USEFUL LINKS SECTION ---
+fetch("./data/anupam-dutta-photography-data-set.json")
+    .then(res => res.json())
+    .then(data => {
+        const usefulLinksContainer = document.getElementById('useful-links-container');
+        if (!usefulLinksContainer || !data['useful-links']) return;
+        
+        usefulLinksContainer.innerHTML = '';
+        
+        data['useful-links'].forEach((link, index) => {
+            const linkCard = document.createElement('div');
+            linkCard.className = 'group relative bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-[#1C5BAE]/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1';
+            
+            linkCard.innerHTML = `
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="block">
+                    <div class="flex items-start gap-4">
+                        <!-- Icon -->
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-[#1DA6E1] transition-colors duration-300">
+                                ${link.title}
+                            </h3>
+                            <p class="text-gray-400 text-sm flex items-center gap-1">
+                                Visit link
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Animated border on hover -->
+                    <div class="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-[#1C5BAE]/50 transition-all duration-300 pointer-events-none"></div>
+                </a>
+            `;
+            
+            usefulLinksContainer.appendChild(linkCard);
+        });
+    })
+    .catch(error => console.error('Error loading useful links:', error));

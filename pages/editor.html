@@ -279,10 +279,9 @@
 
             <div class="flex items-center gap-2 md:gap-4">
                 <a href="/" class="group" title="Go to Homepage">
-                    <img id="dashboard-logo" src="../assets/logo.png" alt="Logo"
-                        class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover transition-transform group-hover:scale-110"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div
+                    <img id="dashboard-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Logo"
+                        class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover transition-transform group-hover:scale-110">
+                    <div id="dashboard-logo-fallback"
                         class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg items-center justify-center hidden transition-transform group-hover:scale-110">
                         <svg class="w-4 h-4 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -292,6 +291,45 @@
                         </svg>
                     </div>
                 </a>
+                <script>
+                    // Load dashboard logo immediately from JSON
+                    (function() {
+                        fetch('../data/anupam-dutta-photography-data-set.json')
+                            .then(res => res.json())
+                            .then(data => {
+                                const dashboardLogo = document.getElementById('dashboard-logo');
+                                const dashboardLogoFallback = document.getElementById('dashboard-logo-fallback');
+                                
+                                if (data.settings && data.settings['logo-url'] && dashboardLogo) {
+                                    dashboardLogo.src = data.settings['logo-url'];
+                                    dashboardLogo.onerror = function() {
+                                        this.style.display = 'none';
+                                        if (dashboardLogoFallback) {
+                                            dashboardLogoFallback.style.display = 'flex';
+                                        }
+                                    };
+                                    dashboardLogo.onload = function() {
+                                        this.style.display = 'block';
+                                        if (dashboardLogoFallback) {
+                                            dashboardLogoFallback.style.display = 'none';
+                                        }
+                                    };
+                                } else {
+                                    // No logo URL found, show fallback
+                                    if (dashboardLogo) dashboardLogo.style.display = 'none';
+                                    if (dashboardLogoFallback) dashboardLogoFallback.style.display = 'flex';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error loading logo:', error);
+                                // Show fallback on error
+                                const dashboardLogo = document.getElementById('dashboard-logo');
+                                const dashboardLogoFallback = document.getElementById('dashboard-logo-fallback');
+                                if (dashboardLogo) dashboardLogo.style.display = 'none';
+                                if (dashboardLogoFallback) dashboardLogoFallback.style.display = 'flex';
+                            });
+                    })();
+                </script>
                 <div class="hidden sm:block">
                     <h1
                         class="text-lg md:text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
@@ -388,6 +426,15 @@
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>About Section</span>
+                </a>
+                <a href="#useful-links-section" onclick="scrollToSection('useful-links-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                    <span>Useful Links</span>
                 </a>
                 <a href="#settings-section" onclick="scrollToSection('settings-section')"
                     class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
@@ -817,6 +864,34 @@
             </div>
         </div>
 
+        <!-- Useful Links Section -->
+        <div id="useful-links-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h2
+                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                        Useful Links</h2>
+                    <p class="text-sm text-gray-400">External resources and featured content links</p>
+                </div>
+            </div>
+            <div id="usefulLinksContainer" class="space-y-3"></div>
+            <button onclick="addUsefulLink()" title="Add a new useful link"
+                class="mt-4 w-full bg-gradient-to-r from-green-600 to-green-700 px-6 py-3 rounded-lg text-white font-semibold shadow-md hover:shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Useful Link
+            </button>
+        </div>
+
         <!-- Settings Section -->
         <div id="settings-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 card-hover">
             <div class="flex items-center gap-3 mb-6">
@@ -850,10 +925,11 @@
                     <!-- Logo -->
                     <div class="md:col-span-2 bg-gray-750 rounded-lg p-4 border border-gray-600/50">
                         <div class="flex gap-4 mb-3">
-                            <div
+                            <div id="logo-container"
                                 class="relative bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden hover:border-[#1DA6E1] transition-colors">
                                 <img id="logo-preview" src="" alt="Logo Preview"
-                                    class="max-w-full max-h-full object-contain">
+                                    class="absolute inset-0 w-full h-full object-contain p-2" style="display: none;"
+                                    onerror="this.style.display='none'; document.getElementById('logo-placeholder').style.display='flex';">
                                 <div id="logo-placeholder"
                                     class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
                                     <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1310,6 +1386,7 @@
                 { id: 'categories-section', link: document.querySelector('a[href="#categories-section"]') },
                 { id: 'gallery-section', link: document.querySelector('a[href="#gallery-section"]') },
                 { id: 'about-section', link: document.querySelector('a[href="#about-section"]') },
+                { id: 'useful-links-section', link: document.querySelector('a[href="#useful-links-section"]') },
                 { id: 'settings-section', link: document.querySelector('a[href="#settings-section"]') }
             ];
 
@@ -1372,7 +1449,8 @@
             },
             "slider-images": [],
             "categories": [],
-            "gallery-images": []
+            "gallery-images": [],
+            "useful-links": []
         };
 
         // Auto-load anupam-dutta-photography-data-set.json on page load
@@ -1420,6 +1498,7 @@
             renderSliderImages();
             renderCategories();
             renderGalleryImages();
+            renderUsefulLinks();
         }
 
         function renderAboutSection() {
@@ -1628,10 +1707,23 @@
                 jsonData.settings['logo-url'] = this.value;
                 const logoPreview = document.getElementById('logo-preview');
                 const logoPlaceholder = document.getElementById('logo-placeholder');
+                const dashboardLogo = document.getElementById('dashboard-logo');
+                
                 if (this.value) {
                     logoPreview.src = this.value;
                     logoPreview.style.display = 'block';
                     logoPlaceholder.style.display = 'none';
+                    
+                    // Update dashboard logo
+                    if (dashboardLogo) {
+                        dashboardLogo.src = this.value;
+                    }
+                    
+                    // Update favicon
+                    const favicon = document.querySelector('link[rel="icon"]');
+                    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                    if (favicon) favicon.href = this.value;
+                    if (appleTouchIcon) appleTouchIcon.href = this.value;
                 } else {
                     logoPreview.style.display = 'none';
                     logoPlaceholder.style.display = 'flex';
@@ -1692,6 +1784,18 @@
                         logoPreview.src = result.url;
                         logoPreview.style.display = 'block';
                         logoPlaceholder.style.display = 'none';
+                        
+                        // Update dashboard logo
+                        const dashboardLogo = document.getElementById('dashboard-logo');
+                        if (dashboardLogo) {
+                            dashboardLogo.src = result.url;
+                        }
+                        
+                        // Update favicon
+                        const favicon = document.querySelector('link[rel="icon"]');
+                        const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                        if (favicon) favicon.href = result.url;
+                        if (appleTouchIcon) appleTouchIcon.href = result.url;
                     });
                 }
             };
@@ -2294,6 +2398,195 @@
                 }
             };
             input.click();
+        }
+
+        // --- USEFUL LINKS FUNCTIONS ---
+        function renderUsefulLinks() {
+            const container = document.getElementById('usefulLinksContainer');
+            if (!jsonData['useful-links']) {
+                jsonData['useful-links'] = [];
+            }
+            
+            container.innerHTML = '';
+
+            if (jsonData['useful-links'].length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                            </path>
+                        </svg>
+                        <p class="font-semibold">No useful links added yet</p>
+                        <p class="text-sm mt-2">Click "Add Useful Link" to create your first link</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-3">
+                    ${jsonData['useful-links'].map((link, index) => `
+                        <div class="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-[#1C5BAE] transition-all">
+                            <!-- Position Badge -->
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-gray-800 rounded-full text-sm font-semibold text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                                    </svg>
+                                    Position ${index + 1}
+                                </span>
+                                
+                                <!-- Move Up/Down Buttons -->
+                                <div class="flex gap-2">
+                                    <button onclick="moveUsefulLinkUp(${index})" 
+                                        ${index === 0 ? 'disabled' : ''}
+                                        class="px-3 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded text-white font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1"
+                                        title="Move up">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                        </svg>
+                                        Up
+                                    </button>
+                                    <button onclick="moveUsefulLinkDown(${index})" 
+                                        ${index === jsonData['useful-links'].length - 1 ? 'disabled' : ''}
+                                        class="px-3 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded text-white font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1"
+                                        title="Move down">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                        Down
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-400 mb-2">Link Title</label>
+                                    <input type="text" 
+                                        value="${link.title || ''}"
+                                        onchange="updateUsefulLink(${index}, 'title', this.value)"
+                                        placeholder="e.g., Nature Photography Guide"
+                                        class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-400 mb-2">URL</label>
+                                    <input type="url" 
+                                        value="${link.url || ''}"
+                                        onchange="updateUsefulLink(${index}, 'url', this.value)"
+                                        placeholder="https://example.com"
+                                        class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE]">
+                                </div>
+                            </div>
+                            
+                            <!-- Preview Link -->
+                            ${link.url ? `
+                                <div class="mb-3 p-3 bg-gray-800 rounded border border-gray-700">
+                                    <p class="text-xs text-gray-400 mb-1">Preview:</p>
+                                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
+                                        class="text-[#1DA6E1] hover:text-[#1C5BAE] text-sm flex items-center gap-1">
+                                        ${link.title || 'Untitled Link'}
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="flex justify-end">
+                                <button onclick="removeUsefulLink(${index})" 
+                                    class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function addUsefulLink() {
+            if (!jsonData['useful-links']) {
+                jsonData['useful-links'] = [];
+            }
+            jsonData['useful-links'].push({
+                title: '',
+                url: ''
+            });
+            renderUsefulLinks();
+            
+            Toastify({
+                text: "✅ New useful link added! Fill in the details.",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #10b981, #059669)",
+                className: "toastify-custom",
+            }).showToast();
+        }
+
+        function updateUsefulLink(index, field, value) {
+            if (jsonData['useful-links'][index]) {
+                jsonData['useful-links'][index][field] = value;
+                renderUsefulLinks();
+            }
+        }
+
+        function removeUsefulLink(index) {
+            if (confirm('Are you sure you want to remove this link?')) {
+                jsonData['useful-links'].splice(index, 1);
+                renderUsefulLinks();
+                
+                Toastify({
+                    text: "🗑️ Useful link removed!",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ef4444, #dc2626)",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }
+
+        function moveUsefulLinkUp(index) {
+            if (index > 0) {
+                // Swap with previous item
+                const temp = jsonData['useful-links'][index];
+                jsonData['useful-links'][index] = jsonData['useful-links'][index - 1];
+                jsonData['useful-links'][index - 1] = temp;
+                renderUsefulLinks();
+                
+                Toastify({
+                    text: "⬆️ Link moved up!",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }
+
+        function moveUsefulLinkDown(index) {
+            if (index < jsonData['useful-links'].length - 1) {
+                // Swap with next item
+                const temp = jsonData['useful-links'][index];
+                jsonData['useful-links'][index] = jsonData['useful-links'][index + 1];
+                jsonData['useful-links'][index + 1] = temp;
+                renderUsefulLinks();
+                
+                Toastify({
+                    text: "⬇️ Link moved down!",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
+                    className: "toastify-custom",
+                }).showToast();
+            }
         }
 
         // Convert image URL to base64
