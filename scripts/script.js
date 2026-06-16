@@ -356,72 +356,55 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // --- GALLERY MASONRY/COLLAGE RENDER ---
+    // --- GALLERY MASONRY RENDER ---
     fetch("./data/anupam-dutta-photography-data-set.json")
         .then(res => res.json())
         .then(data => {
             const gallery = document.getElementById('gallery');
             if (!gallery || !data['gallery-images']) return;
             gallery.innerHTML = '';
+
             data['gallery-images'].forEach((img, i) => {
                 const wrapper = document.createElement('div');
+                const pad = String(i + 1).padStart(2, '0');
 
-                // Create collage pattern with varying spans and heights
-                let spanClass = '';
-                let heightClass = 'h-64';
-
-                // Pattern: large, medium, small repeating for visual interest
-                if (i % 8 === 0) {
-                    spanClass = 'sm:col-span-2 sm:row-span-2';
-                    heightClass = 'h-96';
-                } else if (i % 8 === 1 || i % 8 === 2) {
-                    spanClass = 'sm:col-span-1';
-                    heightClass = 'h-48';
-                } else if (i % 8 === 3) {
-                    spanClass = 'sm:col-span-2';
-                    heightClass = 'h-72';
-                } else if (i % 8 === 4 || i % 8 === 5) {
-                    spanClass = 'sm:col-span-1';
-                    heightClass = 'h-80';
-                } else if (i % 8 === 6) {
-                    spanClass = 'sm:col-span-1 sm:row-span-2';
-                    heightClass = 'h-96';
-                } else {
-                    spanClass = 'sm:col-span-1';
-                    heightClass = 'h-64';
-                }
-
-                wrapper.className = `group relative overflow-hidden rounded-2xl cursor-pointer transform transition-all duration-500 hover:scale-[1.02] hover:z-10 ${spanClass}`;
+                wrapper.className = 'group relative overflow-hidden rounded-xl cursor-pointer mb-3 break-inside-avoid transition-all duration-300 hover:shadow-2xl hover:shadow-black/60';
+                wrapper.style.animationDelay = `${i * 60}ms`;
 
                 wrapper.innerHTML = `
-                    <!-- Image -->
-                    <img src="${img}" 
-                         class="w-full ${heightClass} object-cover object-center pointer-events-none" 
-                         data-img="${img}" 
-                         alt="Gallery Image ${i + 1}" />
-                    
-                    <!-- Overlay with gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                    <img src="${img}"
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                         data-img="${img}"
+                         alt="Gallery Image ${i + 1}"
+                         loading="lazy" />
+
+                    <!-- Hover overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none">
+                        <!-- Photo number top-left -->
+                        <div class="absolute top-3 left-3 text-white/60 text-xs font-mono tracking-wider">${pad}</div>
+
+                        <!-- View icon center -->
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                            <div class="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-500">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </div>
                         </div>
-                        
-                        <!-- Bottom accent line -->
-                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE]"></div>
+
+                        <!-- Bottom accent bar -->
+                        <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE]"></div>
                     </div>
-                    
-                    <!-- Corner accent -->
-                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#1C5BAE] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                    <!-- Subtle ring on hover -->
+                    <div class="absolute inset-0 rounded-xl ring-0 group-hover:ring-1 ring-[#1C5BAE]/40 transition-all duration-300 pointer-events-none"></div>
                 `;
 
-                // Add click event for popup - make entire wrapper clickable
                 wrapper.addEventListener('click', function (e) {
                     e.stopPropagation();
-                    console.log('Image clicked, index:', i);
                     openModal(i);
                 });
 
@@ -675,38 +658,51 @@ fetch("./data/anupam-dutta-photography-data-set.json")
         usefulLinksContainer.innerHTML = '';
         
         data['useful-links'].forEach((link, index) => {
+            let domain = '';
+            try {
+                domain = new URL(link.url).hostname.replace(/^www\./, '');
+            } catch (e) {
+                domain = link.url;
+            }
+
             const linkCard = document.createElement('div');
             linkCard.className = 'group relative bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-[#1C5BAE]/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1';
-            
+
             linkCard.innerHTML = `
                 <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="block">
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-center gap-4">
                         <!-- Icon -->
                         <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
                             </svg>
                         </div>
-                        
+
                         <!-- Content -->
                         <div class="flex-1 min-w-0">
-                            <h3 class="md:text-xl font-semibold text-white mb-2 group-hover:text-[#1DA6E1] transition-colors duration-300">
-                                ${link.title}
+                            <p class="text-xs font-semibold tracking-widest uppercase text-[#1DA6E1] mb-0.5">${link.title}</p>
+                            <h3 class="text-base md:text-lg font-bold text-white truncate group-hover:text-[#1DA6E1] transition-colors duration-300">
+                                ${domain}
                             </h3>
-                            <p class="text-gray-400 text-sm flex items-center gap-1">
-                                Visit link
-                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <p class="text-gray-400 text-xs flex items-center gap-1 mt-1">
+                                Read article
+                                <svg class="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                                 </svg>
                             </p>
                         </div>
+
+                        <!-- External arrow -->
+                        <svg class="w-5 h-5 text-gray-600 group-hover:text-[#1DA6E1] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
                     </div>
-                    
+
                     <!-- Animated border on hover -->
                     <div class="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-[#1C5BAE]/50 transition-all duration-300 pointer-events-none"></div>
                 </a>
             `;
-            
+
             usefulLinksContainer.appendChild(linkCard);
         });
     })

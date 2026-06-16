@@ -60,7 +60,18 @@
                 "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714417/photography/collection10_i22cdy.webp",
                 "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714380/photography/collection12_rlun2z.webp",
                 "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714387/photography/collection13_dh4ljl.webp",
-                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714393/photography/Aug_t9xqau.webp"
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714393/photography/Aug_t9xqau.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584710/photography/IMG_0670_ovvnge.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584717/photography/IMG_0668_mf6lzt.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584733/photography/IMG_0667_hqqdwc.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584743/photography/IMG_0663_j0rtgn.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584755/photography/IMG_0659_c8xy7z.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584775/photography/IMG_0658_flib5c.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584785/photography/IMG_0657_nqdbzg.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584796/photography/DSC_0320_nf5zi2.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584813/photography/DSC_0117_xgozg0.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584830/photography/collection_5_zymjym.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp"
             ]
         }
     ],
@@ -78,7 +89,18 @@
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714417/photography/collection10_i22cdy.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714380/photography/collection12_rlun2z.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714387/photography/collection13_dh4ljl.webp",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714393/photography/Aug_t9xqau.webp"
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714393/photography/Aug_t9xqau.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584710/photography/IMG_0670_ovvnge.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584717/photography/IMG_0668_mf6lzt.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584733/photography/IMG_0667_hqqdwc.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584743/photography/IMG_0663_j0rtgn.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584755/photography/IMG_0659_c8xy7z.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584775/photography/IMG_0658_flib5c.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584785/photography/IMG_0657_nqdbzg.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584796/photography/DSC_0320_nf5zi2.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584813/photography/DSC_0117_xgozg0.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584830/photography/collection_5_zymjym.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp"
     ],
     "settings": {
         "logo-url": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775708154/photography/logo_yafbkj.png",
@@ -96,6 +118,14 @@
         {
             "title": "Publications",
             "url": "https://www.aaroananda.com/story/entertainment-news/travel/anini-hidden-gem-for-nature-enthusiasts/10989891"
+        },
+        {
+            "title": "Publications",
+            "url": "https://www.dodho.com/anupam-dutta-captures-the-himalayas-in-chasing-color-in-silence/"
+        },
+        {
+            "title": "Publications",
+            "url": "https://www.goindigo.in/campaigns/hello-6e/2026/june.html"
         }
     ]
 }
