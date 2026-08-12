@@ -1,0 +1,2893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anupam Dutta Photography Data Editor - Dashboard</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="">
+    <link rel="icon" type="image/png" sizes="16x16" href="">
+    <link rel="apple-touch-icon" href="">
+    <meta name="theme-color" content="#1C5BAE">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Toastify -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Fallback Image Handler -->
+    <script src="../scripts/fallback-handler.js"></script>
+
+    <!-- Cloudinary Uploader -->
+    <script src="../scripts/cloudinary-uploader.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1C5BAE;
+            --secondary-color: #1DA6E1;
+        }
+
+        @keyframes gradient-shift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient-shift 8s ease infinite;
+        }
+
+        @keyframes slide-in {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slide-in 0.5s ease-out forwards;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(28, 91, 174, 0.2), 0 10px 10px -5px rgba(29, 166, 225, 0.1);
+        }
+
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            background: linear-gradient(90deg, rgba(28, 91, 174, 0.1) 0%, transparent 100%);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, transparent 100%);
+            border-left: 4px solid #6366f1;
+            font-weight: 600;
+        }
+
+        /* Toastify Custom Styles */
+        .toastify {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Fullscreen Image Modal */
+        .fullscreen-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .fullscreen-modal.active {
+            display: flex;
+        }
+
+        .fullscreen-modal img {
+            max-width: 95%;
+            max-height: 95vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .image-clickable {
+            cursor: zoom-in;
+        }
+
+        /* Scroll margin to account for fixed navbar */
+        [id$="-section"] {
+            scroll-margin-top: 80px;
+        }
+
+        /* Mobile sidebar toggle */
+        .sidebar-open {
+            transform: translateX(0);
+        }
+
+        .sidebar-closed {
+            transform: translateX(-100%);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transition: transform 0.3s ease-in-out;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-900">
+    <!-- Password Login Modal -->
+    <div id="password-modal" class="fixed inset-0 bg-gray-900 z-[9999] flex items-center justify-center">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-8">
+                <div
+                    class="w-20 h-20 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent mb-2">
+                    Editor Access
+                </h2>
+                <p class="text-gray-400 text-sm">Enter password to access the dashboard</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="login-password" data-password-hidden="true"
+                            class="w-full px-4 py-3 pr-12 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent transition-all"
+                            placeholder="Enter your password" onkeypress="if(event.key === 'Enter') verifyPassword()">
+                        <button type="button" onclick="togglePasswordVisibility('login-password', 'login-toggle-icon')"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors">
+                            <svg id="login-toggle-icon" class="w-5 h-5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="error-message"
+                    class="hidden bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-400 text-sm">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Incorrect password. Please try again.</span>
+                    </div>
+                </div>
+
+                <button onclick="verifyPassword()"
+                    class="w-full bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                        </path>
+                    </svg>
+                    <span>Login</span>
+                </button>
+
+                <!-- Security Info -->
+                <div class="flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg mt-4">
+                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                        </path>
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Your credentials are protected with <span
+                                class="text-blue-400 font-semibold">enterprise-grade encryption</span>.
+                            Access is secure and private.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer Badge -->
+                <div class="text-center pt-3">
+                    <span
+                        class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-700/50 border border-gray-600 rounded-full text-xs text-gray-400">
+                        <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Protected Access
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Image Modal -->
+    <div id="fullscreenModal" class="fullscreen-modal" onclick="closeFullscreen()">
+        <button onclick="closeFullscreen()"
+            class="absolute top-4 right-4 text-white bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full p-3 transition-all z-10"
+            title="Close (ESC)">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <img id="fullscreenImage" src="" alt="Fullscreen view" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 h-16 bg-gray-800 border-b border-gray-700 shadow-sm z-50">
+        <div class="h-full px-4 md:px-6 flex items-center justify-between">
+            <!-- Hamburger Menu (Mobile) -->
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-200 p-2 hover:bg-gray-700 rounded-lg"
+                title="Toggle menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+
+            <div class="flex items-center gap-2 md:gap-4">
+                <a href="/" class="group" title="Go to Homepage">
+                    <img id="dashboard-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Logo"
+                        class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover transition-transform group-hover:scale-110">
+                    <div id="dashboard-logo-fallback"
+                        class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg items-center justify-center hidden transition-transform group-hover:scale-110">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                    </div>
+                </a>
+                <script>
+                    // Load dashboard logo immediately from JSON
+                    (function() {
+                        fetch('../data/anupam-dutta-photography-data-set.json')
+                            .then(res => res.json())
+                            .then(data => {
+                                const dashboardLogo = document.getElementById('dashboard-logo');
+                                const dashboardLogoFallback = document.getElementById('dashboard-logo-fallback');
+                                
+                                if (data.settings && data.settings['logo-url'] && dashboardLogo) {
+                                    dashboardLogo.src = data.settings['logo-url'];
+                                    dashboardLogo.onerror = function() {
+                                        this.style.display = 'none';
+                                        if (dashboardLogoFallback) {
+                                            dashboardLogoFallback.style.display = 'flex';
+                                        }
+                                    };
+                                    dashboardLogo.onload = function() {
+                                        this.style.display = 'block';
+                                        if (dashboardLogoFallback) {
+                                            dashboardLogoFallback.style.display = 'none';
+                                        }
+                                    };
+                                } else {
+                                    // No logo URL found, show fallback
+                                    if (dashboardLogo) dashboardLogo.style.display = 'none';
+                                    if (dashboardLogoFallback) dashboardLogoFallback.style.display = 'flex';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error loading logo:', error);
+                                // Show fallback on error
+                                const dashboardLogo = document.getElementById('dashboard-logo');
+                                const dashboardLogoFallback = document.getElementById('dashboard-logo-fallback');
+                                if (dashboardLogo) dashboardLogo.style.display = 'none';
+                                if (dashboardLogoFallback) dashboardLogoFallback.style.display = 'flex';
+                            });
+                    })();
+                </script>
+                <div class="hidden sm:block">
+                    <h1
+                        class="text-lg md:text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                        Anupam Dutta Photography Data Editor - Dashboard</h1>
+                    <p class="text-xs text-gray-400">Content Management System</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <div id="loadingMessage" class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-[#1DA6E1] rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    <span class="text-sm text-gray-300 font-medium ml-2 hidden sm:inline">Loading...</span>
+                </div>
+                <button onclick="updateJSON()"
+                    class="bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-3 md:px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-1 md:gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Save JSON</span>
+                    <span class="sm:hidden">Save</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden"
+        onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar"
+        class="sidebar fixed top-16 left-0 bottom-0 w-64 bg-gray-800 border-r border-gray-700 shadow-sm overflow-y-auto z-40 md:translate-x-0 -translate-x-full transition-transform duration-300">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="bg-gradient-to-r from-[#1C5BAE]/20 to-[#1DA6E1]/20 border border-[#1C5BAE]/50 rounded-lg p-3 flex-1">
+                    <p class="text-xs text-gray-200 leading-relaxed font-medium">✨ Click images to upload •
+                        Auto-converts to
+                        base64 •
+                        Real-time preview</p>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden ml-2 text-gray-400 hover:text-gray-200 p-1"
+                    title="Close menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="#slider-content-section" onclick="scrollToSection('slider-content-section')"
+                    class="sidebar-item active flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                        </path>
+                    </svg>
+                    <span>Hero/Slider Content</span>
+                </a>
+                <a href="#slider-section" onclick="scrollToSection('slider-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                    <span>Slider Images</span>
+                </a>
+                <a href="#categories-section" onclick="scrollToSection('categories-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                        </path>
+                    </svg>
+                    <span>Categories</span>
+                </a>
+                <a href="#gallery-section" onclick="scrollToSection('gallery-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                    <span>Gallery Images</span>
+                </a>
+                <a href="#about-section" onclick="scrollToSection('about-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>About Section</span>
+                </a>
+                <a href="#useful-links-section" onclick="scrollToSection('useful-links-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                    <span>Useful Links</span>
+                </a>
+                <a href="#settings-section" onclick="scrollToSection('settings-section')"
+                    class="sidebar-item flex items-center gap-3 px-4 py-3 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 mt-16 p-4 md:p-8">
+
+        <!-- Slider Content Section -->
+        <div id="slider-content-section"
+            class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Hero/Slider Content</h2>
+                <p class="text-sm text-gray-400">Customize text overlay on your homepage slider</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Heading -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-[#1C5BAE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                            </path>
+                        </svg>
+                        Heading
+                    </label>
+                    <input type="text" id="slider-heading" maxlength="100"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] hover:border-gray-500 transition-all"
+                        placeholder="e.g., Capturing Life's Beautiful Moments">
+                    <p class="mt-1.5 text-xs text-gray-400">✨ Main heading displayed over slider images (max 100
+                        characters)</p>
+                </div>
+
+                <!-- Show Heading Toggle -->
+                <div class="bg-gray-700/30 rounded-lg p-3 border border-gray-600/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="show-heading"
+                                class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
+                            <label for="show-heading" class="ml-3 text-sm font-medium text-gray-300">Show
+                                Heading</label>
+                        </div>
+                        <span class="text-xs text-gray-400">👁️ Visibility toggle</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-[#1C5BAE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h7"></path>
+                        </svg>
+                        Description
+                    </label>
+                    <textarea id="slider-description" rows="3" maxlength="250"
+                        class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] hover:border-gray-500 transition-all resize-none"
+                        placeholder="Brief tagline or welcome message for your visitors..."></textarea>
+                    <p class="mt-1.5 text-xs text-gray-400">📝 Supporting text shown below the heading (max 250
+                        characters)</p>
+                </div>
+
+                <!-- Show Description Toggle -->
+                <div class="bg-gray-700/30 rounded-lg p-3 border border-gray-600/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="show-description"
+                                class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
+                            <label for="show-description" class="ml-3 text-sm font-medium text-gray-300">Show
+                                Description</label>
+                        </div>
+                        <span class="text-xs text-gray-400">👁️ Visibility toggle</span>
+                    </div>
+                </div>
+
+                <!-- Show Latest Collections Button Toggle -->
+                <div class="bg-gray-700/30 rounded-lg p-3 border border-gray-600/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="show-latest-collections-button"
+                                class="w-5 h-5 text-[#1C5BAE] bg-gray-700 border-gray-600 rounded focus:ring-[#1C5BAE] focus:ring-2">
+                            <label for="show-latest-collections-button"
+                                class="ml-3 text-sm font-medium text-gray-300">Show Latest Collections Button</label>
+                        </div>
+                        <span class="text-xs text-gray-400">🖘️ CTA button</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 ml-8">💡 Displays a call-to-action button to view your latest
+                        work</p>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Slider Images Section -->
+        <div id="slider-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Slider Images</h2>
+                <p class="text-sm text-gray-400">Homepage carousel images - showcase your best work</p>
+            </div>
+            <div id="sliderImagesContainer" class="space-y-3"></div>
+            <button onclick="addSliderImage()" title="Add a new image to the homepage slider"
+                class="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Slider Image
+            </button>
+        </div>
+
+        <!-- Categories Section -->
+        <div id="categories-section"
+            class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Categories</h2>
+                <p class="text-sm text-gray-400">Organize your work into themed collections</p>
+            </div>
+            <div id="categoriesContainer" class="space-y-6"></div>
+            <button onclick="addCategory()" title="Create a new category for organizing your photos"
+                class="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Category
+            </button>
+        </div>
+
+        <!-- Gallery Images Section -->
+        <div id="gallery-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Gallery Images</h2>
+                <p class="text-sm text-gray-400">Main portfolio gallery - your complete collection</p>
+            </div>
+            <div id="galleryImagesContainer" class="space-y-3"></div>
+            <button onclick="addGalleryImage()" title="Add a new image to your main gallery"
+                class="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Gallery Image
+            </button>
+        </div>
+
+        <!-- About Section -->
+        <div id="about-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    About Section</h2>
+                <p class="text-sm text-gray-400">Tell your story and showcase your profile</p>
+            </div>
+            <div class="space-y-5">
+                <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
+                    <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                            </path>
+                        </svg>
+                        Title
+                    </label>
+                    <input type="text" id="about-title-input" maxlength="100"
+                        class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm hover:border-gray-500 transition-colors"
+                        placeholder="e.g., Welcome to My Photography Journey">
+                    <p class="mt-1.5 text-xs text-gray-400">💡 This appears as the main heading in your About section
+                    </p>
+                </div>
+                <div class="bg-gradient-to-r from-gray-700 to-gray-700 p-4 rounded-xl border border-gray-600">
+                    <label class="block text-sm font-semibold text-gray-200 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h7"></path>
+                        </svg>
+                        Description
+                    </label>
+                    <textarea id="about-description-input" rows="4" maxlength="500"
+                        class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm hover:border-gray-500 transition-colors"
+                        placeholder="Share your story, experience, and what makes your photography unique..."></textarea>
+                    <p class="mt-1.5 text-xs text-gray-400">📝 Brief introduction about you and your work (max 500
+                        characters)</p>
+                </div>
+
+                <!-- About Card Section -->
+                <div class="border-t-2 border-gray-700 pt-6 mt-6">
+                    <div class="flex items-center gap-2 mb-5">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3
+                            class="text-xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                            About Card</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card Title</label>
+                            <input type="text" id="about-card-title-input" maxlength="80"
+                                class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all hover:border-gray-500"
+                                placeholder="e.g., Professional Photographer & Visual Artist">
+                            <p class="mt-1.5 text-xs text-gray-400">✨ Highlighted title for your profile card</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card Description</label>
+                            <textarea id="about-card-description-input" maxlength="800"
+                                class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all resize-none h-[200px] hover:border-gray-500"
+                                placeholder="Describe your expertise, style, achievements, and what sets you apart in the photography world..."></textarea>
+                            <p class="mt-1.5 text-xs text-gray-400">📸 Main description for your profile card (max 800
+                                characters)</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card
+                                Sub-Description</label>
+                            <textarea id="about-card-subdescription-input" rows="2" maxlength="200"
+                                class="w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent bg-gray-700 text-white shadow-sm transition-all hover:border-gray-500"
+                                placeholder="e.g., Specializing in landscape, portrait, and event photography"></textarea>
+                            <p class="mt-1.5 text-xs text-gray-400">🎯 Brief tagline or specialty description (max 200
+                                characters)</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">Card Image</label>
+                            <div
+                                class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
+                                <div class="flex flex-col md:flex-row gap-4 p-4">
+                                    <!-- Left Side - Image Preview -->
+                                    <div id="about-card-container"
+                                        class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px] cursor-pointer"
+                                        onclick="openFullscreen(document.getElementById('about-card-image-preview').src)">
+                                        <img id="about-card-image-preview" src="" class="w-full h-full object-contain"
+                                            alt="About Card"
+                                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+
+                                        <!-- Hover Overlay with Icon -->
+                                        <div
+                                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                                            <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7">
+                                                </path>
+                                            </svg>
+                                        </div>
+
+                                        <!-- Upload Progress Overlay -->
+                                        <div id="about-card-progress"
+                                            class="absolute inset-0 bg-black bg-opacity-90 hidden flex-col items-center justify-center z-50">
+                                            <div class="text-center">
+                                                <svg class="animate-spin h-12 w-12 text-blue-500 mx-auto mb-3"
+                                                    fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                        stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                    </path>
+                                                </svg>
+                                                <div class="text-white font-bold text-lg mb-2"
+                                                    id="about-card-progress-text">Uploading...</div>
+                                                <div class="w-48 bg-gray-700 rounded-full h-2 mb-2">
+                                                    <div id="about-card-progress-bar"
+                                                        class="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                                                        style="width: 0%"></div>
+                                                </div>
+                                                <div class="text-blue-400 font-semibold text-sm"
+                                                    id="about-card-progress-percent">0%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Side - Content -->
+                                    <div class="flex-1 flex flex-col space-y-3">
+                                        <!-- Card Header -->
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+                                                <span
+                                                    class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">1</span>
+                                                About Card Image
+                                            </h3>
+                                        </div>
+
+                                        <!-- URL Input -->
+                                        <div class="flex-1">
+                                            <button type="button" title="Toggle Image URL Input"
+                                                onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                                                class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
+                                                    </path>
+                                                </svg>
+                                                <span class="flex-1">Image URL / Base64</span>
+                                                <svg class="w-4 h-4 transition-transform" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <div class="hidden">
+                                                <textarea id="about-card-url-input"
+                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors resize-none h-24"
+                                                    placeholder="Paste image URL or upload to generate base64..."
+                                                    readonly></textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div class="flex gap-2">
+                                            <button onclick="pickImageForAboutCard()"
+                                                class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                                    </path>
+                                                </svg>
+                                                <span>Upload</span>
+                                            </button>
+                                            <button
+                                                onclick="openFullscreen(document.getElementById('about-card-image-preview').src); event.stopPropagation();"
+                                                class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
+                                                title="View Fullscreen">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-700 p-4 rounded-xl border border-gray-600 flex items-center gap-3">
+                            <input type="checkbox" id="about-card-visible-input"
+                                class="w-5 h-5 text-[#1C5BAE] border-gray-600 rounded focus:ring-[#1C5BAE] cursor-pointer bg-gray-600">
+                            <label for="about-card-visible-input"
+                                class="text-sm font-semibold text-gray-200 cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                    </path>
+                                </svg>
+                                Card Visible on Website
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Container -->
+            <div id="progressContainer" class="mt-6 hidden bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
+                <div class="mb-2">
+                    <p id="progressText" class="text-center text-gray-300 font-bold text-lg"></p>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-8 overflow-hidden shadow-inner">
+                    <div id="progressBar"
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-sm text-white font-bold shadow-lg">
+                        0%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Useful Links Section -->
+        <div id="useful-links-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 mb-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h2
+                        class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                        Useful Links</h2>
+                    <p class="text-sm text-gray-400">External resources and featured content links</p>
+                </div>
+            </div>
+            <div id="usefulLinksContainer" class="space-y-3"></div>
+            <button onclick="addUsefulLink()" title="Add a new useful link"
+                class="mt-4 w-full bg-gradient-to-r from-green-600 to-green-700 px-6 py-3 rounded-lg text-white font-semibold shadow-md hover:shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Useful Link
+            </button>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6 card-hover">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <h2
+                    class="text-2xl font-bold bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] bg-clip-text text-transparent">
+                    Settings</h2>
+                <p class="text-sm text-gray-400">Configure your website branding, contact info, and security</p>
+            </div>
+
+            <!-- Branding Section -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                        </path>
+                    </svg>
+                    Branding & Identity
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Logo -->
+                    <div class="md:col-span-2 bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                        <div class="flex gap-4 mb-3">
+                            <div id="logo-container"
+                                class="relative bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden hover:border-[#1DA6E1] transition-colors">
+                                <img id="logo-preview" src="" alt="Logo Preview"
+                                    class="absolute inset-0 w-full h-full object-contain p-2" style="display: none;"
+                                    onerror="this.style.display='none'; document.getElementById('logo-placeholder').style.display='flex';">
+                                <div id="logo-placeholder"
+                                    class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                                    <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                        </path>
+                                    </svg>
+                                    <span class="text-xs">Logo</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                        </path>
+                                    </svg>
+                                    Website Logo
+                                </label>
+                                <button onclick="pickImageForLogo()"
+                                    class="w-full px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                        </path>
+                                    </svg>
+                                    Upload Logo Image
+                                </button>
+                                <p class="text-xs text-gray-400 mt-2">📌 Recommended: PNG with transparent background
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" title="Toggle Logo URL Input"
+                            onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                            class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all">
+                            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                            <span class="flex-1">Logo URL / Base64</span>
+                            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="hidden mt-2">
+                            <input type="url" id="logo-url"
+                                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all font-mono text-xs"
+                                placeholder="./logo.png or https://...">
+                        </div>
+                    </div>
+
+                    <!-- Navbar Title -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z">
+                                </path>
+                            </svg>
+                            Navbar Title
+                        </label>
+                        <input type="text" id="navbar-title"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="Anupam Dutta Photography">
+                        <p class="text-xs text-gray-400 mt-1">Displayed in the website header</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    Contact Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207">
+                                </path>
+                            </svg>
+                            Email Address
+                        </label>
+                        <input type="email" id="email"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="your@email.com">
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                </path>
+                            </svg>
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Location / Address
+                        </label>
+                        <textarea id="address" rows="2"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all resize-none"
+                            placeholder="City, State, Country"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                    Social Media Links
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Instagram Username -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                            Instagram Username
+                        </label>
+                        <input type="text" id="instagram-username"
+                            class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                            placeholder="@your_username">
+                    </div>
+
+                    <!-- Instagram URL -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                </path>
+                            </svg>
+                            Instagram Profile URL
+                        </label>
+                        <button type="button" title="Toggle Instagram URL Input"
+                            onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                            class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                            <span class="flex-1">Instagram URL / Base64</span>
+                            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="hidden">
+                            <input type="url" id="instagram-url"
+                                class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all font-mono text-xs"
+                                placeholder="https://www.instagram.com/your_username">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security & Advanced -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#1DA6E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    Security & Advanced Settings
+                </h3>
+                <div class="space-y-4">
+                    <!-- Password Hash -->
+                    <div class="bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                        <label class="block text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                                </path>
+                            </svg>
+                            Admin Password
+                        </label>
+                        <div class="flex gap-3 mb-3">
+                            <div class="relative flex-1">
+                                <input type="password" id="password-input" data-password-hidden="true"
+                                    class="w-full px-4 py-3 pr-12 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                                    placeholder="Enter password to hash">
+                                <button type="button"
+                                    onclick="togglePasswordVisibility('password-input', 'hash-toggle-icon')"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors">
+                                    <svg id="hash-toggle-icon" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <button onclick="hashPassword()"
+                                class="px-6 py-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                    </path>
+                                </svg>
+                                Generate Hash
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-medium text-gray-400">Hashed Password (SHA-256)</label>
+                            <button onclick="copyHashedPassword()" id="copy-hash-btn"
+                                class="hidden text-xs text-[#1DA6E1] hover:text-[#1C5BAE] flex items-center gap-1 transition-colors">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        <input type="text" id="password-hash" readonly
+                            class="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 text-sm font-mono cursor-not-allowed"
+                            placeholder="Hashed password will appear here">
+                        <p class="text-xs text-gray-400 mt-2">🔒 Secure password hashing for admin access</p>
+                    </div>
+
+                    <!-- Upload Settings -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Max Upload Size -->
+                        <div class="bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                            <label class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                Max Upload Size
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <input type="number" id="max-upload-size" min="1" max="50" step="1"
+                                    class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all"
+                                    placeholder="5">
+                                <span
+                                    class="text-sm font-semibold text-gray-300 bg-gray-700/50 px-3 py-3 rounded-lg border border-gray-600">MB</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2">📏 Maximum size for image uploads (1-50 MB)</p>
+                        </div>
+
+                        <!-- Fallback Image -->
+                        <div class="bg-gray-750 rounded-lg p-4 border border-gray-600/50">
+                            <label class="block text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                    </path>
+                                </svg>
+                                Fallback Image
+                            </label>
+
+                            <!-- Image Preview -->
+                            <div id="fallback-container"
+                                class="relative group bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-3 w-full h-32 flex items-center justify-center overflow-hidden hover:border-[#1DA6E1] transition-colors mb-3 cursor-pointer"
+                                onclick="const img = document.getElementById('fallback-preview'); if(img.src && !img.src.includes('data:image/svg')) openFullscreen(img.src);">
+                                <img id="fallback-preview" src="" alt="Fallback Preview"
+                                    class="max-w-full max-h-full object-contain">
+                                <div id="fallback-placeholder"
+                                    class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                        </path>
+                                    </svg>
+                                    <span class="text-xs font-medium">No Image</span>
+                                </div>
+
+                                <!-- Hover Overlay -->
+                                <div
+                                    class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Upload Button -->
+                            <button onclick="pickImageForFallback()"
+                                class="w-full px-4 py-2.5 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1DA6E1] hover:to-[#1C5BAE] text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm mb-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                    </path>
+                                </svg>
+                                Upload Fallback Image
+                            </button>
+
+                            <p class="text-xs text-gray-400 mb-2">🖼️ Shown when images fail to load</p>
+
+                            <!-- Collapsible URL Input -->
+                            <button type="button" title="Toggle Fallback Image URL Input"
+                                onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');"
+                                class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all">
+                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                                <span class="flex-1">Fallback URL / Base64</span>
+                                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="hidden mt-2">
+                                <input type="url" id="fallback-image-url"
+                                    class="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:border-[#1C5BAE] transition-all font-mono text-xs"
+                                    placeholder="https://placehold.co/150x150.webp?text=No+Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div
+            class="bg-gradient-to-r from-gray-800 to-gray-900 border-t border-gray-700 rounded-xl p-6 text-center shadow-lg">
+            <div class="flex flex-col items-center gap-4">
+                <div class="flex items-center gap-2 text-gray-300">
+                    <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <p class="text-sm font-medium">Crafted for Photography Excellence</p>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-xs text-gray-400">
+                        Changes auto-save • Click <span class="text-blue-400 font-semibold">Save JSON</span> to download
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Fullscreen Image Viewer Functions
+        function openFullscreen(imageSrc) {
+            const modal = document.getElementById('fullscreenModal');
+            const img = document.getElementById('fullscreenImage');
+            img.src = imageSrc;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFullscreen() {
+            const modal = document.getElementById('fullscreenModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            }
+        });
+
+        // Smooth scroll to section
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Update active sidebar item
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                const clickedItem = event.target.closest('.sidebar-item');
+                if (clickedItem) {
+                    clickedItem.classList.add('active');
+                }
+
+                // Close sidebar on mobile after clicking
+                if (window.innerWidth < 768) {
+                    toggleSidebar();
+                }
+            }
+        }
+
+        // Scroll spy to highlight active section
+        function updateActiveSectionOnScroll() {
+            const sections = [
+                { id: 'slider-content-section', link: document.querySelector('a[href="#slider-content-section"]') },
+                { id: 'slider-section', link: document.querySelector('a[href="#slider-section"]') },
+                { id: 'categories-section', link: document.querySelector('a[href="#categories-section"]') },
+                { id: 'gallery-section', link: document.querySelector('a[href="#gallery-section"]') },
+                { id: 'about-section', link: document.querySelector('a[href="#about-section"]') },
+                { id: 'useful-links-section', link: document.querySelector('a[href="#useful-links-section"]') },
+                { id: 'settings-section', link: document.querySelector('a[href="#settings-section"]') }
+            ];
+
+            let currentSection = null;
+            const scrollPosition = window.scrollY + 200;
+
+            sections.forEach(section => {
+                const element = document.getElementById(section.id);
+                if (element) {
+                    const offsetTop = element.offsetTop;
+                    const offsetHeight = element.offsetHeight;
+
+                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                        currentSection = section;
+                    }
+                }
+            });
+
+            if (currentSection) {
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                if (currentSection.link) {
+                    currentSection.link.classList.add('active');
+                }
+            }
+        }
+
+        // Add scroll event listener
+        window.addEventListener('scroll', updateActiveSectionOnScroll);
+
+        // Helper function to format bytes to MB
+        function formatFileSize(bytes) {
+            const mb = bytes / (1024 * 1024);
+            return mb.toFixed(2) + ' MB';
+        }
+
+        // Helper function to format error messages with byte sizes to MB
+        function formatErrorMessage(message) {
+            // Match patterns like "Got 38928845" or "Maximum is 10485760" (numbers with 5+ digits)
+            return message.replace(/(Got|Maximum is|exceeds)\s+(\d{5,})/gi, (match, prefix, bytes) => {
+                const mb = (parseInt(bytes) / (1024 * 1024)).toFixed(2);
+                return `${prefix} ${mb} MB`;
+            });
+        }
+
+        let jsonData = {
+            "logo-url": "./logo.png",
+            "about": {
+                "title": "",
+                "heading": "",
+                "description": "",
+                "card": {
+                    "title": "",
+                    "description": "",
+                    "sub-description": "",
+                    "url": "",
+                    "is-card-visible": false
+                }
+            },
+            "slider-images": [],
+            "categories": [],
+            "gallery-images": [],
+            "useful-links": []
+        };
+
+        // Auto-load anupam-dutta-photography-data-set.json on page load
+        window.addEventListener('DOMContentLoaded', async function () {
+            // Check Cloudinary configuration
+            if (typeof cloudinaryUploader === 'undefined') {
+                console.error('❌ Cloudinary uploader not loaded! Check if cloudinary-uploader.js is loaded.');
+            } else {
+                console.log('✅ Cloudinary uploader loaded successfully');
+                console.log('📋 Cloud Name:', cloudinaryUploader.cloudName);
+                console.log('📋 Upload Preset:', cloudinaryUploader.uploadPreset);
+                console.log('📋 Folder:', cloudinaryUploader.folder);
+                console.log('📋 Upload URL:', cloudinaryUploader.uploadUrl);
+            }
+
+            try {
+                const response = await fetch('../data/anupam-dutta-photography-data-set.json');
+                jsonData = await response.json();
+                document.getElementById('loadingMessage').classList.add('hidden');
+                renderEditor();
+            } catch (error) {
+                document.getElementById('loadingMessage').innerHTML = `
+                    <div class="text-red-600 font-semibold">Error loading anupam-dutta-photography-data-set.json: ${error.message}</div>
+                    <p class="text-gray-600 mt-2">Make sure anupam-dutta-photography-data-set.json is in the data folder</p>
+                `;
+            }
+        });
+
+        function renderEditor() {
+            // Update favicon from settings
+            if (jsonData.settings && jsonData.settings['logo-url']) {
+                const favicon = document.querySelector('link[rel="icon"]');
+                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                if (favicon) favicon.href = jsonData.settings['logo-url'];
+                if (appleTouchIcon) appleTouchIcon.href = jsonData.settings['logo-url'];
+
+                // Update dashboard logo
+                const dashboardLogo = document.getElementById('dashboard-logo');
+                if (dashboardLogo) dashboardLogo.src = jsonData.settings['logo-url'];
+            }
+
+            renderSliderContentSection();
+            renderSettingsSection();
+            renderAboutSection();
+            renderSliderImages();
+            renderCategories();
+            renderGalleryImages();
+            renderUsefulLinks();
+        }
+
+        function renderAboutSection() {
+            if (jsonData.about) {
+                document.getElementById('about-title-input').value = jsonData.about.title || '';
+                document.getElementById('about-description-input').value = jsonData.about.description || '';
+
+                if (jsonData.about.card) {
+                    document.getElementById('about-card-title-input').value = jsonData.about.card.title || '';
+                    document.getElementById('about-card-description-input').value = jsonData.about.card.description || '';
+                    document.getElementById('about-card-subdescription-input').value = jsonData.about.card['sub-description'] || '';
+                    document.getElementById('about-card-url-input').value = jsonData.about.card.url || '';
+                    document.getElementById('about-card-image-preview').src = jsonData.about.card.url || '';
+                    document.getElementById('about-card-visible-input').checked = jsonData.about.card['is-card-visible'] || false;
+                }
+            }
+
+            // Add event listeners for about section inputs
+            document.getElementById('about-title-input').addEventListener('input', function () {
+                jsonData.about.title = this.value;
+            });
+            document.getElementById('about-description-input').addEventListener('input', function () {
+                jsonData.about.description = this.value;
+            });
+            document.getElementById('about-card-title-input').addEventListener('input', function () {
+                jsonData.about.card.title = this.value;
+            });
+            document.getElementById('about-card-description-input').addEventListener('input', function () {
+                jsonData.about.card.description = this.value;
+            });
+            document.getElementById('about-card-subdescription-input').addEventListener('input', function () {
+                jsonData.about.card['sub-description'] = this.value;
+            });
+            document.getElementById('about-card-url-input').addEventListener('input', function () {
+                jsonData.about.card.url = this.value;
+                document.getElementById('about-card-image-preview').src = this.value;
+            });
+            document.getElementById('about-card-visible-input').addEventListener('change', function () {
+                jsonData.about.card['is-card-visible'] = this.checked;
+            });
+        }
+
+        async function pickImageForAboutCard() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const overlay = document.getElementById('about-card-progress');
+                    const progressBar = document.getElementById('about-card-progress-bar');
+                    const progressPercent = document.getElementById('about-card-progress-percent');
+                    const progressText = document.getElementById('about-card-progress-text');
+
+                    if (!overlay || !progressBar || !progressPercent || !progressText) {
+                        console.error('Progress elements not found');
+                        Toastify({
+                            text: "❌ Error: Progress elements not found. Please refresh the page.",
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#dc2626",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+
+                    // Validate file size before showing overlay
+                    const maxSizeMB = jsonData.settings && jsonData.settings['max-upload-size-mb'] ? jsonData.settings['max-upload-size-mb'] : 10;
+                    const validation = cloudinaryUploader.validateFile(file, maxSizeMB);
+                    if (!validation.valid) {
+                        Toastify({
+                            text: `❌ Upload Failed: ${formatErrorMessage(validation.error)}`,
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#dc2626",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+
+                    // Show overlay
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+
+                    // Freeze screen during upload
+                    document.body.style.pointerEvents = 'none';
+                    overlay.style.pointerEvents = 'auto';
+
+                    try {
+                        const result = await cloudinaryUploader.upload(file, (percentage) => {
+                            progressBar.style.width = percentage + '%';
+                            progressPercent.textContent = percentage + '%';
+                            progressText.textContent = percentage < 100 ? 'Uploading...' : 'Processing...';
+                        }, { maxSizeMB });
+
+                        if (result.success) {
+                            progressText.textContent = '✓ Upload Complete!';
+                            progressBar.classList.remove('bg-blue-500');
+                            progressBar.classList.add('bg-green-500');
+
+                            jsonData.about.card.url = result.url;
+                            document.getElementById('about-card-url-input').value = result.url;
+                            document.getElementById('about-card-image-preview').src = result.url;
+
+                            Toastify({
+                                text: "✅ About card image uploaded successfully!",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "center",
+                                backgroundColor: "#16a34a",
+                                className: "toastify-custom",
+                            }).showToast();
+
+                            setTimeout(() => {
+                                overlay.classList.add('hidden');
+                                overlay.classList.remove('flex');
+                                progressBar.classList.remove('bg-green-500');
+                                progressBar.classList.add('bg-blue-500');
+                                progressBar.style.width = '0%';
+                                // Re-enable screen
+                                document.body.style.pointerEvents = 'auto';
+                            }, 1500);
+                        } else {
+                            throw new Error(result.error || 'Upload failed');
+                        }
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        progressText.textContent = '✗ Upload Failed';
+                        progressBar.classList.remove('bg-blue-500');
+                        progressBar.classList.add('bg-red-500');
+
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                            overlay.classList.remove('flex');
+                            progressBar.classList.remove('bg-red-500');
+                            progressBar.classList.add('bg-blue-500');
+                            progressBar.style.width = '0%';
+                            // Re-enable screen
+                            document.body.style.pointerEvents = 'auto';
+                        }, 2000);
+
+                        Toastify({
+                            text: "❌ Upload Failed: " + formatErrorMessage(error.message),
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#dc2626",
+                            className: "toastify-custom",
+                        }).showToast();
+                    }
+                }
+            };
+            input.click();
+        }        // Render Settings Section
+        function renderSettingsSection() {
+            if (jsonData.settings) {
+                const logoUrl = jsonData.settings['logo-url'] || '';
+                document.getElementById('logo-url').value = logoUrl;
+                const logoPreview = document.getElementById('logo-preview');
+                const logoPlaceholder = document.getElementById('logo-placeholder');
+                if (logoUrl) {
+                    logoPreview.src = logoUrl;
+                    logoPreview.style.display = 'block';
+                    logoPlaceholder.style.display = 'none';
+                } else {
+                    logoPreview.style.display = 'none';
+                    logoPlaceholder.style.display = 'flex';
+                }
+                document.getElementById('navbar-title').value = jsonData.settings['navbar-title'] || '';
+                document.getElementById('instagram-username').value = jsonData.settings['instagram-username'] || '';
+                document.getElementById('instagram-url').value = jsonData.settings['instagram-url'] || '';
+                document.getElementById('email').value = jsonData.settings.email || '';
+                document.getElementById('phone').value = jsonData.settings.phone || '';
+                document.getElementById('address').value = jsonData.settings.address || '';
+
+                // Load hashed password if exists
+                const hashedPassword = jsonData.settings.password || '';
+                if (hashedPassword) {
+                    document.getElementById('password-hash').value = hashedPassword;
+                    document.getElementById('copy-hash-btn').classList.remove('hidden');
+                    document.getElementById('copy-hash-btn').classList.add('flex');
+                }
+
+                // Load fallback image
+                const fallbackImageUrl = jsonData.settings['fallback-image'] || '';
+                document.getElementById('fallback-image-url').value = fallbackImageUrl;
+                const fallbackPreview = document.getElementById('fallback-preview');
+                const fallbackPlaceholder = document.getElementById('fallback-placeholder');
+                if (fallbackImageUrl) {
+                    fallbackPreview.src = fallbackImageUrl;
+                    fallbackPreview.style.display = 'block';
+                    fallbackPlaceholder.style.display = 'none';
+                } else {
+                    fallbackPreview.style.display = 'none';
+                    fallbackPlaceholder.style.display = 'flex';
+                }
+
+                // Load max upload size
+                document.getElementById('max-upload-size').value = jsonData.settings['max-upload-size-mb'] || 5;
+            }
+
+            // Add event listeners for settings inputs
+            document.getElementById('logo-url').addEventListener('input', function () {
+                jsonData.settings['logo-url'] = this.value;
+                const logoPreview = document.getElementById('logo-preview');
+                const logoPlaceholder = document.getElementById('logo-placeholder');
+                const dashboardLogo = document.getElementById('dashboard-logo');
+                
+                if (this.value) {
+                    logoPreview.src = this.value;
+                    logoPreview.style.display = 'block';
+                    logoPlaceholder.style.display = 'none';
+                    
+                    // Update dashboard logo
+                    if (dashboardLogo) {
+                        dashboardLogo.src = this.value;
+                    }
+                    
+                    // Update favicon
+                    const favicon = document.querySelector('link[rel="icon"]');
+                    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                    if (favicon) favicon.href = this.value;
+                    if (appleTouchIcon) appleTouchIcon.href = this.value;
+                } else {
+                    logoPreview.style.display = 'none';
+                    logoPlaceholder.style.display = 'flex';
+                }
+            });
+            document.getElementById('navbar-title').addEventListener('input', function () {
+                jsonData.settings['navbar-title'] = this.value;
+            });
+            document.getElementById('instagram-username').addEventListener('input', function () {
+                jsonData.settings['instagram-username'] = this.value;
+            });
+            document.getElementById('instagram-url').addEventListener('input', function () {
+                jsonData.settings['instagram-url'] = this.value;
+            });
+            document.getElementById('email').addEventListener('input', function () {
+                jsonData.settings.email = this.value;
+            });
+            document.getElementById('phone').addEventListener('input', function () {
+                jsonData.settings.phone = this.value;
+            });
+            document.getElementById('address').addEventListener('input', function () {
+                jsonData.settings.address = this.value;
+            });
+
+            document.getElementById('fallback-image-url').addEventListener('input', function () {
+                jsonData.settings['fallback-image'] = this.value;
+                const fallbackPreview = document.getElementById('fallback-preview');
+                const fallbackPlaceholder = document.getElementById('fallback-placeholder');
+                if (this.value) {
+                    fallbackPreview.src = this.value;
+                    fallbackPreview.style.display = 'block';
+                    fallbackPlaceholder.style.display = 'none';
+                } else {
+                    fallbackPreview.style.display = 'none';
+                    fallbackPlaceholder.style.display = 'flex';
+                }
+            });
+
+            document.getElementById('max-upload-size').addEventListener('input', function () {
+                const value = parseInt(this.value) || 5;
+                jsonData.settings['max-upload-size-mb'] = Math.max(1, Math.min(50, value)); // Clamp between 1-50
+                this.value = jsonData.settings['max-upload-size-mb']; // Update display
+            });
+        }
+
+        async function pickImageForLogo() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    await uploadWithInlineProgress(file, 'logo-container', (result) => {
+                        jsonData.settings['logo-url'] = result.url;
+                        document.getElementById('logo-url').value = result.url;
+                        const logoPreview = document.getElementById('logo-preview');
+                        const logoPlaceholder = document.getElementById('logo-placeholder');
+                        logoPreview.src = result.url;
+                        logoPreview.style.display = 'block';
+                        logoPlaceholder.style.display = 'none';
+                        
+                        // Update dashboard logo
+                        const dashboardLogo = document.getElementById('dashboard-logo');
+                        if (dashboardLogo) {
+                            dashboardLogo.src = result.url;
+                        }
+                        
+                        // Update favicon
+                        const favicon = document.querySelector('link[rel="icon"]');
+                        const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                        if (favicon) favicon.href = result.url;
+                        if (appleTouchIcon) appleTouchIcon.href = result.url;
+                    });
+                }
+            };
+            input.click();
+        }
+
+        async function pickImageForFallback() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    await uploadWithInlineProgress(file, 'fallback-container', (result) => {
+                        jsonData.settings['fallback-image'] = result.url;
+                        document.getElementById('fallback-image-url').value = result.url;
+                        const fallbackPreview = document.getElementById('fallback-preview');
+                        const fallbackPlaceholder = document.getElementById('fallback-placeholder');
+                        fallbackPreview.src = result.url;
+                        fallbackPreview.style.display = 'block';
+                        fallbackPlaceholder.style.display = 'none';
+                    });
+                }
+            };
+            input.click();
+        }
+
+        async function hashPassword() {
+            const passwordInput = document.getElementById('password-input');
+            const passwordHashField = document.getElementById('password-hash');
+            const copyBtn = document.getElementById('copy-hash-btn');
+            const password = passwordInput.value.trim();
+
+            if (!password) {
+                alert('Please enter a password to hash');
+                return;
+            }
+
+            // Show loading state
+            passwordHashField.value = 'Hashing...';
+
+            try {
+                // Use Web Crypto API to hash the password
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                // Update the hash field
+                passwordHashField.value = hash;
+
+                // Update JSON data
+                if (!jsonData.settings) {
+                    jsonData.settings = {};
+                }
+                jsonData.settings.password = hash;
+
+                // Show copy button
+                copyBtn.classList.remove('hidden');
+                copyBtn.classList.add('flex');
+
+                // Clear the password input for security
+                passwordInput.value = '';
+
+                // Show success feedback
+                passwordHashField.classList.add('border-green-500');
+                setTimeout(() => {
+                    passwordHashField.classList.remove('border-green-500');
+                }, 2000);
+            } catch (error) {
+                console.error('Hashing error:', error);
+                passwordHashField.value = '';
+                alert('Error generating hash: ' + error.message);
+            }
+        }
+
+        function copyHashedPassword() {
+            const passwordHashField = document.getElementById('password-hash');
+            const copyBtn = document.getElementById('copy-hash-btn');
+
+            if (!passwordHashField.value || passwordHashField.value === 'Hashed password will appear here') {
+                return;
+            }
+
+            // Copy to clipboard
+            passwordHashField.select();
+            document.execCommand('copy');
+
+            // Show feedback
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = `
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Copied!
+            `;
+
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        }
+
+        // Render Slider Content Section
+        function renderSliderContentSection() {
+            if (jsonData['slider-content']) {
+                document.getElementById('slider-heading').value = jsonData['slider-content'].heading || '';
+                document.getElementById('slider-description').value = jsonData['slider-content'].description || '';
+                document.getElementById('show-heading').checked = jsonData['slider-content']['show-heading'] || false;
+                document.getElementById('show-description').checked = jsonData['slider-content']['show-description'] || false;
+                document.getElementById('show-latest-collections-button').checked = jsonData['slider-content']['show-latest-collections-button'] || false;
+            }
+
+            // Add event listeners for slider content inputs
+            document.getElementById('slider-heading').addEventListener('input', function () {
+                jsonData['slider-content'].heading = this.value;
+            });
+            document.getElementById('slider-description').addEventListener('input', function () {
+                jsonData['slider-content'].description = this.value;
+            });
+            document.getElementById('show-heading').addEventListener('change', function () {
+                jsonData['slider-content']['show-heading'] = this.checked;
+            });
+            document.getElementById('show-description').addEventListener('change', function () {
+                jsonData['slider-content']['show-description'] = this.checked;
+            });
+            document.getElementById('show-latest-collections-button').addEventListener('change', function () {
+                jsonData['slider-content']['show-latest-collections-button'] = this.checked;
+            });
+        }
+
+        function renderSliderImages() {
+            const container = document.getElementById('sliderImagesContainer');
+            container.innerHTML = '';
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${jsonData['slider-images'].map((url, index) => `
+                        <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+                            <div id="slider-img-${index}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
+                                <img src="${url}" class="w-full h-full object-cover" alt="Slider ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                                    </svg>
+                                </div>
+                                <div class="absolute top-2 right-2 flex gap-2">
+                                    <button onclick="event.stopPropagation(); pickImageForSlider(${index})" 
+                                        class="bg-[#1C5BAE] hover:bg-[#1C5BAE]/90 text-white p-2 rounded-lg transition-all shadow-md" title="Upload Image">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); removeSliderImage(${index})" 
+                                        class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-all shadow-md" title="Remove Image">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                    class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                    <span class="flex-1">Image URL / Base64</span>
+                                    <svg class="w-4 h-4 transition-transform ${jsonData['slider-images'][index] ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="${jsonData['slider-images'][index] ? 'hidden' : ''}">
+                                    <textarea 
+                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
+                                        onchange="jsonData['slider-images'][${index}] = this.value; renderSliderImages();"
+                                        placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function addSliderImage() {
+            jsonData['slider-images'].push('');
+            renderSliderImages();
+        }
+
+        function removeSliderImage(index) {
+            jsonData['slider-images'].splice(index, 1);
+            renderSliderImages();
+        }
+
+        async function pickImageForSlider(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const containerId = `slider-img-${index}`;
+                    console.log('Uploading slider image', index, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        jsonData['slider-images'][index] = result.url;
+                        renderSliderImages();
+                    });
+                }
+            };
+            input.click();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+            jsonData.categories.forEach((category, index) => {
+                container.innerHTML += `
+                    <div class="bg-gray-700 border border-gray-600 rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden mb-4">
+                        <div class="p-4">
+                            <!-- Category Header -->
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-full flex items-center justify-center text-white text-xs">${index + 1}</span>
+                                    Category ${index + 1}
+                                </h3>
+                                <button onclick="removeCategory(${index})" 
+                                    class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition-all" title="Remove Category">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <!-- Main Content: Side by Side Layout -->
+                            <div class="flex flex-col lg:flex-row gap-4">
+                                <!-- Left Side - Category Details -->
+                                <div class="flex-1 space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-300 mb-2">Title</label>
+                                        <input type="text" value="${category.title}" maxlength="60"
+                                            onchange="jsonData.categories[${index}].title = this.value"
+                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm bg-gray-800 text-white hover:border-gray-500 transition-colors"
+                                            placeholder="e.g., Weddings, Portraits, Landscapes">
+                                        <p class="mt-1 text-xs text-gray-400">🏷️ Category name (max 60 characters)</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-300 mb-2">Description</label>
+                                        <textarea maxlength="600"
+                                            onchange="jsonData.categories[${index}].description = this.value"
+                                            class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-sm resize-none bg-gray-800 text-white h-[300px] hover:border-gray-500 transition-colors"
+                                            placeholder="Describe this category: what type of photos it includes, your approach, and what makes these images special...">${category.description}</textarea>
+                                        <p class="mt-1 text-xs text-gray-400">📝 Category description that helps visitors understand your work (max 600 characters)</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right Side - Category Image -->
+                                <div class="flex-1">
+                                    <label class="block text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 text-[#1C5BAE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        Category Cover Image
+                                    </label>
+                                    <p class="text-xs text-gray-400 mb-2">🖼️ Featured image representing this category</p>
+                                    <div class="border border-gray-600 rounded-lg p-3 bg-gray-800">
+                                        <!-- Image Preview -->
+                                        <div id="category-img-${index}" class="relative group bg-gray-900 rounded-lg overflow-hidden w-full h-[200px] mb-3">
+                                            <img src="${category.image}" class="w-full h-full object-contain image-clickable" alt="Category ${index + 1}" onclick="openFullscreen('${category.image}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
+                                                <button onclick="pickImageForCategory(${index})" 
+                                                    class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#1C5BAE] px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-gray-100">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                    </svg>
+                                                    Change
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- URL Input -->
+                                        <div class="mb-3">
+                                            <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                                class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                                </svg>
+                                                <span class="flex-1">Image URL / Base64</span>
+                                                <svg class="w-4 h-4 transition-transform ${category.image ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <div class="${category.image ? 'hidden' : ''}">
+                                                <textarea 
+                                                    onchange="jsonData.categories[${index}].image = this.value; renderCategories();"
+                                                    class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-[#1C5BAE] text-xs font-mono bg-gray-900 text-gray-300 hover:bg-gray-800 transition-colors resize-none h-20"
+                                                    placeholder="Paste image URL or upload to generate base64...">${category.image}</textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="flex gap-2">
+                                            <button onclick="pickImageForCategory(${index})" 
+                                                class="flex-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                                </svg>
+                                                <span>Upload</span>
+                                            </button>
+                                            <button onclick="openFullscreen('${category.image}'); event.stopPropagation();" 
+                                                class="px-4 py-2.5 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg" title="View Fullscreen">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Category Images URL Section -->
+                            <div class="mt-4 p-4 bg-gray-800 border border-gray-600 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="text-sm font-bold text-gray-200 flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-[#1C5BAE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        Category Images (${category['images-url'] ? category['images-url'].length : 0})
+                                    </h4>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    ${(category['images-url'] || []).map((imgUrl, imgIndex) => `
+                                        <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+                                            <div id="category-${index}-img-${imgIndex}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${imgUrl}')">
+                                                <img src="${imgUrl}" class="w-full h-full object-cover" alt="Image ${imgIndex + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                                                    <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="absolute top-2 right-2 flex gap-2">
+                                                    <button onclick="event.stopPropagation(); pickCategoryImage(${index}, ${imgIndex})" 
+                                                        class="bg-[#1C5BAE] hover:bg-[#1C5BAE]/90 text-white p-2 rounded-lg transition-all shadow-md" title="Upload Image">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <button onclick="event.stopPropagation(); removeCategoryImage(${index}, ${imgIndex})" 
+                                                        class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-all shadow-md" title="Remove Image">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="p-3">
+                                                <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                                    class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                                    </svg>
+                                                    <span class="flex-1">Image URL / Base64</span>
+                                                    <svg class="w-4 h-4 transition-transform ${imgUrl ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
+                                                <div class="${imgUrl ? 'hidden' : ''}">
+                                                    <textarea 
+                                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
+                                                        onchange="updateCategoryImage(${index}, ${imgIndex}, this.value)"
+                                                        placeholder="Paste image URL or upload to generate base64...">${imgUrl}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <!-- Add Image Button at Bottom -->
+                                <div class="mt-3">
+                                    <button onclick="addCategoryImage(${index})" 
+                                        class="w-full bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] hover:from-[#1C5BAE]/90 hover:to-[#1DA6E1]/90 text-white px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Add Image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addCategory() {
+            jsonData.categories.push({
+                title: '',
+                description: '',
+                image: '',
+                "images-url": []
+            });
+            renderCategories();
+        }
+
+        function removeCategory(index) {
+            jsonData.categories.splice(index, 1);
+            renderCategories();
+        }
+
+        async function pickImageForCategory(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const containerId = `category-img-${index}`;
+                    console.log('Uploading category image', index, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        jsonData.categories[index].image = result.url;
+                        renderCategories();
+                    });
+                }
+            };
+            input.click();
+        }
+
+        function addCategoryImage(categoryIndex) {
+            if (!jsonData.categories[categoryIndex]['images-url']) {
+                jsonData.categories[categoryIndex]['images-url'] = [];
+            }
+            jsonData.categories[categoryIndex]['images-url'].push('');
+            renderCategories();
+        }
+
+        function updateCategoryImage(categoryIndex, imageIndex, value) {
+            if (!jsonData.categories[categoryIndex]['images-url']) {
+                jsonData.categories[categoryIndex]['images-url'] = [];
+            }
+            jsonData.categories[categoryIndex]['images-url'][imageIndex] = value;
+            renderCategories();
+        }
+
+        function removeCategoryImage(categoryIndex, imageIndex) {
+            if (jsonData.categories[categoryIndex]['images-url']) {
+                jsonData.categories[categoryIndex]['images-url'].splice(imageIndex, 1);
+                renderCategories();
+            }
+        }
+
+        async function pickCategoryImage(categoryIndex, imageIndex) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const containerId = `category-${categoryIndex}-img-${imageIndex}`;
+                    console.log('Uploading category sub-image', categoryIndex, imageIndex, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        if (!jsonData.categories[categoryIndex]['images-url']) {
+                            jsonData.categories[categoryIndex]['images-url'] = [];
+                        }
+                        jsonData.categories[categoryIndex]['images-url'][imageIndex] = result.url;
+                        renderCategories();
+                    });
+                }
+            };
+            input.click();
+        }
+
+        function renderGalleryImages() {
+            const container = document.getElementById('galleryImagesContainer');
+            container.innerHTML = '';
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${jsonData['gallery-images'].map((url, index) => `
+                        <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+                            <div id="gallery-img-${index}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
+                                <img src="${url}" class="w-full h-full object-cover" alt="Gallery ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                                    </svg>
+                                </div>
+                                <div class="absolute top-2 right-2 flex gap-2">
+                                    <button onclick="event.stopPropagation(); pickImageForGallery(${index})" 
+                                        class="bg-[#1C5BAE] hover:bg-[#1C5BAE]/90 text-white p-2 rounded-lg transition-all shadow-md" title="Upload Image">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); removeGalleryImage(${index})" 
+                                        class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-all shadow-md" title="Remove Image">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <button type="button" title="Toggle Image URL Input" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg:last-child').classList.toggle('rotate-180');" 
+                                    class="w-full text-left text-xs font-semibold text-gray-300 px-3 py-2 bg-gray-700/30 rounded-lg flex items-center gap-2 hover:bg-gray-700/50 hover:text-white transition-all mb-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                    <span class="flex-1">Image URL / Base64</span>
+                                    <svg class="w-4 h-4 transition-transform ${jsonData['gallery-images'][index] ? '' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="${jsonData['gallery-images'][index] ? 'hidden' : ''}">
+                                    <textarea 
+                                        class="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] text-xs font-mono bg-gray-800 text-gray-300 resize-none h-20"
+                                        onchange="jsonData['gallery-images'][${index}] = this.value; renderGalleryImages();"
+                                        placeholder="Paste image URL or upload to generate base64...">${url}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function addGalleryImage() {
+            jsonData['gallery-images'].push('');
+            renderGalleryImages();
+        }
+
+        function removeGalleryImage(index) {
+            jsonData['gallery-images'].splice(index, 1);
+            renderGalleryImages();
+        }
+
+        async function pickImageForGallery(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const containerId = `gallery-img-${index}`;
+                    console.log('Uploading gallery image', index, 'Container ID:', containerId);
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        console.error('Container not found:', containerId);
+                        Toastify({
+                            text: "⏳ Please wait for the page to fully load and try again.",
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#f59e0b",
+                            className: "toastify-custom",
+                        }).showToast();
+                        return;
+                    }
+                    await uploadWithInlineProgress(file, containerId, (result) => {
+                        jsonData['gallery-images'][index] = result.url;
+                        renderGalleryImages();
+                    });
+                }
+            };
+            input.click();
+        }
+
+        // --- USEFUL LINKS FUNCTIONS ---
+        function renderUsefulLinks() {
+            const container = document.getElementById('usefulLinksContainer');
+            if (!jsonData['useful-links']) {
+                jsonData['useful-links'] = [];
+            }
+            
+            container.innerHTML = '';
+
+            if (jsonData['useful-links'].length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                            </path>
+                        </svg>
+                        <p class="font-semibold">No useful links added yet</p>
+                        <p class="text-sm mt-2">Click "Add Useful Link" to create your first link</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-3">
+                    ${jsonData['useful-links'].map((link, index) => `
+                        <div class="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-[#1C5BAE] transition-all">
+                            <!-- Position Badge -->
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-gray-800 rounded-full text-sm font-semibold text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                                    </svg>
+                                    Position ${index + 1}
+                                </span>
+                                
+                                <!-- Move Up/Down Buttons -->
+                                <div class="flex gap-2">
+                                    <button onclick="moveUsefulLinkUp(${index})" 
+                                        ${index === 0 ? 'disabled' : ''}
+                                        class="px-3 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded text-white font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1"
+                                        title="Move up">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                        </svg>
+                                        Up
+                                    </button>
+                                    <button onclick="moveUsefulLinkDown(${index})" 
+                                        ${index === jsonData['useful-links'].length - 1 ? 'disabled' : ''}
+                                        class="px-3 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded text-white font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1"
+                                        title="Move down">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                        Down
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-400 mb-2">Link Title</label>
+                                    <input type="text" 
+                                        value="${link.title || ''}"
+                                        onchange="updateUsefulLink(${index}, 'title', this.value)"
+                                        placeholder="e.g., Nature Photography Guide"
+                                        class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-400 mb-2">URL</label>
+                                    <input type="url" 
+                                        value="${link.url || ''}"
+                                        onchange="updateUsefulLink(${index}, 'url', this.value)"
+                                        placeholder="https://example.com"
+                                        class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE]">
+                                </div>
+                            </div>
+                            
+                            <!-- Preview Link -->
+                            ${link.url ? `
+                                <div class="mb-3 p-3 bg-gray-800 rounded border border-gray-700">
+                                    <p class="text-xs text-gray-400 mb-1">Preview:</p>
+                                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
+                                        class="text-[#1DA6E1] hover:text-[#1C5BAE] text-sm flex items-center gap-1">
+                                        ${link.title || 'Untitled Link'}
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="flex justify-end">
+                                <button onclick="removeUsefulLink(${index})" 
+                                    class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function addUsefulLink() {
+            if (!jsonData['useful-links']) {
+                jsonData['useful-links'] = [];
+            }
+            jsonData['useful-links'].push({
+                title: '',
+                url: ''
+            });
+            renderUsefulLinks();
+            
+            Toastify({
+                text: "✅ New useful link added! Fill in the details.",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #10b981, #059669)",
+                className: "toastify-custom",
+            }).showToast();
+        }
+
+        function updateUsefulLink(index, field, value) {
+            if (jsonData['useful-links'][index]) {
+                jsonData['useful-links'][index][field] = value;
+                renderUsefulLinks();
+            }
+        }
+
+        function removeUsefulLink(index) {
+            if (confirm('Are you sure you want to remove this link?')) {
+                jsonData['useful-links'].splice(index, 1);
+                renderUsefulLinks();
+                
+                Toastify({
+                    text: "🗑️ Useful link removed!",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ef4444, #dc2626)",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }
+
+        function moveUsefulLinkUp(index) {
+            if (index > 0) {
+                // Swap with previous item
+                const temp = jsonData['useful-links'][index];
+                jsonData['useful-links'][index] = jsonData['useful-links'][index - 1];
+                jsonData['useful-links'][index - 1] = temp;
+                renderUsefulLinks();
+                
+                Toastify({
+                    text: "⬆️ Link moved up!",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }
+
+        function moveUsefulLinkDown(index) {
+            if (index < jsonData['useful-links'].length - 1) {
+                // Swap with next item
+                const temp = jsonData['useful-links'][index];
+                jsonData['useful-links'][index] = jsonData['useful-links'][index + 1];
+                jsonData['useful-links'][index + 1] = temp;
+                renderUsefulLinks();
+                
+                Toastify({
+                    text: "⬇️ Link moved down!",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }
+
+        // Convert image URL to base64
+        async function urlToBase64(url) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            } catch (error) {
+                console.error('Error converting URL to base64:', error);
+                return url; // Return original URL if conversion fails
+            }
+        }
+
+        // Inline Upload Progress Helper Functions
+        function createProgressOverlay(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return null;
+
+            const overlayId = containerId + '-upload-overlay';
+            let overlay = document.getElementById(overlayId);
+
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = overlayId;
+                overlay.className = 'absolute inset-0 bg-black bg-opacity-90 hidden flex-col items-center justify-center z-50';
+                overlay.innerHTML = `
+                    <div class="text-center">
+                        <svg class="animate-spin h-12 w-12 text-blue-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <div class="text-white font-bold text-lg mb-2" id="${overlayId}-text">Uploading...</div>
+                        <div class="w-64 bg-gray-700 rounded-full h-3">
+                            <div id="${overlayId}-bar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <div class="text-blue-400 font-semibold mt-2" id="${overlayId}-percent">0%</div>
+                    </div>
+                `;
+                container.appendChild(overlay);
+            }
+
+            return {
+                overlay: overlay,
+                bar: document.getElementById(overlayId + '-bar'),
+                percent: document.getElementById(overlayId + '-percent'),
+                text: document.getElementById(overlayId + '-text')
+            };
+        }
+
+        async function uploadWithInlineProgress(file, containerId, onSuccess) {
+            const elements = createProgressOverlay(containerId);
+            if (!elements) {
+                console.error('Could not create progress overlay for container:', containerId);
+                Toastify({
+                    text: "❌ Error: Upload container not found",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#dc2626",
+                    className: "toastify-custom",
+                }).showToast();
+                return;
+            }
+
+            // Validate file size before showing overlay
+            const maxSizeMB = jsonData.settings && jsonData.settings['max-upload-size-mb'] ? jsonData.settings['max-upload-size-mb'] : 10;
+            const validation = cloudinaryUploader.validateFile(file, maxSizeMB);
+            if (!validation.valid) {
+                Toastify({
+                    text: `❌ Upload Failed: ${formatErrorMessage(validation.error)}`,
+                    duration: 5000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#dc2626",
+                    className: "toastify-custom",
+                }).showToast();
+                return;
+            }
+
+            elements.overlay.classList.remove('hidden');
+            elements.overlay.classList.add('flex');
+
+            // Freeze screen during upload
+            document.body.style.pointerEvents = 'none';
+            elements.overlay.style.pointerEvents = 'auto';
+
+            try {
+                const result = await cloudinaryUploader.upload(file, (percentage) => {
+                    elements.bar.style.width = percentage + '%';
+                    elements.percent.textContent = percentage + '%';
+                    elements.text.textContent = percentage < 100 ? 'Uploading...' : 'Processing...';
+                }, { maxSizeMB });
+
+                if (result.success) {
+                    elements.text.textContent = '✓ Upload Complete!';
+                    elements.bar.classList.remove('bg-blue-500');
+                    elements.bar.classList.add('bg-green-500');
+
+                    if (onSuccess) onSuccess(result);
+
+                    Toastify({
+                        text: "✅ Image uploaded successfully!",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#16a34a",
+                        className: "toastify-custom",
+                    }).showToast();
+
+                    setTimeout(() => {
+                        elements.overlay.classList.add('hidden');
+                        elements.overlay.classList.remove('flex');
+                        elements.bar.classList.remove('bg-green-500');
+                        elements.bar.classList.add('bg-blue-500');
+                        elements.bar.style.width = '0%';
+                        // Re-enable screen
+                        document.body.style.pointerEvents = 'auto';
+                    }, 1500);
+                } else {
+                    throw new Error(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                elements.text.textContent = '✗ Upload Failed';
+                elements.bar.classList.remove('bg-blue-500');
+                elements.bar.classList.add('bg-red-500');
+
+                setTimeout(() => {
+                    elements.overlay.classList.add('hidden');
+                    elements.overlay.classList.remove('flex');
+                    elements.bar.classList.remove('bg-red-500');
+                    elements.bar.classList.add('bg-blue-500');
+                    elements.bar.style.width = '0%';
+                    // Re-enable screen
+                    document.body.style.pointerEvents = 'auto';
+                }, 2000);
+
+                Toastify({
+                    text: "❌ Upload Failed: " + formatErrorMessage(error.message),
+                    duration: 5000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#dc2626",
+                    className: "toastify-custom",
+                }).showToast();
+            }
+        }        // Update JSON with base64 images
+        async function updateJSON() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.classList.remove('hidden');
+            progressText.textContent = 'Preparing JSON file...';
+            progressBar.style.width = '50%';
+            progressBar.textContent = '50%';
+
+            try {
+                // Download the updated JSON
+                progressText.textContent = 'Creating download file...';
+                progressBar.style.width = '75%';
+                progressBar.textContent = '75%';
+
+                const jsonString = JSON.stringify(jsonData, null, 4);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'anupam-dutta-photography-data-set.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                progressText.textContent = 'Complete! Your updated anupam-dutta-photography-data-set.json file has been downloaded.';
+                progressBar.classList.add('bg-green-500');
+
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    progressBar.classList.remove('bg-green-500');
+                    progressBar.style.width = '0%';
+                }, 3000);
+
+            } catch (error) {
+                alert('Error updating JSON: ' + error.message);
+                progressContainer.classList.add('hidden');
+            }
+        }
+
+        // Password verification function
+        async function verifyPassword() {
+            const password = document.getElementById('login-password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (!password) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.querySelector('span').textContent = 'Please enter a password.';
+                return;
+            }
+
+            try {
+                // Fetch the JSON data to get the stored password
+                const response = await fetch('../data/anupam-dutta-photography-data-set.json');
+                const data = await response.json();
+                const storedPassword = data.settings?.password;
+
+                if (!storedPassword) {
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.querySelector('span').textContent = 'Password not configured in settings.';
+                    return;
+                }
+
+                // Hash the entered password using Web Crypto API
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                // Compare password hash
+                const isValid = hash === storedPassword;
+
+                if (isValid) {
+                    // Store authentication state
+                    sessionStorage.setItem('editorAuth', 'true');
+
+                    // Hide login modal
+                    document.getElementById('password-modal').classList.add('hidden');
+
+                    // Clear password field
+                    document.getElementById('login-password').value = '';
+                    errorMessage.classList.add('hidden');
+                } else {
+                    // Show error message
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.querySelector('span').textContent = 'Incorrect password. Please try again.';
+
+                    // Clear password field
+                    document.getElementById('login-password').value = '';
+                }
+            } catch (error) {
+                console.error('Error verifying password:', error);
+                errorMessage.classList.remove('hidden');
+                errorMessage.querySelector('span').textContent = 'Error verifying password. Please try again.';
+            }
+        }
+
+        // Check authentication on page load
+        function checkAuth() {
+            const isAuthenticated = sessionStorage.getItem('editorAuth') === 'true';
+
+            if (isAuthenticated) {
+                document.getElementById('password-modal').classList.add('hidden');
+            } else {
+                document.getElementById('password-modal').classList.remove('hidden');
+            }
+        }
+
+        // Initialize authentication check and editor when DOM is ready
+        window.addEventListener('load', function () {
+            console.log('Editor initialized with Web Crypto API');
+            checkAuth();
+            renderEditor();
+        });
+
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            // Toggle between password and text type
+            const isHidden = input.getAttribute('data-password-hidden') === 'true';
+
+            if (isHidden) {
+                // Show password
+                input.type = 'text';
+                input.setAttribute('data-password-hidden', 'false');
+                // Change to "eye-off" icon (password is visible)
+                icon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                `;
+            } else {
+                // Hide password
+                input.type = 'password';
+                input.setAttribute('data-password-hidden', 'true');
+                // Change to "eye" icon (password is hidden)
+                icon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>

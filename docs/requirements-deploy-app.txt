@@ -1,0 +1,3 @@
+# Requirements for Photography Portfolio Deployment App
+tkinter  # Usually comes with Python, but listed for clarity
+pyinstaller>=6.0.0

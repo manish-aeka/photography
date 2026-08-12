@@ -1,0 +1,131 @@
+{
+    "about": {
+        "title": "About Anupam Dutta Photography",
+        "description": "Capturing the untamed beauty of nature through the lens — every photograph tells a story, evokes emotion, and preserves a moment that will never return.",
+        "card": {
+            "title": "My Passion for Photography",
+            "description": "Wildlife photography is not just about capturing images — it’s about uncovering the unseen beauty of nature. Each shot freezes emotions, stories, and moments that live far beyond the frame.",
+            "sub-description": "Through patience and timing, I aim to showcase wildlife in its purest form — inspiring connection,respect, and curiosity toward the wild.",
+            "url": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714807/photography/my_passiona_center_file_fornqv.webp",
+            "is-card-visible": true
+        }
+    },
+    "slider-content": {
+        "heading": "With every click, I freeze emotions that deserve to be remembered.",
+        "show-heading": true,
+        "description": "Nature moves fast, but my camera captures its soul. From raw expressions to untold stories of the wild, I turn every moment into a memory worth holding onto.",
+        "show-description": true,
+        "show-latest-collections-button": true
+    },
+    "slider-images": [
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713935/photography/c3_v8kdnb.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713943/photography/c4_guix3w.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713951/photography/c5_cfdg2j.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713975/photography/c2_k9maa8.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775715169/photography/c6_1_2_td44yr.webp"
+    ],
+    "categories": [
+        {
+            "title": "My Passion for Lunar Photography",
+            "description": "🌕 Lunar photography is a blend of patience and precision—capturing a world that’s always above us, yet always changing. 🌙 Every phase of the moon tells a different story, and the camera becomes the storyteller in this unique realm of nature photography. ✨ Shooting the moon isn’t just photography; it’s the art of freezing a celestial moment millions of miles away, akin to the dedication seen in wildlife photography and other photography services.",
+            "image": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714203/photography/lunar_xcrqgj.webp",
+            "images-url": []
+        },
+        {
+            "title": "Nature Photography",
+            "description": "Photography is more than a craft for me; it’s a connection to the wild. Nature photography is not just a subject for me— it is a realm of wonder. With every photograph, I strive to capture not just what I see, but the enchantment that moves beneath it, making my photography services a gateway to the beauty of wildlife photography.",
+            "image": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714222/photography/nature_sjvcty.webp",
+            "images-url": []
+        },
+        {
+            "title": "Wild Life Photography",
+            "description": "With each frame in my nature photography, I wait for that fragile moment—the pause between movement and stillness—when a creature reveals more than its form. In that heartbeat, the wild speaks… and I try to honor its magic through my photography services before it slips back into mystery.",
+            "image": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714261/photography/c1_v2hn1u.webp",
+            "images-url": [
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714284/photography/collection1_crvlmf.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714291/photography/collection2_sziswq.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714304/photography/collection3_pp4cxw.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714312/photography/collection4_m3eldi.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714319/photography/collection5_rhx7qg.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714329/photography/collection6_happwm.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714338/photography/collection7_odv0cc.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713935/photography/c3_v8kdnb.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713943/photography/c4_guix3w.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713951/photography/c5_cfdg2j.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713975/photography/c2_k9maa8.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775715169/photography/c6_1_2_td44yr.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714346/photography/collection8_xyqsfe.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714355/photography/collection9_y3f13k.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714363/photography/collection11_i11xm2.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714417/photography/collection10_i22cdy.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714380/photography/collection12_rlun2z.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714387/photography/collection13_dh4ljl.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714393/photography/Aug_t9xqau.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584710/photography/IMG_0670_ovvnge.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584717/photography/IMG_0668_mf6lzt.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584733/photography/IMG_0667_hqqdwc.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584743/photography/IMG_0663_j0rtgn.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584755/photography/IMG_0659_c8xy7z.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584775/photography/IMG_0658_flib5c.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584785/photography/IMG_0657_nqdbzg.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584796/photography/DSC_0320_nf5zi2.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584813/photography/DSC_0117_xgozg0.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584830/photography/collection_5_zymjym.webp",
+                "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp"
+            ]
+        }
+    ],
+    "gallery-images": [
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714284/photography/collection1_crvlmf.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714291/photography/collection2_sziswq.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714304/photography/collection3_pp4cxw.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714312/photography/collection4_m3eldi.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714319/photography/collection5_rhx7qg.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714329/photography/collection6_happwm.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714338/photography/collection7_odv0cc.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714346/photography/collection8_xyqsfe.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714355/photography/collection9_y3f13k.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714363/photography/collection11_i11xm2.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714417/photography/collection10_i22cdy.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714380/photography/collection12_rlun2z.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714387/photography/collection13_dh4ljl.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714393/photography/Aug_t9xqau.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584710/photography/IMG_0670_ovvnge.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584717/photography/IMG_0668_mf6lzt.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584733/photography/IMG_0667_hqqdwc.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584743/photography/IMG_0663_j0rtgn.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584755/photography/IMG_0659_c8xy7z.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584775/photography/IMG_0658_flib5c.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584785/photography/IMG_0657_nqdbzg.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584796/photography/DSC_0320_nf5zi2.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584813/photography/DSC_0117_xgozg0.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584830/photography/collection_5_zymjym.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp"
+    ],
+    "settings": {
+        "logo-url": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775708154/photography/logo_yafbkj.png",
+        "navbar-title": "Anupam Dutta Photography",
+        "instagram-username": "@birds.series",
+        "instagram-url": "https://www.instagram.com/birds.series",
+        "email": "anupam.d1@gamil.com",
+        "phone": "9831678665",
+        "address": "Kolkata, India",
+        "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+        "fallback-image": "https://placehold.co/150x150.webp?text=Invalid+Image",
+        "max-upload-size-mb": 5
+    },
+    "useful-links": [
+        {
+            "title": "Publications",
+            "url": "https://www.aaroananda.com/story/entertainment-news/travel/anini-hidden-gem-for-nature-enthusiasts/10989891"
+        },
+        {
+            "title": "Publications",
+            "url": "https://www.dodho.com/anupam-dutta-captures-the-himalayas-in-chasing-color-in-silence/"
+        },
+        {
+            "title": "Publications",
+            "url": "https://www.goindigo.in/campaigns/hello-6e/2026/june.html"
+        }
+    ]
+}

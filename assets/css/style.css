@@ -1,0 +1,81 @@
+.slide-in-left {
+    animation: slideInLeft 1.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Custom animation delays */
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.delay-300 {
+    animation-delay: 0.3s;
+}
+
+/* Fade in up animation for about section */
+@keyframes fadeInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Smooth gradient animation */
+@keyframes gradientShift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+}
+
+/* Hero slider image positioning */
+#slider-image {
+    object-position: center center;
+}
+
+/* Mobile optimization for hero image */
+@media (max-width: 768px) {
+    #slider-image {
+        /* object-position: contains !important; */
+        object-fit: fill !important;
+    }
+
+    /* Hero section height for mobile */
+    .hero-section {
+        height: 70vh !important;
+    }
+}
