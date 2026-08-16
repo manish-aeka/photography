@@ -18,9 +18,9 @@
         "show-latest-collections-button": true
     },
     "slider-images": [
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713935/photography/c3_v8kdnb.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1786879955/photography/DSC03101-3_bcjkvi.jpg",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713943/photography/c4_guix3w.webp",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713951/photography/c5_cfdg2j.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1786879930/photography/DSC06096_cswhsj.jpg",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775713975/photography/c2_k9maa8.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775715169/photography/c6_1_2_td44yr.webp"
     ],
@@ -126,6 +126,18 @@
         {
             "title": "Travel and Wild Life",
             "url": "https://www.goindigo.in/campaigns/hello-6e/2026/june.html"
+        },
+        {
+            "title": "Wild Life ",
+            "url": "https://www.natureinfocus.in/search/?q=anupam+dutta"
+        },
+        {
+            "title": "Travel and Photography",
+            "url": "https://www.aaroananda.com/magazine/anandamela/himalayan-monal-rare-bird-sighting-in-uttarakhand-himalayas/11005928"
+        },
+        {
+            "title": "Photography",
+            "url": "https://www.flickr.com/photos/204479913@N02/"
         }
     ]
 }
