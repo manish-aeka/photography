@@ -15,7 +15,7 @@
         "show-heading": false,
         "description": "Nature moves fast, but my camera tries to capture its soul. From raw expressions to untold stories of the wild, I turn every moment into a memory worth holding onto.",
         "show-description": false,
-        "show-latest-collections-button": true
+        "show-latest-collections-button": false
     },
     "slider-images": [
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1786879955/photography/DSC03101-3_bcjkvi.jpg",
@@ -103,7 +103,9 @@
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584796/photography/DSC_0320_nf5zi2.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584813/photography/DSC_0117_xgozg0.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584830/photography/collection_5_zymjym.webp",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp"
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1790762089/photography/Dwarf_Sulawesi_Indonesia_vs2m6p.jpg",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1790762183/photography/Sacred_Bali_Indonesia_tsezop.jpg"
     ],
     "settings": {
         "logo-url": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775708154/photography/logo_yafbkj.png",
@@ -145,6 +147,10 @@
         {
             "title": "Photography",
             "url": "https://indiawildlifenews.com/2026/09/26/sulawesi-dwarf-kingfisher-anupam-dutta/"
+        },
+        {
+            "title": "Professional",
+            "url": "https://www.linkedin.com/in/anupam-dutta-144a9513/"
         }
     ]
 }
