@@ -79,10 +79,8 @@
         }
     ],
     "gallery-images": [
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714284/photography/collection1_crvlmf.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714291/photography/collection2_sziswq.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714304/photography/collection3_pp4cxw.webp",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714312/photography/collection4_m3eldi.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714319/photography/collection5_rhx7qg.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714329/photography/collection6_happwm.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775714338/photography/collection7_odv0cc.webp",
@@ -100,12 +98,14 @@
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584755/photography/IMG_0659_c8xy7z.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584775/photography/IMG_0658_flib5c.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584785/photography/IMG_0657_nqdbzg.webp",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584796/photography/DSC_0320_nf5zi2.webp",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584813/photography/DSC_0117_xgozg0.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584830/photography/collection_5_zymjym.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1781584838/photography/ASM_0805_ahajae.webp",
         "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1790762089/photography/Dwarf_Sulawesi_Indonesia_vs2m6p.jpg",
-        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1790762183/photography/Sacred_Bali_Indonesia_tsezop.jpg"
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1790762183/photography/Sacred_Bali_Indonesia_tsezop.jpg",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1792587051/photography/Blue_winged_Kookaburra_Large_lhrono.jpg",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1792587063/photography/Rufous_collard_Malayisa_Large_o1ufsi.jpg",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1792587075/photography/Rufous_backed_Large_fgws77.jpg",
+        "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1792587084/photography/Laughing_kookaburra_Large_mkatv1.jpg"
     ],
     "settings": {
         "logo-url": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1775708154/photography/logo_yafbkj.png",
@@ -155,6 +155,10 @@
         {
             "title": "Professional",
             "url": "https://www.linkedin.com/in/anupam-dutta-144a9513/"
+        },
+        {
+            "title": "Wild Life Navigator",
+            "url": "https://wildlifenavigator.com/dwarf-kingfisher-species/"
         }
     ]
 }
