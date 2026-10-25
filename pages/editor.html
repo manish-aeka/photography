@@ -262,7 +262,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
-        <img id="fullscreenImage" src="" alt="Fullscreen view" onclick="event.stopPropagation()">
+        <img loading="lazy" decoding="async" id="fullscreenImage" src="" alt="Fullscreen view" onclick="event.stopPropagation()">
     </div>
 
     <!-- Navbar -->
@@ -279,7 +279,7 @@
 
             <div class="flex items-center gap-2 md:gap-4">
                 <a href="/" class="group" title="Go to Homepage">
-                    <img id="dashboard-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Logo"
+                    <img loading="lazy" decoding="async" id="dashboard-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Logo"
                         class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover transition-transform group-hover:scale-110">
                     <div id="dashboard-logo-fallback"
                         class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#8C7650] to-[#B6A079] rounded-lg items-center justify-center hidden transition-transform group-hover:scale-110">
@@ -656,7 +656,7 @@
                             <div id="about-card-container"
                                 class="relative group bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px] cursor-pointer"
                                 onclick="openFullscreen(document.getElementById('about-card-image-preview').src)">
-                                <img id="about-card-image-preview" src="" class="w-full h-full object-contain"
+                                <img loading="lazy" decoding="async" id="about-card-image-preview" src="" class="w-full h-full object-contain"
                                     alt="About Card"
                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
 
@@ -845,7 +845,7 @@
                         <div id="portrait-container"
                             class="relative bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[200px] cursor-pointer"
                             onclick="openFullscreen(document.getElementById('portrait-preview').src)" title="View fullscreen">
-                            <img id="portrait-preview" src="../assets/portrait.jpg" alt="Portrait preview" class="w-full h-full object-cover">
+                            <img loading="lazy" decoding="async" id="portrait-preview" src="../assets/portrait.jpg" alt="Portrait preview" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1 flex flex-col gap-3">
                             <button onclick="pickImageForPortrait()"
@@ -951,7 +951,7 @@
                         <div class="flex gap-4 mb-3">
                             <div id="logo-container"
                                 class="relative bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-3 w-32 h-24 flex items-center justify-center overflow-hidden hover:border-[#B6A079] transition-colors">
-                                <img id="logo-preview" src="" alt="Logo Preview"
+                                <img loading="lazy" decoding="async" id="logo-preview" src="" alt="Logo Preview"
                                     class="absolute inset-0 w-full h-full object-contain p-2" style="display: none;"
                                     onerror="this.style.display='none'; document.getElementById('logo-placeholder').style.display='flex';">
                                 <div id="logo-placeholder"
@@ -1016,7 +1016,7 @@
                             <div id="footer-image-container"
                                 class="relative bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-[280px] h-[160px] cursor-pointer"
                                 onclick="if (jsonData.settings['footer-image']) openFullscreen(jsonData.settings['footer-image'])" title="View fullscreen">
-                                <img id="footer-image-preview" alt="Footer background preview" class="w-full h-full object-cover" style="display: none;">
+                                <img loading="lazy" decoding="async" id="footer-image-preview" alt="Footer background preview" class="w-full h-full object-cover" style="display: none;">
                                 <!-- Same darkening the site applies, so the preview matches the real footer -->
                                 <div class="absolute inset-0 bg-gradient-to-b from-gray-950/70 via-gray-950/85 to-gray-950/95 pointer-events-none"></div>
                                 <span id="footer-image-placeholder" class="absolute inset-0 flex items-center justify-center text-xs text-gray-500">No photo, plain dark footer</span>
@@ -1288,7 +1288,7 @@
                             <div id="fallback-container"
                                 class="relative group bg-gray-700/50 border-2 border-dashed border-gray-600 rounded-lg p-3 w-full h-32 flex items-center justify-center overflow-hidden hover:border-[#B6A079] transition-colors mb-3 cursor-pointer"
                                 onclick="const img = document.getElementById('fallback-preview'); if(img.src && !img.src.includes('data:image/svg')) openFullscreen(img.src);">
-                                <img id="fallback-preview" src="" alt="Fallback Preview"
+                                <img loading="lazy" decoding="async" id="fallback-preview" src="" alt="Fallback Preview"
                                     class="max-w-full max-h-full object-contain">
                                 <div id="fallback-placeholder"
                                     class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
@@ -2075,7 +2075,7 @@
                     ${jsonData['slider-images'].map((url, index) => `
                         <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
                             <div id="slider-img-${index}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
-                                <img src="${url}" class="w-full h-full object-cover" alt="Slider ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                <img loading="lazy" decoding="async" src="${url}" class="w-full h-full object-cover" alt="Slider ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
                                     <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
@@ -2216,7 +2216,7 @@
                                     <div class="border border-gray-600 rounded-lg p-3 bg-gray-800">
                                         <!-- Image Preview -->
                                         <div id="category-img-${index}" class="relative group bg-gray-900 rounded-lg overflow-hidden w-full h-[200px] mb-3">
-                                            <img src="${category.image}" class="w-full h-full object-contain image-clickable" alt="Category ${index + 1}" onclick="openFullscreen('${category.image}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                            <img loading="lazy" decoding="async" src="${category.image}" class="w-full h-full object-contain image-clickable" alt="Category ${index + 1}" onclick="openFullscreen('${category.image}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231f2937%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
                                                 <button onclick="pickImageForCategory(${index})" 
                                                     class="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#8C7650] px-4 py-2 rounded-lg font-semibold shadow-lg flex items-center gap-2 hover:bg-gray-100">
@@ -2282,7 +2282,7 @@
                                     ${(category['images-url'] || []).map((imgUrl, imgIndex) => `
                                         <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
                                             <div id="category-${index}-img-${imgIndex}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${imgUrl}')">
-                                                <img src="${imgUrl}" class="w-full h-full object-cover" alt="Image ${imgIndex + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                                <img loading="lazy" decoding="async" src="${imgUrl}" class="w-full h-full object-cover" alt="Image ${imgIndex + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
                                                     <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
@@ -2453,7 +2453,7 @@
                     ${jsonData['gallery-images'].map((url, index) => `
                         <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
                             <div id="gallery-img-${index}" class="relative aspect-video group cursor-pointer" onclick="openFullscreen('${url}')">
-                                <img src="${url}" class="w-full h-full object-cover" alt="Gallery ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                                <img loading="lazy" decoding="async" src="${url}" class="w-full h-full object-cover" alt="Gallery ${index + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22%3E%3Crect fill=%22%231f2937%22 width=%22100%25%22 height=%22100%25%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
                                     <svg class="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>

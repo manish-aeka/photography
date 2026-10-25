@@ -13,11 +13,19 @@
 <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+<div class="loader" id="loader" role="status" aria-live="polite">
+  <div class="loader-mark" aria-hidden="true"></div>
+  <p class="loader-name">Anupam Dutta Photography</p>
+  <div class="loader-bar" aria-hidden="true"></div>
+  <p class="loader-msg">This collection couldn’t be loaded. Check your connection and try again.</p>
+  <button type="button" class="loader-retry" onclick="location.reload()">Try again</button>
+</div>
+<noscript><style>.loader{display:none}</style></noscript>
 
 <header class="site-header scrolled">
   <div class="wrap bar">
     <a href="../index.html" class="brand">
-      <img id="brandLogo" alt="" width="40" height="40">
+      <img id="brandLogo" alt="" width="40" height="40" loading="lazy" decoding="async">
       <span id="brandName">Anupam Dutta Photography</span>
     </a>
     <a href="../index.html#collections" class="back"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>All collections</a>
@@ -39,7 +47,7 @@
 </main>
 
 <footer class="contact">
-  <figure class="contact-bg" id="footerBg" aria-hidden="true" hidden><img alt=""></figure>
+  <figure class="contact-bg" id="footerBg" aria-hidden="true" hidden><img alt="" loading="lazy" decoding="async"></figure>
   <div class="wrap">
     <div class="foot">
       <span>© <span id="year">2026</span> <span id="footName">Anupam Dutta Photography</span>. All photographs protected by copyright.</span>
@@ -127,11 +135,14 @@
   viewer.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
   viewer.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); sx = null; });
 
+  function hideLoader() { var l = byId('loader'); l.classList.add('done'); l.setAttribute('aria-hidden', 'true'); }
+
   var index = parseInt(new URLSearchParams(location.search).get('category'), 10);
   fetch('../data/anupam-dutta-photography-data-set.json')
-    .then(function (r) { return r.json(); })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) {
       var s = data.settings || {};
+      setTimeout(hideLoader, 300);
       if (s['logo-url']) { byId('brandLogo').src = sized(s['logo-url'], 120); byId('favicon').href = s['logo-url']; }
       if (s['footer-image']) {
         var fb = byId('footerBg').firstChild; byId('footerBg').hidden = false;
@@ -157,7 +168,7 @@
     })
     .catch(function (err) {
       console.error('Could not load site data:', err);
-      byId('title').textContent = 'Could not load this collection';
+      byId('loader').classList.add('failed');
     });
 })();
 </script>

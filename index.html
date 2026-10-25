@@ -14,11 +14,19 @@
 <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
+<div class="loader" id="loader" role="status" aria-live="polite">
+  <div class="loader-mark" aria-hidden="true"></div>
+  <p class="loader-name">Anupam Dutta Photography</p>
+  <div class="loader-bar" aria-hidden="true"></div>
+  <p class="loader-msg" id="loaderMsg">The photographs couldn’t be loaded. Check your connection and try again.</p>
+  <button type="button" class="loader-retry" onclick="location.reload()">Try again</button>
+</div>
+<noscript><style>.loader{display:none}</style></noscript>
 
 <header class="site-header" id="header">
   <div class="wrap bar">
     <a href="#top" class="brand">
-      <img id="brandLogo" alt="" width="40" height="40">
+      <img id="brandLogo" alt="" width="40" height="40" loading="lazy" decoding="async">
       <span id="brandName">Anupam Dutta Photography</span>
     </a>
     <nav class="nav" aria-label="Main">
@@ -84,7 +92,7 @@
   </section>
 
   <section class="passion" id="stories" aria-labelledby="passion-title">
-    <div class="passion-media"><img id="passionImg" alt="Photograph accompanying My Passion for Photography" loading="lazy"></div>
+    <div class="passion-media"><img id="passionImg" alt="Photograph accompanying My Passion for Photography" loading="lazy" decoding="async"></div>
     <div class="shade" aria-hidden="true"></div>
     <div class="wrap passion-inner">
       <div class="passion-copy">
@@ -111,7 +119,7 @@
     <div class="wrap">
       <div class="about-intro">
         <figure class="portrait">
-          <img id="portrait" src="./assets/portrait.jpg" alt="Anupam Dutta sitting on a mountain road beside his camera and telephoto lens" width="1022" height="782" loading="lazy">
+          <img id="portrait" src="./assets/portrait.jpg" alt="Anupam Dutta sitting on a mountain road beside his camera and telephoto lens" width="1022" height="782" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="this.classList.add('broken')">
           <figcaption>Anupam Dutta in the field</figcaption>
         </figure>
         <div class="about-text">
@@ -140,7 +148,7 @@
 </main>
 
 <footer class="contact" id="contact" aria-labelledby="contact-title">
-  <figure class="contact-bg" id="footerBg" aria-hidden="true" hidden><img alt=""></figure>
+  <figure class="contact-bg" id="footerBg" aria-hidden="true" hidden><img alt="" loading="lazy" decoding="async"></figure>
   <div class="wrap">
     <h2 id="contact-title">Let’s tell a wild story.</h2>
     <a class="mail" id="mail" href="mailto:anupam.d1@gmail.com">anupam.d1@gmail.com</a>
@@ -262,15 +270,20 @@
   var slideWrap = byId('slides'), dotsWrap = byId('dots');
   var slideNo = byId('slideNo');
   slideWrap.style.position = 'absolute'; slideWrap.style.inset = '0';
-  var slideEls = [], cur = 0, timer = null, paused = reduce, N = 0;
+  var slideEls = [], slideUrls = [], cur = 0, timer = null, paused = reduce, N = 0;
+  function loadSlide(k) {
+    var img = slideEls[k];
+    if (img && !img.getAttribute('src')) setImg(img, slideUrls[k], 2400);
+  }
   function buildHero(urls) {
-    N = urls.length;
+    N = urls.length; slideUrls = urls;
     hero.querySelector('.of').textContent = '/ ' + String(N).padStart(2, '0');
     slideEls = urls.map(function (url, i) {
       var img = document.createElement('img');
       img.className = 'slide' + (i === 0 ? ' on' : '');
       img.alt = i === 0 ? 'Wildlife photograph by Anupam Dutta' : '';
-      setImg(img, url, 2400);
+      img.decoding = 'async';
+      if (i === 0) img.fetchPriority = 'high';
       slideWrap.appendChild(img);
       var b = document.createElement('button');
       b.type = 'button';
@@ -280,6 +293,7 @@
       dotsWrap.appendChild(b);
       return img;
     });
+    loadSlide(0); loadSlide(1);
     restartBar(); schedule();
   }
   function restartBar() {
@@ -295,6 +309,7 @@
     if (!N) return;
     slideEls[cur].classList.remove('on');
     cur = (i + N) % N;
+    loadSlide(cur); loadSlide((cur + 1) % N);
     slideEls[cur].classList.add('on');
     slideNo.textContent = String(cur + 1).padStart(2, '0');
     restartBar(); schedule();
@@ -451,7 +466,7 @@
       var art = document.createElement('article');
       art.className = 'cp-item' + (i === cats.length - 1 ? ' on' : '');
       art.innerHTML =
-        '<div class="cp-media"><img loading="lazy"></div>' +
+        '<div class="cp-media"><img loading="lazy" decoding="async"></div>' +
         '<div class="cp-shade" aria-hidden="true"></div>' +
         '<button type="button" class="cp-hit" aria-controls="cp-more-' + i + '"></button>' +
         '<div class="cp-body"><div class="cp-head"><h3 class="cp-title"></h3>' + (count ? '<span class="cp-meta">' + count + ' photographs</span>' : '') + '</div>' +
@@ -490,9 +505,13 @@
     });
   }
 
+  /* Loader */
+  var loader = byId('loader');
+  function hideLoader() { loader.classList.add('done'); loader.setAttribute('aria-hidden', 'true'); }
+
   /* Site content comes from the JSON the editor (pages/editor.html) produces */
   fetch('./data/anupam-dutta-photography-data-set.json')
-    .then(function (r) { return r.json(); })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) {
       var s = data.settings || {}, hc = data['slider-content'] || {}, about = data.about || {}, card = about.card || {};
 
@@ -533,8 +552,15 @@
       }
       buildPress(data['useful-links'] || []);
       spy();
+
+      var first = slideEls[0];
+      if (!first || first.complete) hideLoader();
+      else { first.addEventListener('load', hideLoader); first.addEventListener('error', hideLoader); setTimeout(hideLoader, 6000); }
     })
-    .catch(function (err) { console.error('Could not load site data:', err); });
+    .catch(function (err) {
+      console.error('Could not load site data:', err);
+      loader.classList.add('failed');
+    });
 })();
 </script>
 
