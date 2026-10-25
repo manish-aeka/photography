@@ -123,8 +123,6 @@ p{margin:0}
 .passion .lead{font-family:var(--font-heading);font-size:clamp(21px,5.44vw,30px);font-style:italic;line-height:1.35;color:var(--text-primary)}
 .passion .body{margin-top:16px;font-size:16px;color:var(--text-on-surface);max-width:30rem}
 .passion-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:24px}
-.passion-actions .btn{margin-top:0}
-.passion-actions a.text{font-size:13px;font-weight:600;color:var(--accent);min-height:44px;display:inline-flex;align-items:center}
 .btn{display:inline-flex;align-items:center;min-height:44px;margin-top:28px;padding:0 22px;border:1px solid var(--text-primary);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;transition:border-color var(--fast),color var(--fast)}
 
 /* ---------- About ---------- */
@@ -220,10 +218,17 @@ p{margin:0}
   .hero-inner{position:relative;left:auto;right:auto;bottom:auto;margin-top:-28px;gap:24px;padding-bottom:12px}
   .hero h1{font-size:clamp(34px,10vw,46px);max-width:none}
   .hero p{margin-top:10px;font-size:15px;color:var(--text-on-surface);opacity:1}
-  .hero-actions{margin-top:18px}
-  .hero-cta{min-height:44px;padding:0 18px}
+  /* Two equal buttons side by side: solid brass primary, outlined secondary */
+  .hero-actions,.passion-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+  .hero-cta,.hero-link{justify-content:center;gap:8px;min-height:48px;padding:0 10px;font-size:12px;letter-spacing:.12em;white-space:nowrap}
+  .hero-cta{background:var(--accent);border-color:var(--accent);color:#151A17;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .hero-link{border:1px solid rgba(243,240,231,.35);text-decoration:none}
   .hero-ctrl{padding-top:12px;border-top-color:var(--line)}
 }
+
+@media (max-width:379px){.hero-cta,.hero-link{font-size:11px;letter-spacing:.08em}.hero-link svg{display:none}}
+/* Short "Explore" label until the hero is wide enough for both buttons in one row */
+@media (max-width:1023px){.wide-only{display:none}}
 
 /* ===== ≥560px: large phones / small tablets ===== */
 @media (min-width:560px){
@@ -246,6 +251,8 @@ p{margin:0}
   .hero p{font-size:16px}
   .hero-inner{flex-direction:row;align-items:flex-end;justify-content:space-between;gap:48px;padding-bottom:clamp(48px,8vh,88px)}
   .hero-copy{flex:1 1 auto;min-width:0}
+  .hero-actions,.passion-actions{flex-wrap:nowrap}
+  .passion-actions .wide-only{display:inline}
   .hero-ctrl{flex:none;width:min(400px,42%);border-top:0;padding-top:0}
   .viewer{padding:calc(20px + env(safe-area-inset-top,0px)) clamp(16px,3vw,32px) calc(20px + env(safe-area-inset-bottom,0px));gap:16px}
   .v-stage{padding:0 72px}
