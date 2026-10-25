@@ -3,7 +3,6 @@
 venv/
 env/
 ENV/
-deployment/.venv/
 
 # Python
 __pycache__/
@@ -54,9 +53,6 @@ yarn-error.log*
 .env.*.local
 
 # Build outputs
-deployment/build/**/*
-deployment/dist/**/*
-!deployment/dist/*.exe
 *.spec
 
 # Temporary files

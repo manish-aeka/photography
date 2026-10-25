@@ -1,805 +1,542 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Anupam Dutta Photography</title>
-    <meta name="description"
-        content="Explore the captivating world of wildlife photography with Anupam Dutta. Discover stunning images that tell stories of nature's beauty and raw emotions." />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="">
-    <link rel="icon" type="image/png" sizes="16x16" href="">
-    <link rel="apple-touch-icon" href="">
-    <meta name="theme-color" content="#1C5BAE">
-
-
-
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="./assets/css/style.css" />
-
-    <!-- Fallback Image Handler -->
-    <script src="./scripts/fallback-handler.js"></script>
-
-
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anupam Dutta Photography — Wildlife &amp; Bird Photography</title>
+<meta name="description" content="Wildlife photography by Anupam Dutta, with a special love for birds and their habitats, from India and wildlife destinations around the world.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#151A17">
+<link rel="icon" id="favicon" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="./assets/css/style.css">
 </head>
+<body>
 
-<!-- <body class="bg-black text-white"> -->
-
-<body class="bg-gray-900 text-white">
-
-    <!-- Attractive Loading Overlay -->
-    <div id="loading-overlay"
-        class="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-[100] flex items-center justify-center">
-        <div class="text-center px-4">
-            <!-- Logo with Animation -->
-            <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-8">
-                <!-- Outer Ring -->
-                <div class="absolute inset-0 border-4 border-[#1C5BAE]/20 rounded-full"></div>
-                <!-- Spinning Ring -->
-                <div
-                    class="absolute inset-0 border-4 border-transparent border-t-[#1C5BAE] border-r-[#1DA6E1] rounded-full animate-spin">
-                </div>
-                <!-- Inner Pulse -->
-                <div class="absolute inset-3 bg-[#1C5BAE]/10 rounded-full animate-ping"></div>
-                <!-- Logo Image -->
-                <div class="absolute inset-0 flex items-center justify-center p-6">
-                    <img id="loading-logo" src="" alt="Anupam Dutta Photography"
-                        class="w-full h-full object-contain animate-pulse logo-img">
-                </div>
-            </div>
-
-            <!-- Brand Name with Gradient and Animation -->
-            <div class="space-y-3">
-                <h1 id="loading-brand-name"
-                    class="text-3xl md:text-4xl font-serif tracking-wider bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent animate-pulse">
-                    Anupam Dutta Photography
-                </h1>
-
-                <!-- Loading Text -->
-                <div class="flex items-center justify-center gap-2">
-                    <span class="text-[#1DA6E1] text-sm md:text-base font-medium">Loading</span>
-                    <div class="flex gap-1">
-                        <span class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce"
-                            style="animation-delay: 0s"></span>
-                        <span class="w-2 h-2 bg-[#1DA6E1] rounded-full animate-bounce"
-                            style="animation-delay: 0.15s"></span>
-                        <span class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-bounce"
-                            style="animation-delay: 0.3s"></span>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="w-64 md:w-80 h-1 bg-gray-800 rounded-full mx-auto mt-4 overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] animate-pulse"
-                        style="animation: loadProgress 2s ease-in-out infinite"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Inline Script to Load Logo Dynamically -->
-    <script>
-        // Fetch JSON immediately to populate loading overlay
-        fetch('./data/anupam-dutta-photography-data-set.json')
-            .then(res => res.json())
-            .then(data => {
-                if (data.settings) {
-                    // Update loading logo
-                    const loadingLogo = document.getElementById('loading-logo');
-                    if (loadingLogo && data.settings['logo-url']) {
-                        loadingLogo.src = data.settings['logo-url'];
-                    }
-                    
-                    // Update loading brand name
-                    const loadingBrandName = document.getElementById('loading-brand-name');
-                    if (loadingBrandName && data.settings['navbar-title']) {
-                        loadingBrandName.textContent = data.settings['navbar-title'];
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error loading settings for loading overlay:', error);
-                // Fallback logo if fetch fails
-                const loadingLogo = document.getElementById('loading-logo');
-                if (loadingLogo) {
-                    loadingLogo.src = './assets/logo.png';
-                }
-            });
-    </script>
-
-    <style>
-        :root {
-            --primary-color: #1C5BAE;
-            --secondary-color: #1DA6E1;
-        }
-
-        * {
-            scroll-behavior: smooth;
-        }
-
-        @keyframes loadProgress {
-            0% {
-                width: 0%;
-            }
-
-            50% {
-                width: 70%;
-            }
-
-            100% {
-                width: 100%;
-            }
-        }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fade-in 1s ease-out;
-        }
-
-        /* Modern scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #111827;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
-            border-radius: 10px;
-        }
-    </style>
-
-
-    <!-- Modern Navbar with Glassmorphism -->
-    <nav
-        class="fixed top-0 left-0 w-full backdrop-blur-md bg-gray-900/80 border-b border-white/10 px-4 md:px-10 py-4 z-50 transition-all duration-300">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <a href="/" class="group flex items-center gap-3 transition-transform hover:scale-105">
-                    <img src="" alt="Anupam Dutta Photography"
-                        class="h-12 md:h-14 w-auto logo-img rounded-full transition-all">
-                    <h1 class="md:text-3xl hidden md:block font-serif tracking-widest navbar-title">
-                        Anupam Dutta Photography
-                    </h1>
-                </a>
-            </div>
-
-            <!-- CTA Button -->
-            <button onclick="window.location.href='mailto:anupam.d1@gmail.com'"
-                class="group relative overflow-hidden bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] px-4 md:px-6 py-2.5 rounded-full font-semibold text-white shadow-lg hover:shadow-[#1C5BAE]/50 transition-all transform hover:scale-105">
-                <span class="relative z-10 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    <span class="hidden sm:inline">Start a Conversation</span>
-                    <!-- <span class="sm:hidden">Conversation</span> -->
-                </span>
-                <div
-                    class="absolute inset-0 bg-gradient-to-r from-[#1DA6E1] to-[#1C5BAE] opacity-0 group-hover:opacity-100 transition-opacity">
-                </div>
-            </button>
-        </div>
+<header class="site-header" id="header">
+  <div class="wrap bar">
+    <a href="#top" class="brand">
+      <img id="brandLogo" alt="" width="40" height="40">
+      <span id="brandName">Anupam Dutta Photography</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#portfolio">Portfolio</a>
+      <a href="#stories">Passion</a>
+      <a href="#collections">Collections</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
     </nav>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h18M3 16h18"/></svg>
+    </button>
+  </div>
+</header>
 
-    <!-- Hero Slider with Modern Overlay -->
-    <div class="hero-section relative h-screen w-full overflow-hidden">
-        <!-- Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-transparent to-gray-900/90 z-10"></div>
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+  <button class="close" id="closeNav" aria-label="Close menu">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg>
+  </button>
+  <a href="#portfolio">Portfolio</a>
+  <a href="#stories">Passion</a>
+  <a href="#collections">Collections</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+</nav>
 
-        <img id="slider-image" src=""
-            class="w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out"
-            alt="cover image" />
-
-        <!-- Hero Content (populated dynamically) -->
-        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
-            <h1 id="heroHeading"
-                class="text-4xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent animate-fade-in">
-                Loading...
-            </h1>
-            <p id="heroDescription" class="text-lg md:text-2xl text-gray-200 mb-8 max-w-2xl">
-                Loading...
-            </p>
-            <button id="heroButton"
-                class="group bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] px-8 py-4 rounded-full font-semibold text-white shadow-2xl hover:shadow-[#1C5BAE]/50 transition-all transform hover:scale-105">
-                <span class="flex items-center gap-2">
-                    Explore Gallery
-                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                    </svg>
-                </span>
-            </button>
+<main>
+  <section class="hero" id="top" aria-label="Introduction" aria-roledescription="carousel">
+    <div id="slides"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <h1 id="heroHeading">The Art of the Untamed.</h1>
+        <p id="heroDescription">A visual journey into the wild, capturing nature in its purest form.</p>
+        <div class="hero-actions" id="heroActions">
+          <a href="#portfolio" class="hero-cta">Explore the Collection</a>
+          <a href="#about" class="hero-link">Meet Anupam</a>
         </div>
-
-        <!-- Modern Dots Navigation -->
-        <div id="dots" class="absolute bottom-10 w-full flex justify-center gap-3 z-20"></div>
+      </div>
+      <div class="hero-ctrl">
+        <div class="hero-count" aria-live="polite"><span id="slideNo">01</span><span class="of">/ 00</span></div>
+        <div class="hero-btns">
+          <button type="button" id="heroPrev" aria-label="Previous photograph"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button>
+          <button type="button" id="heroPause" aria-label="Pause slideshow" aria-pressed="false"><svg class="i-pause" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="2.5" y="2" width="3" height="10"/><rect x="8.5" y="2" width="3" height="10"/></svg><svg class="i-play" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="display:none"><path d="M3.5 2l8 5-8 5z"/></svg></button>
+          <button type="button" id="heroNext" aria-label="Next photograph"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button>
+        </div>
+        <div class="dots" id="dots" role="group" aria-label="Choose hero photograph"></div>
+      </div>
     </div>
+  </section>
 
-
-    <!-- About Section with Modern Design -->
-    <div
-        class="relative px-4 py-20 md:py-32 bg-gradient-to-b from-gray-900 via-gray-800/20 to-gray-800 overflow-hidden">
-        <!-- Decorative Background Elements -->
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-[#1C5BAE]/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-[#1DA6E1]/10 rounded-full blur-3xl"></div>
-
-        <div class="relative max-w-7xl mx-auto">
-            <!-- Enhanced Section Header -->
-            <div class="text-center space-y-6 mb-16">
-                <div
-                    class="inline-flex items-center gap-3 bg-gradient-to-r from-[#1C5BAE]/20 via-[#1DA6E1]/20 to-[#1C5BAE]/20 backdrop-blur-xl border border-[#1C5BAE]/30 px-6 py-2.5 rounded-full shadow-lg">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                        </path>
-                    </svg>
-                    <span
-                        class="text-sm font-semibold bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent">
-                        About Me
-                    </span>
-                </div>
-
-                <h2 id="about-title"
-                    class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent tracking-tight leading-[1.3] pb-4">
-                </h2>
-
-                <div class="flex justify-center">
-                    <div class="flex items-center gap-2">
-                        <div class="w-16 h-1 bg-gradient-to-r from-transparent via-[#1C5BAE] to-[#1DA6E1] rounded-full">
-                        </div>
-                        <div class="w-3 h-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full animate-pulse">
-                        </div>
-                        <div class="w-16 h-1 bg-gradient-to-r from-[#1DA6E1] via-[#1C5BAE] to-transparent rounded-full">
-                        </div>
-                    </div>
-                </div>
-
-                <p id="about-description" class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                </p>
-            </div>
-
-            <!-- Enhanced Content Card -->
-            <div id="about-card"
-                class="group relative flex flex-col md:flex-row items-center gap-8 bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-8 md:p-12 transition-all duration-500 hover:shadow-[#1C5BAE]/20 hover:border-[#1C5BAE]/30 overflow-hidden">
-
-                <!-- Animated Background Gradient -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-br from-[#1C5BAE]/5 via-[#1DA6E1]/5 to-[#1C5BAE]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                </div>
-
-                <!-- Image Section with Overlay -->
-                <div class="relative w-full md:w-1/2 overflow-hidden rounded-2xl">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    </div>
-                    <img id="about-card-image" src=""
-                        class="relative w-full h-80 md:h-[28rem] object-cover rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-700"
-                        alt="Anupam Dutta Photography" />
-                    <div
-                        class="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        <div class="w-full h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
-                    </div>
-                </div>
-
-                <!-- Content Section -->
-                <div class="relative flex flex-col gap-6 md:w-1/2 z-10">
-
-                    <h3 id="about-card-title"
-                        class="text-3xl md:text-4xl font-bold text-white tracking-wide leading-tight">
-                    </h3>
-
-                    <div class="w-16 h-1 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full"></div>
-
-                    <p id="about-card-description" class="text-gray-200 leading-relaxed text-lg">
-                    </p>
-
-                    <p id="about-card-subdescription"
-                        class="text-gray-300/90 leading-relaxed italic border-l-4 border-[#1C5BAE]/50 pl-4">
-                    </p>
-
-                    <!-- Decorative Element -->
-                    <div class="flex gap-2 mt-2">
-                        <div class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-pulse"></div>
-                        <div class="w-2 h-2 bg-[#1DA6E1] rounded-full animate-pulse delay-100"></div>
-                        <div class="w-2 h-2 bg-[#1C5BAE] rounded-full animate-pulse delay-200"></div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
+  <section class="gallery" id="portfolio" aria-labelledby="portfolio-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="sec-title" id="portfolio-title">Featured Work</h2>
+        <p class="kicker" id="count"></p>
+      </div>
+      <div class="masonry" id="masonry" aria-live="polite"></div>
+      <nav class="press-pager gal-pager" id="galPager" aria-label="Gallery pages">
+        <span class="info" id="galInfo"></span>
+        <div class="ctrls" id="galCtrls"></div>
+      </nav>
     </div>
+  </section>
 
-    <!-- Featured In / Useful Links Section -->
-    <section class="relative bg-gradient-to-b from-gray-800 to-gray-900 py-16 overflow-hidden">
-        <!-- Subtle top accent line -->
-        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1C5BAE]/60 to-transparent"></div>
-        <!-- Decorative glows -->
-        <div class="absolute top-1/2 left-10 w-72 h-72 bg-[#1C5BAE]/8 rounded-full blur-3xl -translate-y-1/2"></div>
-        <div class="absolute top-1/2 right-10 w-72 h-72 bg-[#1DA6E1]/8 rounded-full blur-3xl -translate-y-1/2"></div>
-
-        <div class="relative max-w-7xl mx-auto px-4">
-            <!-- Label -->
-            <div class="flex items-center gap-4 mb-10">
-                <div class="flex-1 h-px bg-gradient-to-r from-transparent to-[#1C5BAE]/40"></div>
-                <div class="flex items-center gap-2 px-5 py-2 rounded-full bg-[#1C5BAE]/10 border border-[#1C5BAE]/30 backdrop-blur-sm">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                    </svg>
-                    <span class="text-sm font-bold tracking-widest uppercase text-[#1DA6E1]">As Featured In</span>
-                </div>
-                <div class="flex-1 h-px bg-gradient-to-l from-transparent to-[#1C5BAE]/40"></div>
-            </div>
-
-            <!-- Publication Cards -->
-            <div id="useful-links-container" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+  <section class="passion" id="stories" aria-labelledby="passion-title">
+    <div class="passion-media"><img id="passionImg" alt="Photograph accompanying My Passion for Photography" loading="lazy"></div>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap passion-inner">
+      <div class="passion-copy">
+        <h2 id="passion-title">My Passion for Photography</h2>
+        <div class="passion-rule" aria-hidden="true"></div>
+        <p class="lead" id="passionLead">Wildlife photography is not just about capturing images — it’s about uncovering the unseen beauty of nature. Each shot freezes emotions, stories, and moments that live far beyond the frame.</p>
+        <p class="body" id="passionBody">Through patience and timing, I aim to showcase wildlife in its purest form — inspiring connection, respect, and curiosity toward the wild.</p>
+        <div class="passion-actions">
+          <a href="#collections" class="btn">Browse the Collections</a>
+          <a href="#about" class="text">About Anupam</a>
         </div>
-
-        <!-- Subtle bottom accent line -->
-        <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1DA6E1]/60 to-transparent"></div>
-    </section>
-
-    <!-- Categories Section -->
-    <div class="relative bg-gradient-to-b from-gray-900 via-gray-800/20 to-gray-900 py-20 overflow-hidden">
-        <!-- Decorative Background Elements -->
-        <div class="absolute top-0 right-1/4 w-96 h-96 bg-[#1C5BAE]/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-[#1DA6E1]/10 rounded-full blur-3xl"></div>
-
-        <div class="relative max-w-7xl mx-auto px-4">
-            <!-- Enhanced Section Header -->
-            <div class="text-center mb-16 space-y-6">
-                <div
-                    class="inline-flex items-center gap-3 bg-gradient-to-r from-[#1C5BAE]/20 via-[#1DA6E1]/20 to-[#1C5BAE]/20 backdrop-blur-xl border border-[#1C5BAE]/30 px-6 py-2.5 rounded-full shadow-lg">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    <span
-                        class="text-sm font-semibold bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent">
-                        Explore
-                    </span>
-                </div>
-
-                <h2
-                    class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent tracking-tight leading-[1.3] pb-4">
-                    Photography Collections
-                </h2>
-
-                <div class="flex justify-center">
-                    <div class="flex items-center gap-2">
-                        <div class="w-16 h-1 bg-gradient-to-r from-transparent via-[#1C5BAE] to-[#1DA6E1] rounded-full">
-                        </div>
-                        <div class="w-3 h-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full animate-pulse">
-                        </div>
-                        <div class="w-16 h-1 bg-gradient-to-r from-[#1DA6E1] via-[#1C5BAE] to-transparent rounded-full">
-                        </div>
-                    </div>
-                </div>
-
-                <p class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                    Discover different categories of stunning photography
-                </p>
-            </div>
-
-            <div id="categories-container"
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center"></div>
-        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Latest Collections Gallery -->
-    <div id="featured-work" class="relative bg-gray-950 py-20 overflow-hidden">
-        <!-- Subtle background texture -->
-        <div class="absolute inset-0 opacity-[0.03]"
-            style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 32px 32px;">
-        </div>
-        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1C5BAE]/40 to-transparent"></div>
-
-        <div class="relative max-w-7xl mx-auto px-4">
-
-            <!-- Section Header -->
-            <div class="text-center mb-16 space-y-6">
-                <div
-                    class="inline-flex items-center gap-3 bg-gradient-to-r from-[#1C5BAE]/20 via-[#1DA6E1]/20 to-[#1C5BAE]/20 backdrop-blur-xl border border-[#1C5BAE]/30 px-6 py-2.5 rounded-full shadow-lg">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                        </path>
-                    </svg>
-                    <span
-                        class="text-sm font-semibold bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent">
-                        Featured Work
-                    </span>
-                </div>
-
-                <h2
-                    class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent tracking-tight leading-[1.3] pb-4">
-                    Latest Collections
-                </h2>
-
-                <div class="flex justify-center">
-                    <div class="flex items-center gap-2">
-                        <div class="w-16 h-1 bg-gradient-to-r from-transparent via-[#1C5BAE] to-[#1DA6E1] rounded-full">
-                        </div>
-                        <div class="w-3 h-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full animate-pulse">
-                        </div>
-                        <div class="w-16 h-1 bg-gradient-to-r from-[#1DA6E1] via-[#1C5BAE] to-transparent rounded-full">
-                        </div>
-                    </div>
-                </div>
-
-                <p class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                    A curated selection of my most recent photography work, capturing the beauty and essence of nature
-                </p>
-            </div>
-
-            <!-- Masonry Gallery -->
-            <div id="gallery" class="columns-2 md:columns-3 lg:columns-4 gap-3 [column-gap:0.75rem]"></div>
-
-            <!-- Bottom fade hint -->
-            <div class="mt-10 flex items-center justify-center gap-3">
-                <div class="flex-1 h-px bg-gradient-to-r from-transparent to-white/10"></div>
-                <span class="text-gray-600 text-xs tracking-widest uppercase">End of collection</span>
-                <div class="flex-1 h-px bg-gradient-to-l from-transparent to-white/10"></div>
-            </div>
-        </div>
+  <section class="collections" id="collections" aria-labelledby="coll-title">
+    <div class="wrap">
+      <div class="sec-head"><h2 class="sec-title" id="coll-title">Collections</h2></div>
+      <div class="cp" id="cp"></div>
     </div>
+  </section>
 
-    <!-- Modern Image Modal with Navigation -->
-    <div id="image-modal"
-        class="fixed inset-0 bg-black/98 backdrop-blur-sm flex items-center justify-center z-50 hidden transition-all">
-        <!-- Close Button -->
-        <button id="close-modal" title="Close modal" aria-label="Close image viewer"
-            class="absolute top-6 right-6 text-white hover:text-[#1DA6E1] transition-colors group z-10">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-
-        <!-- Previous Button -->
-        <button id="prev-modal" title="Previous image" aria-label="Previous image"
-            class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-[#1DA6E1] transition-all bg-black/50 hover:bg-black/70 rounded-full p-4 group">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-        </button>
-
-        <!-- Image Container -->
-        <div class="flex items-center justify-center w-full h-full p-4">
-            <img id="modal-img" src="" class="max-h-full max-w-full object-contain" alt="Gallery Image" />
+  <section class="about" id="about" aria-labelledby="about-title">
+    <div class="wrap">
+      <div class="about-intro">
+        <figure class="portrait">
+          <img id="portrait" src="./assets/portrait.jpg" alt="Anupam Dutta sitting on a mountain road beside his camera and telephoto lens" width="1022" height="782" loading="lazy">
+          <figcaption>Anupam Dutta in the field</figcaption>
+        </figure>
+        <div class="about-text">
+          <h2 id="about-title">About Anupam Dutta</h2>
+          <p class="about-role">Wildlife &amp; bird photographer, <span id="aboutPlace">Kolkata, India</span></p>
+          <p class="bio" id="aboutBio">Anupam Dutta is a passionate wildlife photographer, with a special love for birds and their habitats. His photography journeys span India and international wildlife destinations, with a focus on rare and lesser-known species. His work has been published in wildlife, travel and photography magazines.</p>
+          <blockquote>“With every click, I freeze emotions that deserve to be remembered.”</blockquote>
+          <div class="about-facts">
+            <div><h3>Follow the work</h3><p><a class="ig-link" href="https://www.instagram.com/duttanupam/" target="_blank" rel="noopener" style="color:var(--accent)">Instagram <span class="ig-name">@duttanupam</span></a><br><a href="https://www.flickr.com/photos/204479913@N02/" target="_blank" rel="noopener" style="color:var(--accent)">Flickr portfolio</a></p></div>
+            <div id="beyond"><h3>Beyond the lens</h3><p id="beyondText">Technology and business consultant, Partner at Aeka Advisors. Formerly with PwC, IBM and Wipro. Alumnus of Kalyani University and INSEAD Singapore.</p></div>
+          </div>
         </div>
-
-        <!-- Next Button -->
-        <button id="next-modal" title="Next image" aria-label="Next image"
-            class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-[#1DA6E1] transition-all bg-black/50 hover:bg-black/70 rounded-full p-4 group">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-        </button>
-
-        <!-- Image Counter -->
-        <div id="image-counter"
-            class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-2 rounded-full text-sm font-semibold">
-            <span id="current-image">1</span> / <span id="total-images">1</span>
+      </div>
+      <div class="press-wrap">
+        <div class="press-head">
+          <h3>Published &amp; featured</h3>
         </div>
+        <div class="press-list" id="pressList" aria-live="polite"></div>
+        <nav class="press-pager gal-pager" id="pressPager" aria-label="Publications pages">
+          <span class="info" id="pressInfo"></span>
+          <div class="ctrls" id="pressCtrls"></div>
+        </nav>
+      </div>
     </div>
+  </section>
+</main>
 
-    <!-- Contact Section with Modern Design -->
-    <section class="relative bg-gradient-to-b from-gray-800 via-gray-900/20 to-gray-950 py-20 overflow-hidden">
-        <!-- Decorative Background Elements -->
-        <div class="absolute top-0 left-1/3 w-96 h-96 bg-[#1C5BAE]/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 right-1/3 w-96 h-96 bg-[#1DA6E1]/10 rounded-full blur-3xl"></div>
+<footer class="contact" id="contact" aria-labelledby="contact-title">
+  <figure class="contact-bg" id="footerBg" aria-hidden="true" hidden><img alt=""></figure>
+  <div class="wrap">
+    <h2 id="contact-title">Let’s tell a wild story.</h2>
+    <a class="mail" id="mail" href="mailto:anupam.d1@gmail.com">anupam.d1@gmail.com</a>
+    <div class="contact-grid">
+      <div><h3>Phone</h3><a id="phone" href="tel:+919831678665">9831678665</a></div>
+      <div><h3>Based in</h3><p id="place">Kolkata, India</p></div>
+      <div><h3>Instagram</h3><a class="ig-link" href="https://www.instagram.com/duttanupam/" target="_blank" rel="noopener"><span class="ig-name">@duttanupam</span></a></div>
+      <div><h3>Elsewhere</h3><div class="links"><a href="https://www.flickr.com/photos/204479913@N02/" target="_blank" rel="noopener">Flickr</a><a href="https://www.linkedin.com/in/anupam-dutta-144a9513/" target="_blank" rel="noopener">LinkedIn</a></div></div>
+    </div>
+    <div class="foot">
+      <span>© <span id="year">2026</span> <span id="footName">Anupam Dutta Photography</span>. All photographs protected by copyright.</span>
+      <span class="foot-links"><a href="./pages/editor.html">Admin</a><a href="#top">Back to top</a></span>
+    </div>
+  </div>
+</footer>
 
-        <div class="relative max-w-7xl mx-auto px-4">
-            <!-- Enhanced Section Header -->
-            <div class="text-center mb-16 space-y-6">
-                <div
-                    class="inline-flex items-center gap-3 bg-gradient-to-r from-[#1C5BAE]/20 via-[#1DA6E1]/20 to-[#1C5BAE]/20 backdrop-blur-xl border border-[#1C5BAE]/30 px-6 py-2.5 rounded-full shadow-lg">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    <span
-                        class="text-sm font-semibold bg-gradient-to-r from-[#1C5BAE] via-[#1DA6E1] to-[#1C5BAE] bg-clip-text text-transparent">
-                        Get in Touch
-                    </span>
-                </div>
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Photograph viewer" tabindex="-1">
+  <div class="v-top">
+    <span id="vPos"></span>
+    <button class="v-btn" id="vClose" aria-label="Close viewer"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14"/></svg></button>
+  </div>
+  <div class="v-stage">
+    <button class="v-btn" id="vPrev" aria-label="Previous photograph"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M11 3L5 9l6 6"/></svg></button>
+    <img id="vImg" alt="">
+    <button class="v-btn" id="vNext" aria-label="Next photograph"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 3l6 6-6 6"/></svg></button>
+  </div>
+  <div class="v-cap"><strong id="vTitle"></strong><span id="vPlace"></span></div>
+</div>
 
-                <h2
-                    class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent tracking-tight leading-[1.3] pb-4">
-                    Let's Connect
-                </h2>
+<script>
+(function () {
+  var BASE = 'https://res.cloudinary.com/ddyo9iiz9/image/upload/';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-                <div class="flex justify-center">
-                    <div class="flex items-center gap-2">
-                        <div class="w-16 h-1 bg-gradient-to-r from-transparent via-[#1C5BAE] to-[#1DA6E1] rounded-full">
-                        </div>
-                        <div class="w-3 h-3 bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] rounded-full animate-pulse">
-                        </div>
-                        <div class="w-16 h-1 bg-gradient-to-r from-[#1DA6E1] via-[#1C5BAE] to-transparent rounded-full">
-                        </div>
-                    </div>
-                </div>
+  /* Gallery captions, keyed by file name without the Cloudinary suffix. The JSON stores plain URLs only. */
+  var CAPTIONS = {
+    'Cerulean_Bali_Indonesia': ['Cerulean', 'Bali, Indonesia'],
+    'Dwarf_Sulawesi_Indonesia': ['Sulawesi Dwarf Kingfisher', 'Sulawesi, Indonesia'],
+    'Blue_winged_Kookaburra_Large': ['Blue-winged Kookaburra', ''],
+    'Rufous_collard_Malayisa_Large': ['Rufous-collared', 'Malaysia'],
+    'Rufous_backed_Large': ['Rufous-backed', ''],
+    'Laughing_kookaburra_Large': ['Laughing Kookaburra', '']
+  };
 
-                <p class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                    For inquiries into my nature photography, photography services, or availability, please use the form
-                    to contact me.
-                </p>
-            </div>
+  function keyOf(path) { return path.split('/').pop().replace(/\.[a-z0-9]+$/i, '').replace(/_[a-z0-9]{6}$/, ''); }
+  function sized(url, w) { return url.indexOf(BASE) === 0 ? url.replace(BASE, BASE + 'f_auto,q_auto,w_' + w + '/') : url; }
+  function byId(id) { return document.getElementById(id); }
+  function setText(id, v) { var el = byId(id); if (el && v) el.textContent = v; }
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Contact Info Cards -->
-                <div class="space-y-6">
-                    <div
-                        class="group bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:border-[#1C5BAE]/50 transition-all">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl p-4 group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7.5 3h9A4.5 4.5 0 0 1 21 7.5v9A4.5 4.5 0 0 1 16.5 21h-9A4.5 4.5 0 0 1 3 16.5v-9A4.5 4.5 0 0 1 7.5 3z">
-                                    </path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.25 7.5h.008v.008H17.25V7.5z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-sm text-gray-400 mb-1">Instagram</div>
-                                <a href="https://www.instagram.com/birds.series" target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-lg font-semibold text-white hover:text-[#1DA6E1] transition-colors instagram-link"><span
-                                        class="instagram-username">@birds.series</span></a>
-                            </div>
-                        </div>
-                    </div>
+  function markBroken(img) {
+    img.classList.add('broken');
+    var p = img.parentElement; if (!p) return;
+    p.classList.add('ph');
+    if (!p.dataset.label) p.dataset.label = img.dataset.label || '';
+  }
+  function setImg(img, url, w, label) {
+    if (!url) return;
+    if (label) img.dataset.label = label;
+    img.onerror = function () {
+      if (img.dataset.tried !== '1' && img.getAttribute('src') !== url) { img.dataset.tried = '1'; img.src = url; }
+      else { markBroken(img); }
+    };
+    img.onload = function () {
+      img.classList.remove('broken'); img.classList.add('loaded');
+      var p = img.parentElement;
+      if (p && !p.querySelector('img.broken')) { p.classList.remove('ph'); }
+    };
+    img.src = sized(url, w);
+  }
 
-                    <div
-                        class="group bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:border-[#1C5BAE]/50 transition-all">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl p-4 group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-sm text-gray-400 mb-1">Email</div>
-                                <a href="mailto:anupam.d1@gmail.com"
-                                    class="text-lg font-semibold text-white hover:text-[#1DA6E1] transition-colors">anupam.d1@gmail.com</a>
-                            </div>
-                        </div>
-                    </div>
+  /* Header */
+  var header = byId('header');
+  var SPY = ['portfolio', 'stories', 'collections', 'about', 'contact'];
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav a, .mobile-nav a'));
+  var activeId = null, lockUntil = 0;
+  function setActive(id) {
+    if (id === activeId) return; activeId = id;
+    navLinks.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('active', on);
+      if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+    });
+  }
+  function spy() {
+    if (Date.now() < lockUntil) return;
+    var line = 52 + window.innerHeight * 0.3, id = null;
+    SPY.forEach(function (s) { var el = byId(s); if (el && !el.hidden && el.getBoundingClientRect().top <= line) id = s; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) id = 'contact';
+    setActive(id);
+  }
+  function onScroll() { header.classList.toggle('scrolled', window.scrollY > 40); spy(); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', spy);
+  onScroll();
 
-                    <div
-                        class="group bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:border-[#1C5BAE]/50 transition-all">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl p-4 group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.25 6.75c0 8.284 6.716 15 15 15h1.5a2.25 2.25 0 002.25-2.25v-1.372c0-.51-.324-.96-.801-1.11l-3.423-1.084a2.25 2.25 0 00-2.31.596l-.97.97a11.42 11.42 0 01-5.362-5.362l.97-.97a2.25 2.25 0 00.596-2.31L7.482 3.05A1.125 1.125 0 006.372 2.25H5.25A3 3 0 002.25 5.25v1.5z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-sm text-gray-400 mb-1">Phone</div>
-                                <a href="tel:+919831678665"
-                                    class="text-lg font-semibold text-white hover:text-[#1DA6E1] transition-colors">+91
-                                    9831678665</a>
-                            </div>
-                        </div>
-                    </div>
+  /* In-page links: scroll below the fixed header and mark the menu item at once */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1), el = id ? byId(id) : null;
+    if (!el) return;
+    e.preventDefault();
+    var top = id === 'top' ? 0 : el.getBoundingClientRect().top + window.scrollY - 52;
+    window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' });
+    setActive(SPY.indexOf(id) > -1 ? id : null);
+    lockUntil = Date.now() + (reduce ? 0 : 900);
+    setTimeout(spy, reduce ? 0 : 950);
+  });
 
-                    <div
-                        class="group bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:border-[#1C5BAE]/50 transition-all">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl p-4 group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-sm text-gray-400 mb-1">Location</div>
-                                <p class="text-lg font-semibold text-white location-text" data-location>Kolkata, India
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  /* Mobile nav */
+  var mnav = byId('mobileNav'), burger = byId('burger');
+  function setNav(open) { mnav.classList.toggle('open', open); burger.setAttribute('aria-expanded', String(open)); document.body.style.overflow = open ? 'hidden' : ''; if (open) byId('closeNav').focus(); }
+  burger.addEventListener('click', function () { setNav(true); });
+  byId('closeNav').addEventListener('click', function () { setNav(false); burger.focus(); });
+  mnav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setNav(false); }); });
 
-                <!-- Contact Form -->
-                <div
-                    class="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8">
-                    <form class="space-y-6" onsubmit="handleFormSubmit(event)">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Your Name</label>
-                            <input type="text" name="name" required
-                                class="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent transition-all"
-                                placeholder="John Doe">
-                        </div>
+  /* Hero slideshow: progress bars, counter, previous / pause / next */
+  var hero = byId('top');
+  var slideWrap = byId('slides'), dotsWrap = byId('dots');
+  var slideNo = byId('slideNo');
+  slideWrap.style.position = 'absolute'; slideWrap.style.inset = '0';
+  var slideEls = [], cur = 0, timer = null, paused = reduce, N = 0;
+  function buildHero(urls) {
+    N = urls.length;
+    hero.querySelector('.of').textContent = '/ ' + String(N).padStart(2, '0');
+    slideEls = urls.map(function (url, i) {
+      var img = document.createElement('img');
+      img.className = 'slide' + (i === 0 ? ' on' : '');
+      img.alt = i === 0 ? 'Wildlife photograph by Anupam Dutta' : '';
+      setImg(img, url, 2400);
+      slideWrap.appendChild(img);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Show photograph ' + (i + 1) + ' of ' + N);
+      b.innerHTML = '<span></span>';
+      b.addEventListener('click', function () { show(i); });
+      dotsWrap.appendChild(b);
+      return img;
+    });
+    restartBar(); schedule();
+  }
+  function restartBar() {
+    Array.prototype.forEach.call(dotsWrap.children, function (b, k) {
+      b.setAttribute('aria-current', String(k === cur));
+      b.classList.toggle('done', k < cur);
+      var sp = b.firstChild; sp.classList.remove('run');
+      if (k === cur && !paused) { void sp.offsetWidth; sp.classList.add('run'); }
+    });
+  }
+  function schedule() { clearTimeout(timer); if (N > 1 && !paused && !document.hidden) timer = setTimeout(function () { show(cur + 1); }, 6500); }
+  function show(i) {
+    if (!N) return;
+    slideEls[cur].classList.remove('on');
+    cur = (i + N) % N;
+    slideEls[cur].classList.add('on');
+    slideNo.textContent = String(cur + 1).padStart(2, '0');
+    restartBar(); schedule();
+  }
+  var pauseBtn = byId('heroPause');
+  function setPaused(v) {
+    paused = v; hero.classList.toggle('paused', v);
+    pauseBtn.setAttribute('aria-pressed', String(v));
+    pauseBtn.setAttribute('aria-label', v ? 'Play slideshow' : 'Pause slideshow');
+    pauseBtn.querySelector('.i-pause').style.display = v ? 'none' : '';
+    pauseBtn.querySelector('.i-play').style.display = v ? '' : 'none';
+    restartBar(); schedule();
+  }
+  byId('heroPrev').addEventListener('click', function () { show(cur - 1); });
+  byId('heroNext').addEventListener('click', function () { show(cur + 1); });
+  pauseBtn.addEventListener('click', function () { setPaused(!paused); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(timer); else { restartBar(); schedule(); } });
+  setPaused(paused);
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Email Address</label>
-                            <input type="email" name="email" required
-                                class="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent transition-all"
-                                placeholder="john@example.com">
-                        </div>
+  /* Gallery */
+  var masonry = byId('masonry');
+  var ratios = ['4/5', '3/2', '1/1', '4/3', '2/3', '3/2'];
+  var items = [];
+  var galPage = 0, PER = 15;
+  function pgBtn(label, aria, fn, disabled, current) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'pg'; b.textContent = label;
+    b.setAttribute('aria-label', aria); if (disabled) b.disabled = true; if (current) b.setAttribute('aria-current', 'page');
+    b.addEventListener('click', fn); return b;
+  }
+  function goGallery(p) {
+    galPage = p; buildGallery();
+    var top = byId('portfolio').getBoundingClientRect().top + window.scrollY - 52;
+    window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+    var c = document.querySelector('#galCtrls [aria-current]'); if (c) c.focus({ preventScroll: true });
+  }
+  function buildGallery() {
+    var pages = Math.max(1, Math.ceil(items.length / PER));
+    if (galPage > pages - 1) galPage = pages - 1;
+    masonry.innerHTML = '';
+    byId('count').textContent = items.length + ' photographs';
+    var start = galPage * PER, end = Math.min(items.length, start + PER);
+    items.forEach(function (g, i) {
+      if (i < start || i >= end) return;
+      var btn = document.createElement('button');
+      btn.className = 'tile';
+      btn.style.setProperty('--r', ratios[i % ratios.length]);
+      btn.setAttribute('aria-label', 'View ' + (g.title || ('photograph ' + (i + 1))));
+      var img = document.createElement('img');
+      img.loading = 'lazy'; img.decoding = 'async';
+      img.alt = g.title ? g.title + (g.place ? ', ' + g.place : '') : 'Wildlife photograph by Anupam Dutta';
+      btn.appendChild(img);
+      setImg(img, g.url, 900, g.key || 'Photograph');
+      if (g.title) {
+        var cap = document.createElement('div'); cap.className = 'cap';
+        var st = document.createElement('strong'); st.textContent = g.title; cap.appendChild(st);
+        if (g.place) { var sp = document.createElement('span'); sp.textContent = g.place; cap.appendChild(sp); }
+        btn.appendChild(cap);
+      }
+      btn.addEventListener('click', function () { openViewer(i, btn); });
+      masonry.appendChild(btn);
+    });
+    var pager = byId('galPager'), ctrls = byId('galCtrls');
+    pager.style.display = pages > 1 ? '' : 'none';
+    byId('galInfo').textContent = (start + 1) + '–' + end + ' of ' + items.length;
+    ctrls.innerHTML = '';
+    ctrls.appendChild(pgBtn('‹', 'Previous page', function () { goGallery(galPage - 1); }, galPage === 0));
+    for (var n = 0; n < pages; n++) { (function (k) { ctrls.appendChild(pgBtn(String(k + 1), 'Page ' + (k + 1), function () { goGallery(k); }, false, k === galPage)); })(n); }
+    ctrls.appendChild(pgBtn('›', 'Next page', function () { goGallery(galPage + 1); }, galPage === pages - 1));
+  }
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Phone Number</label>
-                            <input type="tel" name="phone"
-                                class="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent transition-all"
-                                placeholder="+91 98765 43210">
-                        </div>
+  /* Viewer */
+  var viewer = byId('viewer'), vImg = byId('vImg'), vStage = vImg.parentElement;
+  var vi = 0, opener = null;
+  function render() {
+    var g = items[vi];
+    vImg.style.opacity = '0';
+    vImg.onload = function () { vImg.style.opacity = '1'; vImg.style.display = ''; vStage.classList.remove('ph'); };
+    vImg.onerror = function () { vImg.style.display = 'none'; vStage.classList.add('ph'); vStage.dataset.label = (g.key || 'Photograph') + ' · could not be loaded'; };
+    vImg.src = sized(g.url, 2000);
+    vImg.alt = g.title ? g.title + (g.place ? ', ' + g.place : '') : 'Wildlife photograph by Anupam Dutta';
+    byId('vTitle').textContent = g.title || byId('brandName').textContent;
+    byId('vPlace').textContent = g.place;
+    byId('vPos').textContent = (vi + 1) + ' of ' + items.length;
+  }
+  function openViewer(i, from) {
+    vi = i; opener = from; render();
+    viewer.classList.add('open'); document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () { viewer.classList.add('show'); });
+    viewer.focus();
+  }
+  function closeViewer() {
+    viewer.classList.remove('show');
+    setTimeout(function () { viewer.classList.remove('open'); }, reduce ? 0 : 300);
+    document.body.style.overflow = '';
+    var vp = Math.floor(vi / PER);
+    if (vp !== galPage) { galPage = vp; buildGallery(); opener = masonry.children[vi % PER] || null; }
+    if (opener) opener.focus();
+  }
+  function step(d) { vi = (vi + d + items.length) % items.length; render(); }
+  byId('vClose').addEventListener('click', closeViewer);
+  byId('vPrev').addEventListener('click', function () { step(-1); });
+  byId('vNext').addEventListener('click', function () { step(1); });
+  viewer.addEventListener('click', function (e) { if (e.target === viewer || e.target === vStage) closeViewer(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mnav.classList.contains('open')) { setNav(false); burger.focus(); return; }
+    if (!viewer.classList.contains('open')) return;
+    if (e.key === 'Escape') closeViewer();
+    else if (e.key === 'ArrowRight') step(1);
+    else if (e.key === 'ArrowLeft') step(-1);
+  });
+  var sx = null;
+  viewer.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  viewer.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); sx = null; });
+  byId('year').textContent = new Date().getFullYear();
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-300 mb-2">Your Message</label>
-                            <textarea name="message" rows="5" required
-                                class="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C5BAE] focus:border-transparent transition-all resize-none"
-                                placeholder="Tell me about your project or inquiry..."></textarea>
-                        </div>
+  /* Published & featured: 6 per page */
+  function buildPress(links) {
+    var list = byId('pressList'), ctrls = byId('pressCtrls'), info = byId('pressInfo');
+    var els = links.map(function (l) {
+      var a = document.createElement('a');
+      a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = '<span><strong></strong><span class="note"></span></span><span class="go" aria-hidden="true">↗</span>';
+      var note = l.note;
+      if (!note) { try { note = new URL(l.url).hostname.replace(/^www\./, ''); } catch (e) { note = ''; } }
+      a.querySelector('strong').textContent = l.title;
+      a.querySelector('.note').textContent = note;
+      list.appendChild(a);
+      return a;
+    });
+    var per = 6, pages = Math.ceil(els.length / per), page = 0;
+    if (pages <= 1) { byId('pressPager').style.display = 'none'; return; }
+    function go(p) {
+      page = p;
+      els.forEach(function (a, i) { a.hidden = Math.floor(i / per) !== page; });
+      var from = page * per + 1, to = Math.min(els.length, from + per - 1);
+      info.textContent = from + '–' + to + ' of ' + els.length;
+      ctrls.innerHTML = '';
+      ctrls.appendChild(pgBtn('‹', 'Previous page', function () { go(page - 1); }, page === 0));
+      for (var i = 0; i < pages; i++) { (function (n) { ctrls.appendChild(pgBtn(String(n + 1), 'Page ' + (n + 1), function () { go(n); }, false, n === page)); })(i); }
+      ctrls.appendChild(pgBtn('›', 'Next page', function () { go(page + 1); }, page === pages - 1));
+    }
+    go(0);
+    function lockHeight() { list.style.minHeight = ''; var keep = page; if (keep !== 0) go(0); list.style.minHeight = list.offsetHeight + 'px'; if (keep !== 0) go(keep); }
+    lockHeight();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockHeight);
+    window.addEventListener('resize', lockHeight);
+  }
 
-                        <button type="submit"
-                            class="w-full bg-gradient-to-r from-[#1C5BAE] to-[#1DA6E1] py-4 rounded-xl font-semibold text-white shadow-lg hover:shadow-[#1C5BAE]/50 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
-                            <span class="flex items-center justify-center gap-2">
-                                Send Message
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+  /* Collections: expanding panels (hover, tap, focus or arrow keys). The last one starts open. */
+  function buildCollections(cats) {
+    var wrap = byId('cp');
+    var cards = cats.map(function (c, i) {
+      var count = (c['images-url'] || []).filter(Boolean).length;
+      var art = document.createElement('article');
+      art.className = 'cp-item' + (i === cats.length - 1 ? ' on' : '');
+      art.innerHTML =
+        '<div class="cp-media"><img loading="lazy"></div>' +
+        '<div class="cp-shade" aria-hidden="true"></div>' +
+        '<button type="button" class="cp-hit" aria-controls="cp-more-' + i + '"></button>' +
+        '<div class="cp-body"><div class="cp-head"><h3 class="cp-title"></h3>' + (count ? '<span class="cp-meta">' + count + ' photographs</span>' : '') + '</div>' +
+        '<div class="cp-more" id="cp-more-' + i + '"><div><p class="cp-desc"></p>' +
+        (count ? '<a href="./pages/category.html?category=' + i + '" class="cp-link">View the photographs</a>' : '') +
+        '</div></div></div>';
+      var img = art.querySelector('img');
+      img.alt = 'Cover photograph for ' + c.title;
+      setImg(img, c.image, 1200, 'Cover · ' + c.title);
+      art.querySelector('.cp-title').textContent = c.title;
+      art.querySelector('.cp-desc').textContent = c.description;
+      art.querySelector('.cp-hit').setAttribute('aria-label', 'Show ' + c.title);
+      art.querySelector('.cp-hit').setAttribute('aria-expanded', String(i === cats.length - 1));
+      wrap.appendChild(art);
+      return art;
+    });
+    var canHover = window.matchMedia('(hover: hover)').matches;
+    function open(i) {
+      cards.forEach(function (c, k) {
+        var on = k === i;
+        c.classList.toggle('on', on);
+        c.querySelector('.cp-hit').setAttribute('aria-expanded', String(on));
+      });
+    }
+    cards.forEach(function (c, i) {
+      var hit = c.querySelector('.cp-hit');
+      hit.addEventListener('click', function () { open(i); });
+      hit.addEventListener('focus', function () { open(i); });
+      if (canHover) c.addEventListener('mouseenter', function () { open(i); });
+      hit.addEventListener('keydown', function (e) {
+        var n = cards.length, k = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') k = (i + 1) % n;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') k = (i - 1 + n) % n;
+        if (k !== null) { e.preventDefault(); cards[k].querySelector('.cp-hit').focus(); }
+      });
+    });
+  }
 
-    </section>
+  /* Site content comes from the JSON the editor (pages/editor.html) produces */
+  fetch('./data/anupam-dutta-photography-data-set.json')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var s = data.settings || {}, hc = data['slider-content'] || {}, about = data.about || {}, card = about.card || {};
 
-    <!-- Modern Footer -->
-    <footer class="bg-gray-950 border-t border-white/10 py-12">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <!-- Brand -->
-                <div class="space-y-4">
-                    <h3
-                        class="text-xl font-bold bg-gradient-to-r from-white via-[#1DA6E1] to-white bg-clip-text text-transparent">
-                        Anupam Dutta Photography
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Capturing the essence of wildlife through the lens, one moment at a time.
-                    </p>
-                </div>
+      if (s['logo-url']) { setImg(byId('brandLogo'), s['logo-url'], 120); byId('favicon').href = s['logo-url']; }
+      setText('brandName', s['navbar-title']); setText('footName', s['navbar-title']);
+      if (s.email) { byId('mail').href = 'mailto:' + s.email; byId('mail').textContent = s.email; }
+      if (s.phone) { byId('phone').href = 'tel:' + s.phone.replace(/[^\d+]/g, ''); byId('phone').textContent = s.phone; }
+      setText('place', s.address); setText('aboutPlace', s.address);
+      if (s['footer-image']) { byId('footerBg').hidden = false; setImg(byId('footerBg').firstChild, s['footer-image'], 2000); }
+      if (s['instagram-url']) document.querySelectorAll('.ig-link').forEach(function (a) { a.href = s['instagram-url']; });
+      if (s['instagram-username']) document.querySelectorAll('.ig-name').forEach(function (el) { el.textContent = s['instagram-username']; });
 
-                <!-- Quick Links -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-semibold text-white">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Home</a></li>
-                        <li><a href="#about-title"
-                                class="text-gray-400 hover:text-[#1DA6E1] transition-colors">About</a></li>
-                        <li><a href="#categories-container"
-                                class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Gallery</a></li>
-                        <li><a href="mailto:anupam.d1@gmail.com"
-                                class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Contact</a></li>
-                        <li><a href="./pages/editor.html"
-                                class="text-gray-400 hover:text-[#1DA6E1] transition-colors">Admin</a>
-                        </li>
-                    </ul>
-                </div>
+      setText('heroHeading', hc.heading); setText('heroDescription', hc.description);
+      byId('heroHeading').hidden = hc['show-heading'] === false;
+      byId('heroDescription').hidden = hc['show-description'] === false;
+      byId('heroActions').hidden = hc['show-latest-collections-button'] === false;
+      buildHero((data['slider-images'] || []).filter(Boolean));
 
-                <!-- Social Links -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-semibold text-white">Follow Me</h4>
-                    <div class="flex gap-4">
-                        <a href="https://www.instagram.com/birds.series" target="_blank" rel="noopener noreferrer"
-                            title="Follow on Instagram" aria-label="Follow Anupam Dutta Photography on Instagram"
-                            class="bg-gradient-to-br from-[#1C5BAE] to-[#1DA6E1] rounded-xl p-3 hover:scale-110 transition-transform instagram-link">
-                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
+      items = (data['gallery-images'] || []).filter(Boolean).map(function (url) {
+        var key = keyOf(url), cap = CAPTIONS[key] || [];
+        return { url: url, key: key, title: cap[0] || '', place: cap[1] || '' };
+      });
+      buildGallery();
 
-            <div class="border-t border-white/10 pt-8">
-                <div class="text-center">
-                    <p class="text-gray-400 text-sm">
-                        &copy; <span id="year"></span> Anupam Dutta Photography. All rights reserved.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
+      byId('stories').hidden = card['is-card-visible'] === false;
+      setText('passion-title', card.title); setText('passionLead', card.description); setText('passionBody', card['sub-description']);
+      setImg(byId('passionImg'), card.url, 1600, 'Passion photograph');
 
-    <script src="./scripts/script.js"></script>
+      buildCollections(data.categories || []);
 
-    <script>
-        document.getElementById("year").textContent = new Date().getFullYear();
-
-        // Form submission handler
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-
-            // Get form values
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const phone = formData.get('phone') || 'Not provided';
-            const message = formData.get('message');
-
-            // Get recipient email from data attribute or fetch from JSON
-            const recipientEmail = document.querySelector('[href^="mailto:"]')?.href.replace('mailto:', '') || 'anupam.d1@gmail.com';
-
-            // Create email content
-            const subject = encodeURIComponent(`Photography Inquiry from ${name}`);
-            const body = encodeURIComponent(
-                `Name: ${name}\n` +
-                `Email: ${email}\n` +
-                `Phone: ${phone}\n\n` +
-                `Message:\n${message}`
-            );
-
-            // Redirect to email client
-            window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-
-            // Show success message
-            const button = form.querySelector('button[type="submit"]');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<span class="flex items-center justify-center gap-2">✓ Opening Email Client...</span>';
-            button.disabled = true;
-
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-                form.reset();
-            }, 2000);
-        }
-    </script>
+      setText('about-title', about.title);
+      if (about.portrait) setImg(byId('portrait'), about.portrait, 1400, 'Portrait');
+      if (about.description) {
+        var paras = about.description.split(/\n+/);
+        setText('aboutBio', paras[0]);
+        if (paras.length > 1) setText('beyondText', paras.slice(1).join(' '));
+        else byId('beyond').hidden = true;
+      }
+      buildPress(data['useful-links'] || []);
+      spy();
+    })
+    .catch(function (err) { console.error('Could not load site data:', err); });
+})();
+</script>
 
 </body>
-
 </html>

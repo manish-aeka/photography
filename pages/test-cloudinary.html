@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloudinary Upload Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../scripts/tailwind-theme.js"></script>
 </head>
 
 <body class="bg-gray-900 min-h-screen flex items-center justify-center p-8">
@@ -31,7 +32,7 @@
 
         <!-- Upload Button -->
         <button onclick="testUpload()"
-            class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold py-4 rounded-lg transition-all shadow-lg">
+            class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-gray-900 font-bold py-4 rounded-lg transition-all shadow-lg">
             Upload to Cloudinary
         </button>
 
@@ -89,7 +90,7 @@
 
             // Validate configuration
             if (cloudinaryUploader.cloudName === 'YOUR_CLOUD_NAME') {
-                alert('Please update cloudinary-uploader.js with your Cloudinary credentials!\n\nSee CLOUDINARY_SETUP.md for instructions.');
+                alert('Please update cloudinary-uploader.js with your Cloudinary credentials!\n\nSet cloudName and uploadPreset at the bottom of scripts/cloudinary-uploader.js.');
                 return;
             }
 
