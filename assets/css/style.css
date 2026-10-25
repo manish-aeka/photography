@@ -26,7 +26,9 @@ p{margin:0}
 @media (hover:hover){a:hover{color:var(--accent)}}
 
 /* ---------- Header ---------- */
-.site-header{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:rgba(21,26,23,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background var(--normal),border-color var(--normal);border-bottom:1px solid rgba(243,240,231,.08)}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:rgba(21,26,23,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background var(--normal),border-color var(--normal),transform 350ms ease;border-bottom:1px solid rgba(243,240,231,.08)}
+/* Desktop only: hidden while scrolling down, back on any scroll up. Phones/tablets keep it fixed at the top. */
+@media (min-width:1024px){.site-header.hide{transform:translateY(-100%)}}
 .site-header.scrolled{background:rgba(21,26,23,.94);border-bottom-color:var(--line)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:var(--bar)}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--font-heading);font-size:15px;font-weight:500;white-space:nowrap}
@@ -49,6 +51,7 @@ p{margin:0}
 .hero{position:relative;height:100vh;height:100svh;min-height:520px;max-height:820px;overflow:hidden;background:#1C231F}
 .slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1600ms ease,transform 8000ms ease;transform:scale(1.04)}
 .slide.on{opacity:1;transform:scale(1)}
+#slides{position:absolute;inset:0}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,26,23,.55) 0%,rgba(21,26,23,0) 22%,rgba(21,26,23,0) 40%,rgba(21,26,23,.9) 100%);pointer-events:none}
 .hero h1{font-size:clamp(38px,9.9vw,72px);line-height:.98;letter-spacing:-.01em;max-width:11ch;animation:rise 700ms ease both}
 .hero p{margin-top:14px;font-size:16px;max-width:30rem;opacity:.9;animation:rise 700ms ease 120ms both}
@@ -205,6 +208,20 @@ p{margin:0}
 .slots span{font-size:12px;padding:4px 8px;border:1px solid #33403A;color:#8B9587}
 .slots span.ok{border-color:#6F7F5F;color:#DDE5D4;background:#26382D}
 .mgr-close{margin-top:20px;min-height:44px;padding:0 20px;background:none;border:1px solid var(--text-primary);color:var(--text-primary);font:600 15px var(--font-body);cursor:pointer}
+
+/* ===== Phones (<768px): photo on top, text and controls on a panel below, so nothing covers the photo ===== */
+@media (max-width:767px){
+  .hero{height:auto;min-height:0;max-height:none;background:var(--background)}
+  .hero::after{display:none}
+  #slides{position:relative;inset:auto;width:100%;aspect-ratio:1/1;max-height:62svh;margin-top:calc(var(--bar) + env(safe-area-inset-top,0px));overflow:hidden;touch-action:pan-y}
+  #slides::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,26,23,0) 62%,rgba(21,26,23,.6) 82%,var(--background) 100%);pointer-events:none}
+  .hero-inner{position:relative;left:auto;right:auto;bottom:auto;margin-top:-28px;gap:24px;padding-bottom:12px}
+  .hero h1{font-size:clamp(34px,10vw,46px);max-width:none}
+  .hero p{margin-top:10px;font-size:15px;color:var(--text-on-surface);opacity:1}
+  .hero-actions{margin-top:18px}
+  .hero-cta{min-height:44px;padding:0 18px}
+  .hero-ctrl{padding-top:12px;border-top-color:var(--line)}
+}
 
 /* ===== ≥560px: large phones / small tablets ===== */
 @media (min-width:560px){

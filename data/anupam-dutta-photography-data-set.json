@@ -124,7 +124,9 @@
         "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
         "fallback-image": "https://placehold.co/150x150.webp?text=Invalid+Image",
         "max-upload-size-mb": 5,
-        "footer-image": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1787587455/photography/DSC09237_Large_cdcjxx.jpg"
+        "footer-image": "https://res.cloudinary.com/ddyo9iiz9/image/upload/v1787587455/photography/DSC09237_Large_cdcjxx.jpg",
+        "gallery-per-page": 15,
+        "press-per-page": 6
     },
     "useful-links": [
         {

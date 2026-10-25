@@ -239,7 +239,20 @@
     if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) id = 'contact';
     setActive(id);
   }
-  function onScroll() { header.classList.toggle('scrolled', window.scrollY > 40); spy(); }
+  /* Navbar hides while scrolling down and returns on scroll up (always shown near the top or when focused) */
+  var lastY = window.scrollY;
+  function autoHide() {
+    var y = window.scrollY;
+    if (y < 120 || y < lastY - 4) header.classList.remove('hide');
+    else if (y > lastY + 4 && !(usingKeyboard && header.contains(document.activeElement))) header.classList.add('hide');
+    if (Math.abs(y - lastY) > 4) lastY = y;
+  }
+  // Pin only for real keyboard use: Safari can report focus-visible after a tap (e.g. focus returning to the menu button)
+  var usingKeyboard = false;
+  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') usingKeyboard = true; });
+  document.addEventListener('pointerdown', function () { usingKeyboard = false; }, { passive: true });
+  header.addEventListener('focusin', function () { if (usingKeyboard) header.classList.remove('hide'); });
+  function onScroll() { header.classList.toggle('scrolled', window.scrollY > 40); autoHide(); spy(); }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', spy);
   onScroll();
@@ -269,7 +282,6 @@
   var hero = byId('top');
   var slideWrap = byId('slides'), dotsWrap = byId('dots');
   var slideNo = byId('slideNo');
-  slideWrap.style.position = 'absolute'; slideWrap.style.inset = '0';
   var slideEls = [], slideUrls = [], cur = 0, timer = null, paused = reduce, N = 0;
   function loadSlide(k) {
     var img = slideEls[k];
@@ -323,6 +335,9 @@
     pauseBtn.querySelector('.i-play').style.display = v ? '' : 'none';
     restartBar(); schedule();
   }
+  var hx = null;
+  slideWrap.addEventListener('touchstart', function (e) { hx = e.touches[0].clientX; }, { passive: true });
+  slideWrap.addEventListener('touchend', function (e) { if (hx === null) return; var dx = e.changedTouches[0].clientX - hx; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); hx = null; });
   byId('heroPrev').addEventListener('click', function () { show(cur - 1); });
   byId('heroNext').addEventListener('click', function () { show(cur + 1); });
   pauseBtn.addEventListener('click', function () { setPaused(!paused); });
@@ -338,6 +353,11 @@
     var b = document.createElement('button'); b.type = 'button'; b.className = 'pg'; b.textContent = label;
     b.setAttribute('aria-label', aria); if (disabled) b.disabled = true; if (current) b.setAttribute('aria-current', 'page');
     b.addEventListener('click', fn); return b;
+  }
+  /* Page size from the editor: 0 = everything on one page; missing/invalid = default */
+  function pageSize(v, def, total) {
+    v = parseInt(v, 10); if (isNaN(v)) v = def;
+    return v > 0 ? v : Math.max(1, total);
   }
   function goGallery(p) {
     galPage = p; buildGallery();
@@ -426,7 +446,7 @@
   byId('year').textContent = new Date().getFullYear();
 
   /* Published & featured: 6 per page */
-  function buildPress(links) {
+  function buildPress(links, per) {
     var list = byId('pressList'), ctrls = byId('pressCtrls'), info = byId('pressInfo');
     var els = links.map(function (l) {
       var a = document.createElement('a');
@@ -439,7 +459,7 @@
       list.appendChild(a);
       return a;
     });
-    var per = 6, pages = Math.ceil(els.length / per), page = 0;
+    var pages = Math.ceil(els.length / per), page = 0;
     if (pages <= 1) { byId('pressPager').style.display = 'none'; return; }
     function go(p) {
       page = p;
@@ -534,6 +554,7 @@
         var key = keyOf(url), cap = CAPTIONS[key] || [];
         return { url: url, key: key, title: cap[0] || '', place: cap[1] || '' };
       });
+      PER = pageSize(s['gallery-per-page'], 15, items.length);
       buildGallery();
 
       byId('stories').hidden = card['is-card-visible'] === false;
@@ -550,7 +571,8 @@
         if (paras.length > 1) setText('beyondText', paras.slice(1).join(' '));
         else byId('beyond').hidden = true;
       }
-      buildPress(data['useful-links'] || []);
+      var press = data['useful-links'] || [];
+      buildPress(press, pageSize(s['press-per-page'], 6, press.length));
       spy();
 
       var first = slideEls[0];
