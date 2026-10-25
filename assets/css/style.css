@@ -26,10 +26,11 @@ p{margin:0}
 @media (hover:hover){a:hover{color:var(--accent)}}
 
 /* ---------- Header ---------- */
-.site-header{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:rgba(21,26,23,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background var(--normal),border-color var(--normal),transform 350ms ease;border-bottom:1px solid rgba(243,240,231,.08)}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:transparent;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform 350ms ease;border-bottom:1px solid transparent}
+/* Mobile view (☰ menu): thin line under the bar */
+@media (max-width:1023px){.site-header{border-bottom-color:rgba(243,240,231,.18)}}
 /* Desktop only: hidden while scrolling down, back on any scroll up. Phones/tablets keep it fixed at the top. */
 @media (min-width:1024px){.site-header.hide{transform:translateY(-100%)}}
-.site-header.scrolled{background:rgba(21,26,23,.94);border-bottom-color:var(--line)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:var(--bar)}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--font-heading);font-size:15px;font-weight:500;white-space:nowrap}
 .brand span{overflow:hidden;text-overflow:ellipsis}
