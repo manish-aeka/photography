@@ -37,7 +37,7 @@
       <a href="#contact">Contact</a>
     </nav>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h18M3 16h18"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
   </div>
 </header>
@@ -62,7 +62,7 @@
         <p id="heroDescription">A visual journey into the wild, capturing nature in its purest form.</p>
         <div class="hero-actions" id="heroActions">
           <a href="#portfolio" class="hero-cta">Explore the Collection</a>
-          <a href="#about" class="hero-link">Meet Anupam</a>
+          <a href="#about" class="hero-link">Meet Anupam<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
         </div>
       </div>
       <div class="hero-ctrl">
@@ -404,11 +404,14 @@
   var viewer = byId('viewer'), vImg = byId('vImg'), vStage = vImg.parentElement;
   var vi = 0, opener = null;
   function render() {
-    var g = items[vi];
-    vImg.style.opacity = '0';
-    vImg.onload = function () { vImg.style.opacity = '1'; vImg.style.display = ''; vStage.classList.remove('ph'); };
+    var g = items[vi], k = vi, big = new Image();
+    vImg.style.display = ''; vStage.classList.remove('ph');
     vImg.onerror = function () { vImg.style.display = 'none'; vStage.classList.add('ph'); vStage.dataset.label = (g.key || 'Photograph') + ' · could not be loaded'; };
-    vImg.src = sized(g.url, 2000);
+    // Show the grid's copy at once (already cached), then swap in the sharp one when it arrives
+    vImg.src = sized(g.url, 900);
+    big.onload = function () { if (k === vi) vImg.src = big.src; };
+    big.src = sized(g.url, 2000);
+    [1, -1].forEach(function (d) { new Image().src = sized(items[(vi + d + items.length) % items.length].url, 2000); });
     vImg.alt = g.title ? g.title + (g.place ? ', ' + g.place : '') : 'Wildlife photograph by Anupam Dutta';
     byId('vTitle').textContent = g.title || byId('brandName').textContent;
     byId('vPlace').textContent = g.place;

@@ -116,10 +116,14 @@
   /* Viewer */
   var viewer = byId('viewer'), vImg = byId('vImg'), vStage = vImg.parentElement;
   function render() {
-    vImg.style.opacity = '0';
-    vImg.onload = function () { vImg.style.opacity = '1'; vImg.style.display = ''; vStage.classList.remove('ph'); };
+    var k = vi, big = new Image();
+    vImg.style.display = ''; vStage.classList.remove('ph');
     vImg.onerror = function () { vImg.style.display = 'none'; vStage.classList.add('ph'); vStage.dataset.label = 'Photograph could not be loaded'; };
-    vImg.src = sized(images[vi], 2000);
+    // Show the grid's copy at once (already cached), then swap in the sharp one when it arrives
+    vImg.src = sized(images[vi], 900);
+    big.onload = function () { if (k === vi) vImg.src = big.src; };
+    big.src = sized(images[vi], 2000);
+    [1, -1].forEach(function (d) { new Image().src = sized(images[(vi + d + images.length) % images.length], 2000); });
     vImg.alt = title + ', photograph ' + (vi + 1);
     byId('vTitle').textContent = title;
     byId('vPos').textContent = (vi + 1) + ' of ' + images.length;

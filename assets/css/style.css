@@ -59,7 +59,8 @@ p{margin:0}
 .hero-inner{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;flex-direction:column;gap:28px;padding-bottom:20px}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:22px;animation:rise 700ms ease 240ms both}
 .hero-cta{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border:1px solid var(--accent);background:rgba(21,26,23,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--text-primary);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;transition:background var(--fast),color var(--fast)}
-.hero-link{display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:#DCE0D6;border-bottom:1px solid transparent;transition:border-color var(--fast),color var(--fast)}
+.hero-link{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-primary);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:8px;transition:color var(--fast)}
+.hero-link svg{transition:transform var(--fast)}
 .hero-ctrl{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px 14px;padding-top:14px;border-top:1px solid rgba(243,240,231,.18)}
 .hero-ctrl .dots{grid-column:1 / -1}
 .hero-count{font-family:var(--font-heading);font-size:24px;line-height:1;white-space:nowrap}
@@ -247,7 +248,8 @@ p{margin:0}
   .hero-copy{flex:1 1 auto;min-width:0}
   .hero-ctrl{flex:none;width:min(400px,42%);border-top:0;padding-top:0}
   .viewer{padding:calc(20px + env(safe-area-inset-top,0px)) clamp(16px,3vw,32px) calc(20px + env(safe-area-inset-bottom,0px));gap:16px}
-  .v-stage .v-btn{position:static;transform:none;background:none;border-color:#2C3530;width:48px;height:48px}
+  .v-stage{padding:0 72px}
+  .v-stage .v-btn{background:none;border-color:#2C3530;width:48px;height:48px}
   .v-cap strong{font-size:20px}
   .press-list a{padding:16px 20px}
   .contact-grid{margin-top:56px}
@@ -311,7 +313,8 @@ p{margin:0}
 /* ===== Hover effects only where a mouse exists ===== */
 @media (hover:hover){
   .hero-cta:hover{background:var(--accent);color:#151A17}
-  .hero-link:hover{color:var(--text-primary);border-bottom-color:var(--accent)}
+  .hero-link:hover{color:var(--accent)}
+  .hero-link:hover svg{transform:translateX(4px)}
   .hero-btns button:hover{border-color:var(--accent);color:var(--accent)}
   .nav a:hover{color:var(--text-primary)}
   .tile:hover img{transform:scale(1.035)}
