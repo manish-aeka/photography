@@ -22,7 +22,7 @@
 </div>
 <noscript><style>.loader{display:none}</style></noscript>
 
-<header class="site-header scrolled" id="header">
+<header class="site-header" id="header">
   <div class="wrap bar">
     <a href="../index.html" class="brand">
       <img id="brandLogo" alt="" width="40" height="40" loading="lazy" decoding="async">
@@ -77,21 +77,6 @@
   function byId(id) { return document.getElementById(id); }
   byId('year').textContent = new Date().getFullYear();
 
-  var header = byId('header');
-  /* Navbar hides while scrolling down and returns on scroll up (always shown near the top or when focused) */
-  var lastY = window.scrollY;
-  function autoHide() {
-    var y = window.scrollY;
-    if (y < 120 || y < lastY - 4) header.classList.remove('hide');
-    else if (y > lastY + 4 && !(usingKeyboard && header.contains(document.activeElement))) header.classList.add('hide');
-    if (Math.abs(y - lastY) > 4) lastY = y;
-  }
-  // Pin only for real keyboard use: Safari can report focus-visible after a tap (e.g. focus returning to the menu button)
-  var usingKeyboard = false;
-  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') usingKeyboard = true; });
-  document.addEventListener('pointerdown', function () { usingKeyboard = false; }, { passive: true });
-  header.addEventListener('focusin', function () { if (usingKeyboard) header.classList.remove('hide'); });
-  window.addEventListener('scroll', autoHide, { passive: true });
 
   var images = [], title = '', vi = 0, opener = null;
   var masonry = byId('masonry'), ratios = ['4/5', '3/2', '1/1', '4/3', '2/3', '3/2'];

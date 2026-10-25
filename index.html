@@ -80,7 +80,7 @@
   <section class="gallery" id="portfolio" aria-labelledby="portfolio-title">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="sec-title" id="portfolio-title">Featured Work</h2>
+        <h2 class="sec-title" id="portfolio-title">Chasing the Kingfishers of the World</h2>
         <p class="kicker" id="count"></p>
       </div>
       <div class="masonry" id="masonry" aria-live="polite"></div>
@@ -220,7 +220,6 @@
   }
 
   /* Header */
-  var header = byId('header');
   var SPY = ['portfolio', 'stories', 'collections', 'about', 'contact'];
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav a, .mobile-nav a'));
   var activeId = null, lockUntil = 0;
@@ -239,20 +238,7 @@
     if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) id = 'contact';
     setActive(id);
   }
-  /* Navbar hides while scrolling down and returns on scroll up (always shown near the top or when focused) */
-  var lastY = window.scrollY;
-  function autoHide() {
-    var y = window.scrollY;
-    if (y < 120 || y < lastY - 4) header.classList.remove('hide');
-    else if (y > lastY + 4 && !(usingKeyboard && header.contains(document.activeElement))) header.classList.add('hide');
-    if (Math.abs(y - lastY) > 4) lastY = y;
-  }
-  // Pin only for real keyboard use: Safari can report focus-visible after a tap (e.g. focus returning to the menu button)
-  var usingKeyboard = false;
-  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') usingKeyboard = true; });
-  document.addEventListener('pointerdown', function () { usingKeyboard = false; }, { passive: true });
-  header.addEventListener('focusin', function () { if (usingKeyboard) header.classList.remove('hide'); });
-  function onScroll() { header.classList.toggle('scrolled', window.scrollY > 40); autoHide(); spy(); }
+  function onScroll() { spy(); }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', spy);
   onScroll();
